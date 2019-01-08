@@ -8,6 +8,11 @@ public class Day01Test  {
 	private Day day = new Day01();
 	
 	@Test
+	public void case0() {
+		Assert.assertEquals("3", day.part1("src/test/resources/01-0.txt"));
+	}
+	
+	@Test
 	public void case1() {
 		Assert.assertEquals("3", day.part1("src/test/resources/01-1.txt"));
 	}
