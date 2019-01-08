@@ -5,3 +5,5 @@
 .settings/
 .classpath
 .credentials
+
+target/
