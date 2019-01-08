@@ -9,5 +9,4 @@ public class Day01 implements Day {
 			.sum();
 		return String.valueOf(frequency);
 	}
-	
 }
