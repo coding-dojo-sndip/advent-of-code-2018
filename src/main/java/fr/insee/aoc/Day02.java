@@ -16,6 +16,19 @@ public class Day02 implements Day {
 		return String.valueOf(checksum);
 	}
 
+	@Override
+	public String part2(String input) {
+		List<String> words = readLines(input);
+		for (int i = 0; i < words.size() - 1; i ++) {
+			for (int j = i + 1; j < words.size(); j ++) {
+				String a = words.get(i);
+				String b = words.get(j);
+				if(differOnlyByOneChar(a, b)) return commonsChars(a, b);
+			}	
+		}
+		throw new DayAlgoException();
+	}
+
 	private boolean exactlyNTimes(String word, int n) {
 		return word.chars()
 			.boxed()
@@ -29,5 +42,30 @@ public class Day02 implements Day {
 		return words.stream()
 			.filter(word -> exactlyNTimes(word, n))
 			.count();
+	}
+	
+	private boolean differOnlyByOneChar(String a, String b) {
+		int numberOfDifferences = 0;
+		int length = a.length();
+		for (int indice = 0; indice < length; indice ++) {
+			if (a.charAt(indice) != b.charAt(indice)) {
+				numberOfDifferences ++;
+				if(numberOfDifferences > 1) {
+					return false;
+				}
+			}
+		}
+		return numberOfDifferences == 1;
+	}
+	
+	private String commonsChars(String a, String b) {
+		StringBuilder builder = new StringBuilder();
+		int length = a.length();
+		for (int indice = 0; indice < length; indice ++) {
+			if (a.charAt(indice) == b.charAt(indice)) {
+				builder.append(a.charAt(indice));
+			}
+		}
+		return builder.toString();
 	}
 }
