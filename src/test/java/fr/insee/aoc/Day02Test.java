@@ -16,7 +16,7 @@ public class Day02Test  {
 	public void part1() {
 		String answer = day.part1("src/main/resources/02.txt");
 		System.out.println(String.format("%s.1: %s", day.getClass().getSimpleName(), answer));
-		Assert.assertEquals("", answer);
+		Assert.assertEquals("6150", answer);
 	}
 	
 	@Test

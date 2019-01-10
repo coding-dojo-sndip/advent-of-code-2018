@@ -24,6 +24,11 @@ public abstract class DayUtils {
 		}
 	}
 	
+	public static String[] readToArray(String input) {
+		List<String> lines = readLines(input);
+		return lines.toArray(new String[lines.size()]);
+	}
+	
 	@SafeVarargs
 	public static <T> Set<T> setOf(T... elements) {
 		return new HashSet<>(Arrays.asList(elements));
