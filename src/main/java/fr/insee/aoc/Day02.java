@@ -23,7 +23,8 @@ public class Day02 implements Day {
 			for (int j = i + 1; j < words.size(); j ++) {
 				String a = words.get(i);
 				String b = words.get(j);
-				if(differOnlyByOneChar(a, b)) return commonsChars(a, b);
+				String commonsChars = commonsChars(a, b);
+				if(commonsChars.length() == a.length() - 1) return commonsChars;
 			}	
 		}
 		throw new DayAlgoException();
@@ -42,20 +43,6 @@ public class Day02 implements Day {
 		return words.stream()
 			.filter(word -> exactlyNTimes(word, n))
 			.count();
-	}
-	
-	private boolean differOnlyByOneChar(String a, String b) {
-		int numberOfDifferences = 0;
-		int length = a.length();
-		for (int indice = 0; indice < length; indice ++) {
-			if (a.charAt(indice) != b.charAt(indice)) {
-				numberOfDifferences ++;
-				if(numberOfDifferences > 1) {
-					return false;
-				}
-			}
-		}
-		return numberOfDifferences == 1;
 	}
 	
 	private String commonsChars(String a, String b) {
