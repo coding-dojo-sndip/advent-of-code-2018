@@ -10,6 +10,7 @@ public class Day01 implements Day {
 	}
 	
 	public String part2(String input) {
+		
 		return null;
 	}
 }
