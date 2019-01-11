@@ -18,25 +18,34 @@ import fr.insee.aoc.exception.DayException;
 public class DayUtils {
 	
 	
-	public static Stream<String> streamLines(String input){
+	public static Stream<String> streamOfLines(String input){
 		try {
 			return Files.lines(Paths.get(input));
-		} catch (IOException e) {
+		}
+		catch (IOException e) {
 			e.printStackTrace();
 		}
 		throw new DayException("Erreur dans la lecture du fichier");
 	}
 	
-	public static List<String> readLines(String input) {
-		return streamLines(input).collect(toList());
+	public static IntStream streamOfInt(String input) {
+		return streamOfLines(input).mapToInt(Integer::parseInt);
 	}
 	
-	public static IntStream streamIntegers(String input) {
-		return streamLines(input).mapToInt(Integer::parseInt);
+	public static List<String> listOfLines(String input) {
+		return streamOfLines(input).collect(toList());
 	}
 	
-	public static List<Integer> readIntegers(String input) {
-		return streamIntegers(input).boxed().collect(toList());
+	public static List<Integer> listOfIntegers(String input) {
+		return streamOfInt(input).boxed().collect(toList());
+	}
+	
+	public static String[] arrayOfLines(String input) {
+		return streamOfLines(input).toArray(String[]::new);
+	}
+	
+	public static int[] arrayOfInt(String input) {
+		return streamOfInt(input).toArray();
 	}
 
 	@SafeVarargs
