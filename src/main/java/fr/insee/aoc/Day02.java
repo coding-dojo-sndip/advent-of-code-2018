@@ -1,33 +1,35 @@
 package fr.insee.aoc;
 
-import static fr.insee.aoc.DayUtils.readLines;
+import static fr.insee.aoc.utils.DayUtils.arrayOfLines;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.counting;
 import static java.util.stream.Collectors.groupingBy;
 
-import java.util.List;
+import java.util.Arrays;
+
+import fr.insee.aoc.exception.DayException;
 
 public class Day02 implements Day {
 
 	@Override
 	public String part1(String input) {
-		List<String> words = readLines(input);
+		String[] words = arrayOfLines(input);
 		long checksum = numberOfExactlyNTimes(words, 2) * numberOfExactlyNTimes(words, 3);
 		return String.valueOf(checksum);
 	}
 
 	@Override
 	public String part2(String input) {
-		List<String> words = readLines(input);
-		for (int i = 0; i < words.size() - 1; i ++) {
-			for (int j = i + 1; j < words.size(); j ++) {
-				String a = words.get(i);
-				String b = words.get(j);
+		String[] words = arrayOfLines(input);
+		for (int i = 0; i < words.length - 1; i ++) {
+			for (int j = i + 1; j < words.length; j ++) {
+				String a = words[i];
+				String b = words[j];
 				String commonsChars = commonsChars(a, b);
 				if(commonsChars.length() == a.length() - 1) return commonsChars;
 			}	
 		}
-		throw new DayAlgoException();
+		throw new DayException("Erreur d'algorithme");
 	}
 
 	private boolean exactlyNTimes(String word, int n) {
@@ -39,8 +41,8 @@ public class Day02 implements Day {
 			.anyMatch(v -> v == n);
 	}
 	
-	private long numberOfExactlyNTimes(List<String> words, int n) {
-		return words.stream()
+	private long numberOfExactlyNTimes(String[] words, int n) {
+		return Arrays.stream(words)
 			.filter(word -> exactlyNTimes(word, n))
 			.count();
 	}
