@@ -1,4 +1,4 @@
-package fr.insee.aoc.utils;
+package fr.insee.aoc;
 
 import static java.util.stream.Collectors.toList;
 
@@ -13,9 +13,7 @@ import java.util.Set;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import fr.insee.aoc.exception.DayException;
-
-public class DayUtils {
+public class Days {
 	
 	
 	public static Stream<String> streamOfLines(String input){
