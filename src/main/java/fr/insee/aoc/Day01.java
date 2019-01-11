@@ -1,6 +1,11 @@
 package fr.insee.aoc;
 
-import static fr.insee.aoc.utils.DayUtils.streamLines;
+import static fr.insee.aoc.Days.readLines;
+import static fr.insee.aoc.Days.streamLines;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class Day01 implements Day {
 
@@ -10,7 +15,13 @@ public class Day01 implements Day {
 	}
 	
 	public String part2(String input) {
-		
-		return null;
+		Set<Integer> frequencies = new HashSet<>();
+		List<String> changes = readLines(input);
+		int frequency = 0;
+		while(true) {
+			if(frequencies.contains(frequency)) return String.valueOf(frequency);
+			frequencies.add(frequency);
+			frequency += Integer.valueOf(changes.get((frequencies.size() - 1) % changes.size()));
+		}
 	}
 }

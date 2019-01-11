@@ -1,4 +1,4 @@
-package fr.insee.aoc.utils;
+package fr.insee.aoc;
 
 import java.io.File;
 import java.io.IOException;
@@ -9,9 +9,7 @@ import java.util.stream.Stream;
 
 import org.apache.commons.io.FileUtils;
 
-import fr.insee.aoc.exception.DayException;
-
-public class DayUtils {
+public class Days {
 	
 	public static List<String> readLines(String input) {
 		try {
