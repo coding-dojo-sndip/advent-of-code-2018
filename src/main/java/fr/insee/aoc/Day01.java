@@ -1,9 +1,9 @@
 package fr.insee.aoc;
 
-import static fr.insee.aoc.utils.DayUtils.arrayOfInt;
-import static fr.insee.aoc.utils.DayUtils.notIn;
-import static fr.insee.aoc.utils.DayUtils.setOf;
-import static fr.insee.aoc.utils.DayUtils.streamOfInt;
+import static fr.insee.aoc.Days.arrayOfInt;
+import static fr.insee.aoc.Days.notIn;
+import static fr.insee.aoc.Days.setOf;
+import static fr.insee.aoc.Days.streamOfInt;
 
 import java.util.Set;
 

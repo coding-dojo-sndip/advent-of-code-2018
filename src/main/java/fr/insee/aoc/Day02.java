@@ -1,13 +1,11 @@
 package fr.insee.aoc;
 
-import static fr.insee.aoc.utils.DayUtils.arrayOfLines;
+import static fr.insee.aoc.Days.arrayOfLines;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.counting;
 import static java.util.stream.Collectors.groupingBy;
 
 import java.util.Arrays;
-
-import fr.insee.aoc.exception.DayException;
 
 public class Day02 implements Day {
 
