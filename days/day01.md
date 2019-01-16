@@ -2,7 +2,7 @@
 
 ## Partie 1
 
-En entrée, vous disposez d'une suite de changement de fréquence.
+En entrée, on dispose d'une suite de changement de fréquence.
 
 Une valeur de `+6` signifie que la fréquence augmente de `6` ; une fréquence de `-3` signifie que la fréquence diminue de `3`.
 
