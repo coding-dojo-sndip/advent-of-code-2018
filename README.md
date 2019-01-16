@@ -4,6 +4,8 @@ Progresser en Java en résolvant les problèmes de Advent Of Code 2018
 
 https://adventofcode.com/2018
 
+## Énoncés en français
+
 |1      |2      |3      |4      |5      |
 |-------|-------|-------|-------|-------|
 |[Jour 01](https://github.com/coding-dojo-sndip/advent-of-code-2018/blob/master/days/day01.md#jour-1)|Jour 06|Jour 11|Jour 16|Jour 21|
