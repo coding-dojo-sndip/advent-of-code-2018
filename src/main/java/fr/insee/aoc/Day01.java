@@ -17,10 +17,12 @@ public class Day01 implements Day {
 	public String part2(String input) {
 		Set<Integer> frequencies = setOf();
 		int[] changes = arrayOfInt(input);
+		int n = 0;
 		int frequency = 0;
 		while (notIn(frequency, frequencies)) {
 			frequencies.add(frequency);
-			frequency += changes[(frequencies.size() - 1) % changes.length];
+			frequency += changes[n % changes.length];
+			n ++;
 		}
 		return String.valueOf(frequency);
 	}
