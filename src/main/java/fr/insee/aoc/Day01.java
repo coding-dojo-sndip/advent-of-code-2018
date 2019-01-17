@@ -9,18 +9,20 @@ import java.util.Set;
 public class Day01 implements Day {
 
 	public String part1(String input) {
-		int sum = streamOfLines(input).mapToInt(Integer::valueOf).sum();
+		int sum = streamOfInt(input).sum();
 		return String.valueOf(sum);
 	}
 	
 	public String part2(String input) {
 		Set<Integer> frequencies = new HashSet<>();
-		List<String> changes = listOfLines(input);
+		int[] changes = arrayOfInt(input);
 		int frequency = 0;
-		while(true) {
-			if(frequencies.contains(frequency)) return String.valueOf(frequency);
+		int n = 0;
+		while(notIn(frequency, frequencies)) {
 			frequencies.add(frequency);
-			frequency += Integer.valueOf(changes.get((frequencies.size() - 1) % changes.size()));
+			frequency += Integer.valueOf(changes[n % changes.length]);
+			n++;
 		}
+		return String.valueOf(frequency);
 	}
 }
