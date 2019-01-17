@@ -13,13 +13,13 @@ public class Day01 implements Day {
 		int sum = streamOfInt(input).sum();
 		return String.valueOf(sum);
 	}
-	
+
 	public String part2(String input) {
 		Set<Integer> frequencies = new HashSet<>();
 		int[] changes = arrayOfInt(input);
 		int frequency = 0;
 		int n = 0;
-		while(notIn(frequency, frequencies)) {
+		while (notIn(frequency, frequencies)) {
 			frequencies.add(frequency);
 			frequency += Integer.valueOf(changes[n % changes.length]);
 			n++;
