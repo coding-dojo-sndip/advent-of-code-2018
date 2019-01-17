@@ -9,4 +9,5 @@ public interface Day {
 	default String part2(String input) {
 		throw new DayException("Not implemented yet!");
 	}
+	
 }
