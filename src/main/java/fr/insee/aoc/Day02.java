@@ -11,9 +11,13 @@ public class Day02 implements Day {
 	@Override
 	public String part1(String input) {
 		List<String>strings = listOfLines(input);
-		long a = strings.stream().map(this::occurences).filter(o -> containsSameCharacter(o, 2)).count();
-		long b = strings.stream().map(this::occurences).filter(o -> containsSameCharacter(o, 3)).count();
+		long a = numberOfStringsNTimes(strings,2);
+		long b = numberOfStringsNTimes(strings,3);
 		return String.valueOf(a*b);
+	}
+
+	private long numberOfStringsNTimes(List<String> strings, int n) {
+		return strings.stream().map(this::occurences).filter(o -> containsSameCharacter(o, n)).count();
 	}
 	
 	private Map<Integer, Long>occurences(String string){
