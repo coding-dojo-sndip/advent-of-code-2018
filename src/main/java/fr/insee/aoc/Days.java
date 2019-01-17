@@ -3,7 +3,6 @@ package fr.insee.aoc;
 import static java.util.stream.Collectors.toList;
 
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Collection;

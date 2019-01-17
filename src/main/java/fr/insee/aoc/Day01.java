@@ -1,9 +1,10 @@
 package fr.insee.aoc;
 
-import static fr.insee.aoc.Days.*;
+import static fr.insee.aoc.Days.arrayOfInt;
+import static fr.insee.aoc.Days.notIn;
+import static fr.insee.aoc.Days.streamOfInt;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public class Day01 implements Day {
