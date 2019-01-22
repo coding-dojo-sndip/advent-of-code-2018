@@ -2,7 +2,7 @@
 
 ## Partie 1
 
-En entrée, on dispose d’une liste d'identifiants.
+En entrée, on dispose d’une liste d’identifiants.
 
 Il faut compter les identifiants qui comportent au moins une lettre en double ; puis compter séparemment les identifiants qui comportent au moins une lettre en triple.
 
@@ -16,14 +16,14 @@ Par exemple avec la liste d’identifiants suivante :
  * `abcdee` contient deux `e`
  * `ababab` contient trois `a` et trois `b`, mais cela ne compte qu’un seule fois.
 
-Dans cette liste d’identifiants, quatre d'entre eux contiennent une lettre en double et trois contiennent une lettre en triple.
+Dans cette liste d’identifiants, quatre d’entre eux contiennent une lettre en double et trois contiennent une lettre en triple.
 En multipliant ces deux nombres ensembles on obtient une somme de controle de `4 * 3 = 12`.
 
 __Quelle est la somme de contôle__ de la liste d’identifiants ?
 
 ## Partie 2
 
-Dans la liste d’identifiants, il y a un unique couple d'identifiants presque identiques qui ne diffèrent que par un seul caractère.
+Dans la liste d’identifiants, il y a un unique couple d’identifiants presque identiques qui ne diffèrent que par un seul caractère.
 
 Par exemple :
 
