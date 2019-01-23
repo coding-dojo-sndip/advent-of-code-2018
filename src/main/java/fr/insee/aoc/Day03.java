@@ -12,16 +12,20 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Day03 implements Day {
-
-	
 	
 	@Override
 	public String part1(String input) {
-		List<Rectangle> rectangles = rectangles(input);
-		for (int i = 0; i < rectangles.size(); i ++) {
-			
+		Rectangle[] rectangles = rectangles(input);
+		Set<Point> overlappingPoints = new HashSet<>();
+		for (int i = 0; i < rectangles.length - 1; i ++) {
+			for (int j = i + 1; j < rectangles.length; j ++) {
+				Rectangle a = rectangles[i];
+				Rectangle b = rectangles[j];
+				overlappingPoints.addAll(a.commonPoints(b));
+			}
 		}
-		return Day.super.part1(input);
+		int size = overlappingPoints.size();
+		return String.valueOf(size);
 	}
 
 	@Override
@@ -30,8 +34,8 @@ public class Day03 implements Day {
 		return Day.super.part2(input);
 	}
 	
-	private List<Rectangle> rectangles(String input) {
-		return streamOfLines(input).map(Rectangle::new).collect(toList());
+	private Rectangle[] rectangles(String input) {
+		return streamOfLines(input).map(Rectangle::new).toArray(Rectangle[]::new);
 	}
 
 	static class Rectangle {
@@ -43,12 +47,14 @@ public class Day03 implements Day {
 		
 		public Rectangle(String line) {
 			Matcher matcher = pattern.matcher(line);
-			id = groupInt(1, matcher);
-			left = groupInt(2, matcher);
-			top = groupInt(3, matcher);
-			width = groupInt(4, matcher);
-			height = groupInt(5, matcher);
-			points = points();
+			if(matcher.matches()) {
+				id = groupInt(1, matcher);
+				left = groupInt(2, matcher);
+				top = groupInt(3, matcher);
+				width = groupInt(4, matcher);
+				height = groupInt(5, matcher);
+				points = points();
+			}
 		}
 		
 		private Set<Point> points() {
