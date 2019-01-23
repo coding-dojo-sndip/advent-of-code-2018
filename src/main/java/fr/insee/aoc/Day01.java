@@ -21,7 +21,7 @@ public class Day01 implements Day {
 		int n = 0;
 		while (notIn(frequency, frequencies)) {
 			frequencies.add(frequency);
-			frequency += Integer.valueOf(changes[n % changes.length]);
+			frequency += changes[n % changes.length];
 			n++;
 		}
 		return String.valueOf(frequency);
