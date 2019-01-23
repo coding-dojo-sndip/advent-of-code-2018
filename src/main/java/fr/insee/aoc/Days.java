@@ -6,7 +6,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
+import java.util.regex.Matcher;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -49,4 +52,56 @@ public class Days {
 		return !in(element, collection);
 	}
 
+	public static int groupInt(int group, Matcher matcher) {
+		return Integer.valueOf(matcher.group(group)).intValue();
+	}
+	
+	public static class Point implements Comparable<Point> {
+		
+		private int x, y;
+
+		private static final Comparator<Point> comparator = Comparator.comparingInt(Point::getX).thenComparingInt(Point::getY);
+		
+		private Point() {}
+		
+		public static Point of(int x, int y) {
+			Point point = new Point();
+			point.x = x;
+			point.y = y;
+			return point;
+		}
+
+		@Override
+		public int compareTo(Point other) {
+			return comparator.compare(this, other);
+		}
+
+		@Override
+		public int hashCode() {
+			return Objects.hash(x, y);
+		}
+
+		@Override
+		public boolean equals(Object object) {
+			if(object == null) return false;
+			if(object instanceof Point) {
+				Point other = (Point) object;
+				return Objects.equals(this.x, other.x) && Objects.equals(this.y, other.y);
+			}
+			return false;
+		}
+
+		@Override
+		public String toString() {
+			return String.format("(%d, %d)", x, y);
+		}
+
+		public int getX() {
+			return x;
+		}
+
+		public int getY() {
+			return y;
+		}
+	}
 }
