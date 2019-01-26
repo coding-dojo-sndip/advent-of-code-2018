@@ -5,6 +5,7 @@ import static fr.insee.aoc.Days.streamOfLines;
 import static java.lang.Math.min;
 import static java.util.Collections.emptySet;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -26,22 +27,15 @@ public class Day03 implements Day {
 				intersection.addAll(a.commonPoints(b));
 			}
 		}
-		int size = intersection.size();
-		return String.valueOf(size);
+		return String.valueOf(intersection.size());
 	}
 
 	@Override
 	public String part2(String input) {
 		Rectangle[] rectangles = rectangles(input);
-		for (int i = 0; i < rectangles.length; i ++) {
-			Rectangle a = rectangles[i];
-			for (int j = 0; j < rectangles.length; j ++) {
-				Rectangle b = rectangles[j];
-				if(a.overlaps(b)) break;
-				if(j == rectangles.length - 1) return String.valueOf(a.id);
-			}
-			
-		}
+        for (Rectangle rectangle : rectangles) {
+            if(rectangle.overlapsNone(rectangles)) return String.valueOf(rectangle.id);
+        }
 		throw new DayException("Erreur d'algorithme.");
 	}
 	
@@ -56,13 +50,13 @@ public class Day03 implements Day {
 		private int id;
 		private Segment height, width;
 		
-		public Rectangle(Segment height, Segment width) {
+		Rectangle(Segment height, Segment width) {
 			super();
 			this.height = height;
 			this.width = width;
 		}
 
-		public Rectangle(String line) {
+		Rectangle(String line) {
 			Matcher matcher = pattern.matcher(line);
 			if(matcher.matches()) {
 				id = groupInt(1, matcher);
@@ -75,7 +69,7 @@ public class Day03 implements Day {
 			}
 		}
 		
-		public Optional<Rectangle> intersection(Rectangle other) {
+		Optional<Rectangle> intersection(Rectangle other) {
 			Optional<Segment> intersectionHeight = this.height.intersection(other.height);
 			Optional<Segment> intersectionWidth = this.width.intersection(other.width);
 			if(intersectionHeight.isPresent() && intersectionWidth.isPresent()) {
@@ -94,32 +88,32 @@ public class Day03 implements Day {
 			return points;
 		}
 		
-		public Set<Point> commonPoints(Rectangle other) {
+		Set<Point> commonPoints(Rectangle other) {
 			return this.intersection(other)
 				.map(Rectangle::points)
 				.orElse(emptySet());
 		}
 		
-		public boolean overlaps(Rectangle other) {
+		boolean overlaps(Rectangle other) {
 			return this.id != other.id && !commonPoints(other).isEmpty();
 		}
 
-		public int getId() {
-			return id;
-		}
+        boolean overlapsNone(Rectangle[] rectangles) {
+            return Arrays.stream(rectangles).noneMatch(this::overlaps);
+        }
 	}
 	
 	static class Segment {
 		
 		private int start, length, end;
 		
-		public Segment(int start, int length) {
+		Segment(int start, int length) {
 			this.start = start;
 			this.length = length;
 			this.end = this.start + this.length - 1;
 		}
 		
-		public Optional<Segment> intersection(Segment other) {
+		Optional<Segment> intersection(Segment other) {
 			if(this.start <= other.start && other.start <= this.end) {
 				return Optional.of(new Segment(other.start, min(this.end, other.end) + 1 - other.start));
 			}
