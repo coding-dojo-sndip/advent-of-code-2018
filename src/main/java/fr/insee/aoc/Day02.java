@@ -20,11 +20,10 @@ public class Day02 implements Day {
 	public String part2(String input) {
 		String[] words = arrayOfLines(input);
 		for (int i = 0; i < words.length - 1; i ++) {
+			String a = words[i];
 			for (int j = i + 1; j < words.length; j ++) {
-				String a = words[i];
 				String b = words[j];
-				String commonsChars = commonsChars(a, b);
-				if(commonsChars.length() == a.length() - 1) return commonsChars;
+				if(differByOneChar(a, b)) return commonsChars(a, b);
 			}	
 		}
 		throw new DayException("Erreur d'algorithme");
@@ -43,6 +42,18 @@ public class Day02 implements Day {
 		return Arrays.stream(words)
 			.filter(word -> exactlyNTimes(word, n))
 			.count();
+	}
+	
+	private boolean differByOneChar(String a, String b) {
+		int numberOfDifferences = 0;
+		int length = a.length();
+		for (int indice = 0; indice < length; indice ++) {
+			if (a.charAt(indice) != b.charAt(indice)) {
+				numberOfDifferences ++;
+				if(numberOfDifferences > 1) return false;
+			}
+		}
+		return numberOfDifferences == 1;
 	}
 	
 	private String commonsChars(String a, String b) {
