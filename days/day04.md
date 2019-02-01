@@ -28,7 +28,7 @@ Par exemple, considérons le relevé suivant qui a été au préalable trié par
 [1518-11-05 00:55] wakes up
 ```
 
-Les dates sont écrites sous la forme `year-month-day hour:minute`. L’agent qui se réveille ou s’endort est touours celui qui a pris sont tour de garde le plus récemment.
+Les dates sont écrites sous la forme `year-month-day hour:minute`. L’agent qui se réveille ou s’endort est touours celui qui a prit sont tour de garde le plus récemment.
 
 Visuellement, le relevé montre qu’entre minuit et une heure, les agents sont endormis aux minutes suivantes :
 
