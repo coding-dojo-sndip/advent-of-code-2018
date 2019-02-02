@@ -14,9 +14,7 @@ import static java.util.stream.Collectors.*;
 public class Day04 implements Day {
 
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-    private static final Pattern regexBeginsShift = Pattern.compile("\\[(.+)] Guard #(\\d+) begins shift");
-    private static final Pattern regexWakesUp = Pattern.compile("\\[(.+)] wakes up");
-    private static final Pattern regexFallsAsleep = Pattern.compile("\\[(.+)] falls asleep");
+    private static final Pattern regex = Pattern.compile("\\[(.+)] (?:Guard #(\\d+) begins shift|wakes up|falls asleep)");
 
     @Override
     public String part1(String input) {
@@ -43,21 +41,19 @@ public class Day04 implements Day {
 
         static Record fromLine(String line) {
             Record record = new Record();
-            Matcher matcherBeginsShift = regexBeginsShift.matcher(line);
-            Matcher matcherWakesUp = regexWakesUp.matcher(line);
-            Matcher matcherFallsAsleep = regexFallsAsleep.matcher(line);
-            if(matcherBeginsShift.matches()) {
-                record.type = Type.BEGINS_SHIFT;
-                record.time = LocalDateTime.parse(matcherBeginsShift.group(1), formatter);
-                record.guardId = groupInt(2, matcherBeginsShift);
-            }
-            else if(matcherWakesUp.matches()) {
-                record.type = Type.WAKES_UP;
-                record.time = LocalDateTime.parse(matcherWakesUp.group(1), formatter);
-            }
-            else if(matcherFallsAsleep.matches()) {
-                record.type = Type.FALLS_ASLEEP;
-                record.time = LocalDateTime.parse(matcherFallsAsleep.group(1), formatter);
+            Matcher matcher = regex.matcher(line);
+            if(matcher.matches()) {
+                record.time = LocalDateTime.parse(matcher.group(1), formatter);
+                if(line.endsWith("begins shift")) {
+                    record.type = Type.BEGINS_SHIFT;
+                    record.guardId = groupInt(2, matcher);
+                }
+                else if(line.endsWith("wakes up")) {
+                    record.type = Type.WAKES_UP;
+                }
+                else if(line.endsWith("falls asleep")) {
+                    record.type = Type.FALLS_ASLEEP;
+                }
             }
             return record;
         }
