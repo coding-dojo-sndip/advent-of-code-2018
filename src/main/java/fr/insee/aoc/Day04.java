@@ -57,7 +57,7 @@ public class Day04 implements Day {
 		List<Integer> times = new ArrayList<>();
 		for(Record record : records) {
 			if(record.type == Type.BEGINS_SHIFT) {
-				if(!times.isEmpty()) guard.shifts.add(shift(times));
+				if(!times.isEmpty()) guard.shifts.add(Shift.of(times));
 				Integer id = record.guardId;
 				guard = guards.computeIfAbsent(id, Guard::new);
 				times.clear();
@@ -66,22 +66,11 @@ public class Day04 implements Day {
 				times.add(record.date.getMinute());
 			}
 		}
-		guard.shifts.add(shift(times));
+		guard.shifts.add(Shift.of(times));
 		Integer id = guard.id;
 		guards.computeIfAbsent(id, Guard::new);
 		return new ArrayList<>(guards.values());
 	}
-	
-	private static Shift shift(List<Integer> times) {
-		Shift shift = new Shift();
-		boolean asleep = false;
-		for(int time = 0; time < 60; time ++) {
-			if(times.contains(time)) asleep = !asleep;
-			shift.minutes.add(new Minute(time, asleep));
-		}
-		return shift;
-	}
-	
 	
 	static class Record implements Comparable<Record> {
 		
@@ -121,8 +110,6 @@ public class Day04 implements Day {
             BEGINS_SHIFT, WAKES_UP, FALLS_ASLEEP
         }
 	}
-	
-	
 	
 	static class Guard {
 		private int id;
@@ -166,6 +153,16 @@ public class Day04 implements Day {
 	
 	static class Shift {
 		private List<Minute> minutes = new ArrayList<>();
+		
+		static Shift of(List<Integer> times) {
+			Shift shift = new Shift();
+			boolean asleep = false;
+			for(int time = 0; time < 60; time ++) {
+				if(times.contains(time)) asleep = !asleep;
+				shift.minutes.add(new Minute(time, asleep));
+			}
+			return shift;
+		}
 	}
 	
 	static class Minute {
