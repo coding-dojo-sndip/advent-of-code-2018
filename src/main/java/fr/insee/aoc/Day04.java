@@ -8,11 +8,7 @@ import static java.util.stream.Collectors.toList;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 import java.util.function.ToLongFunction;
 import java.util.regex.Matcher;
@@ -51,24 +47,21 @@ public class Day04 implements Day {
 	}
 	
 	private static List<Guard> guards(String input) {
-		List<Record> records = records(input);
 		Map<Integer, Guard> guards = new HashMap<>();
+        Iterator<Record> records = records(input).iterator();
 		Guard guard = new Guard();
 		List<Integer> times = new ArrayList<>();
-		for(Record record : records) {
-			if(record.type == Type.BEGINS_SHIFT) {
+		while(records.hasNext()) {
+		    Record record = records.next();
+            if(record.type == Type.BEGINS_SHIFT || !records.hasNext()) {
 				if(!times.isEmpty()) guard.shifts.add(Shift.of(times));
-				Integer id = record.guardId;
-				guard = guards.computeIfAbsent(id, Guard::new);
+				guard = guards.computeIfAbsent(record.guardId, Guard::new);
 				times.clear();
 			}
 			else {
 				times.add(record.date.getMinute());
 			}
 		}
-		guard.shifts.add(Shift.of(times));
-		Integer id = guard.id;
-		guards.computeIfAbsent(id, Guard::new);
 		return new ArrayList<>(guards.values());
 	}
 	
