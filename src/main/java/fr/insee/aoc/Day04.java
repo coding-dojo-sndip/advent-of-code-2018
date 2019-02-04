@@ -23,9 +23,20 @@ public class Day04 implements Day {
 
 	@Override
 	public String part1(String input) {
-		List<Guard> guards = guards(records(input));
+		List<Guard> guards = guards(input);
 		Guard guard = guards.stream()
 			.max(Comparator.comparingLong(g -> g.totalTimeAsleep()))
+			.get();
+		int a = guard.id;
+		int b = guard.minuteMostAsleep();
+		return String.valueOf(a * b);
+	}
+
+	@Override
+	public String part2(String input) {
+		List<Guard> guards = guards(input);
+		Guard guard = guards.stream()
+			.max(Comparator.comparingLong(g -> g.minuteMostAsleepCount()))
 			.get();
 		int a = guard.id;
 		int b = guard.minuteMostAsleep();
@@ -36,7 +47,8 @@ public class Day04 implements Day {
 		return streamOfLines(input).map(Record::fromLine).sorted().collect(toList());
 	}
 	
-	private static List<Guard> guards(List<Record> records) {
+	private static List<Guard> guards(String input) {
+		List<Record> records = records(input);
 		Map<Integer, Guard> guards = new HashMap<>();
 		Guard guard = new Guard();
 		List<Integer> times = new ArrayList<>();
