@@ -42,7 +42,7 @@ public class Day04 implements Day {
 
 	private Guard selectGuard(List<Guard> guards, ToLongFunction<Guard> strategy) {
 		return guards.stream()
-			.max(Comparator.comparingLong(strategy::applyAsLong))
+			.max(Comparator.comparingLong(strategy))
 			.get();
 	}
 	
@@ -82,7 +82,7 @@ public class Day04 implements Day {
 		private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 		private static final Pattern pattern = Pattern.compile("\\[(.+)] (?:Guard #(\\d+) begins shift|wakes up|falls asleep)");
 		
-		public static Record fromLine(String line) {
+		static Record fromLine(String line) {
 			Record record = new Record();
 			Matcher matcher = pattern.matcher(line);
 			if(matcher.matches()) {
@@ -121,14 +121,14 @@ public class Day04 implements Day {
 			this.id = id;
 		}
 		
-		public long totalTimeAsleep() {
+		long totalTimeAsleep() {
 			return shifts.stream()
 				.flatMap(s -> s.minutes.stream())
 				.filter(m -> m.asleep)
 				.count();
 		}
 		
-		public int minuteMostAsleep() {
+		int minuteMostAsleep() {
 			return shifts.stream()
 				.flatMap(s -> s.minutes.stream())
 				.filter(m -> m.asleep)
@@ -139,7 +139,7 @@ public class Day04 implements Day {
 				.orElse(-1);
 		}
 		
-		public long minuteMostAsleepCount() {
+		long minuteMostAsleepCount() {
 			return shifts.stream()
 				.flatMap(s -> s.minutes.stream())
 				.filter(m -> m.asleep)
@@ -169,7 +169,7 @@ public class Day04 implements Day {
 		private int time;
 		private boolean asleep;
 		
-		public Minute(int time, boolean asleep) {
+		Minute(int time, boolean asleep) {
 			this.time = time;
 			this.asleep = asleep;
 		}
