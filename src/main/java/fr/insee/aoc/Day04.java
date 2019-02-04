@@ -14,8 +14,6 @@ import java.util.function.ToLongFunction;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import fr.insee.aoc.Day04.Record.Type;
-
 public class Day04 implements Day {
 
 	@Override
@@ -53,13 +51,13 @@ public class Day04 implements Day {
 		List<Integer> times = new ArrayList<>();
 		while(records.hasNext()) {
 		    Record record = records.next();
-            if(record.type == Type.BEGINS_SHIFT || !records.hasNext()) {
-				if(!times.isEmpty()) guard.shifts.add(Shift.of(times));
-				guard = guards.computeIfAbsent(record.guardId, Guard::new);
-				times.clear();
+            if(record.shiftHasBegun() && records.hasNext()) {
+				times.add(record.date.getMinute());
 			}
 			else {
-				times.add(record.date.getMinute());
+				guard.shifts.add(Shift.of(times));
+				guard = guards.computeIfAbsent(record.guardId, Guard::new);
+				times.clear();
 			}
 		}
 		return new ArrayList<>(guards.values());
@@ -69,8 +67,7 @@ public class Day04 implements Day {
 		
 		private int guardId;
 		private LocalDateTime date;
-		private Type type;
-		
+
 		private static final Comparator<Record> comparator = Comparator.comparing(r -> r.date);
 		private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 		private static final Pattern pattern = Pattern.compile("\\[(.+)] (?:Guard #(\\d+) begins shift|wakes up|falls asleep)");
@@ -80,28 +77,19 @@ public class Day04 implements Day {
 			Matcher matcher = pattern.matcher(line);
 			if(matcher.matches()) {
 				record.date = LocalDateTime.parse(matcher.group(1), formatter);
-				if(line.endsWith("begins shift")) {
-					record.type = Type.BEGINS_SHIFT;
-					record.guardId = groupInt(2, matcher);
-				}
-				else if(line.endsWith("wakes up")) {
-					record.type = Type.WAKES_UP;
-				}
-				else if(line.endsWith("falls asleep")) {
-					record.type = Type.FALLS_ASLEEP;
-				}
+				if(line.endsWith("begins shift")) record.guardId = groupInt(2, matcher);
 			}
 			return record;
 		}
-		
+
+		boolean shiftHasBegun() {
+		    return guardId == 0;
+        }
+
 		@Override
 		public int compareTo(Record other) {
 			return comparator.compare(this, other);
 		}
-
-		enum Type {
-            BEGINS_SHIFT, WAKES_UP, FALLS_ASLEEP
-        }
 	}
 	
 	static class Guard {
