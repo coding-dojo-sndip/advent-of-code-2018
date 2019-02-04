@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.function.ToLongFunction;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -23,26 +24,28 @@ public class Day04 implements Day {
 
 	@Override
 	public String part1(String input) {
-		List<Guard> guards = guards(input);
-		Guard guard = guards.stream()
-			.max(Comparator.comparingLong(g -> g.totalTimeAsleep()))
-			.get();
-		int a = guard.id;
-		int b = guard.minuteMostAsleep();
-		return String.valueOf(a * b);
+		return strategyResult(input, Guard::totalTimeAsleep);
 	}
 
 	@Override
 	public String part2(String input) {
+		return strategyResult(input, Guard::minuteMostAsleepCount);
+	}
+
+	private String strategyResult(String input, ToLongFunction<Guard> strategy) {
 		List<Guard> guards = guards(input);
-		Guard guard = guards.stream()
-			.max(Comparator.comparingLong(g -> g.minuteMostAsleepCount()))
-			.get();
+		Guard guard = selectGuard(guards, strategy);
 		int a = guard.id;
 		int b = guard.minuteMostAsleep();
 		return String.valueOf(a * b);
 	}
 
+	private Guard selectGuard(List<Guard> guards, ToLongFunction<Guard> strategy) {
+		return guards.stream()
+			.max(Comparator.comparingLong(strategy::applyAsLong))
+			.get();
+	}
+	
 	private static List<Record> records(String input) {
 		return streamOfLines(input).map(Record::fromLine).sorted().collect(toList());
 	}
