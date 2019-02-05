@@ -8,17 +8,11 @@ import static java.util.stream.Collectors.toList;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 import java.util.function.ToLongFunction;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import fr.insee.aoc.Day04.Record.Type;
 
 public class Day04 implements Day {
 
@@ -42,7 +36,7 @@ public class Day04 implements Day {
 
 	private Guard selectGuard(List<Guard> guards, ToLongFunction<Guard> strategy) {
 		return guards.stream()
-			.max(Comparator.comparingLong(strategy::applyAsLong))
+			.max(Comparator.comparingLong(strategy))
 			.get();
 	}
 	
@@ -51,24 +45,21 @@ public class Day04 implements Day {
 	}
 	
 	private static List<Guard> guards(String input) {
-		List<Record> records = records(input);
 		Map<Integer, Guard> guards = new HashMap<>();
+        Iterator<Record> records = records(input).iterator();
 		Guard guard = new Guard();
 		List<Integer> times = new ArrayList<>();
-		for(Record record : records) {
-			if(record.type == Type.BEGINS_SHIFT) {
-				if(!times.isEmpty()) guard.shifts.add(Shift.of(times));
-				Integer id = record.guardId;
-				guard = guards.computeIfAbsent(id, Guard::new);
-				times.clear();
-			}
-			else {
+		while(records.hasNext()) {
+		    Record record = records.next();
+            if(record.shiftHasBegun() && records.hasNext()) {
 				times.add(record.date.getMinute());
 			}
+			else {
+				guard.shifts.add(Shift.of(times));
+				guard = guards.computeIfAbsent(record.guardId, Guard::new);
+				times.clear();
+			}
 		}
-		guard.shifts.add(Shift.of(times));
-		Integer id = guard.id;
-		guards.computeIfAbsent(id, Guard::new);
 		return new ArrayList<>(guards.values());
 	}
 	
@@ -76,39 +67,29 @@ public class Day04 implements Day {
 		
 		private int guardId;
 		private LocalDateTime date;
-		private Type type;
-		
+
 		private static final Comparator<Record> comparator = Comparator.comparing(r -> r.date);
 		private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 		private static final Pattern pattern = Pattern.compile("\\[(.+)] (?:Guard #(\\d+) begins shift|wakes up|falls asleep)");
 		
-		public static Record fromLine(String line) {
+		static Record fromLine(String line) {
 			Record record = new Record();
 			Matcher matcher = pattern.matcher(line);
 			if(matcher.matches()) {
 				record.date = LocalDateTime.parse(matcher.group(1), formatter);
-				if(line.endsWith("begins shift")) {
-					record.type = Type.BEGINS_SHIFT;
-					record.guardId = groupInt(2, matcher);
-				}
-				else if(line.endsWith("wakes up")) {
-					record.type = Type.WAKES_UP;
-				}
-				else if(line.endsWith("falls asleep")) {
-					record.type = Type.FALLS_ASLEEP;
-				}
+				if(line.endsWith("begins shift")) record.guardId = groupInt(2, matcher);
 			}
 			return record;
 		}
-		
+
+		boolean shiftHasBegun() {
+		    return guardId == 0;
+        }
+
 		@Override
 		public int compareTo(Record other) {
 			return comparator.compare(this, other);
 		}
-
-		enum Type {
-            BEGINS_SHIFT, WAKES_UP, FALLS_ASLEEP
-        }
 	}
 	
 	static class Guard {
@@ -121,14 +102,14 @@ public class Day04 implements Day {
 			this.id = id;
 		}
 		
-		public long totalTimeAsleep() {
+		long totalTimeAsleep() {
 			return shifts.stream()
 				.flatMap(s -> s.minutes.stream())
 				.filter(m -> m.asleep)
 				.count();
 		}
 		
-		public int minuteMostAsleep() {
+		int minuteMostAsleep() {
 			return shifts.stream()
 				.flatMap(s -> s.minutes.stream())
 				.filter(m -> m.asleep)
@@ -139,7 +120,7 @@ public class Day04 implements Day {
 				.orElse(-1);
 		}
 		
-		public long minuteMostAsleepCount() {
+		long minuteMostAsleepCount() {
 			return shifts.stream()
 				.flatMap(s -> s.minutes.stream())
 				.filter(m -> m.asleep)
@@ -169,7 +150,7 @@ public class Day04 implements Day {
 		private int time;
 		private boolean asleep;
 		
-		public Minute(int time, boolean asleep) {
+		Minute(int time, boolean asleep) {
 			this.time = time;
 			this.asleep = asleep;
 		}
