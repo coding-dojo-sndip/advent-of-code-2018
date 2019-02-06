@@ -5,6 +5,7 @@ import static java.util.stream.Collectors.toList;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
@@ -54,6 +55,30 @@ public class Days {
 
 	public static int groupInt(int group, Matcher matcher) {
 		return Integer.valueOf(matcher.group(group)).intValue();
+	}
+	
+	public static int indexOfMax(int[] array) {
+		int maxAt = 0;
+		for (int i = 0; i < array.length; i++) {
+		    maxAt = array[i] > array[maxAt] ? i : maxAt;
+		}
+		return maxAt;
+	}
+	
+	public static int maxOf(int[] array) {
+		return Arrays.stream(array).max().getAsInt();
+	}
+	
+	public static int indexOfMin(int[] array) {
+		int minAt = 0;
+		for (int i = 0; i < array.length; i++) {
+			minAt = array[i] < array[minAt] ? i : minAt;
+		}
+		return minAt;
+	}
+	
+	public static int minOf(int[] array) {
+		return Arrays.stream(array).min().getAsInt();
 	}
 	
 	public static class Point implements Comparable<Point> {

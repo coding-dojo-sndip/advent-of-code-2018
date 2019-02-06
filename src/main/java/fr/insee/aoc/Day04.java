@@ -1,6 +1,8 @@
 package fr.insee.aoc;
 
 import static fr.insee.aoc.Days.groupInt;
+import static fr.insee.aoc.Days.indexOfMax;
+import static fr.insee.aoc.Days.maxOf;
 import static fr.insee.aoc.Days.streamOfLines;
 import static java.util.stream.Collectors.toList;
 
@@ -8,7 +10,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -119,13 +120,11 @@ public class Day04 implements Day {
 		}
 		
 		int minuteMostAsleep() {
-			List<Integer> listOfMinutes = Arrays.stream(minutes).boxed().collect(toList());
-			return listOfMinutes.indexOf(Collections.max(listOfMinutes));
+			return indexOfMax(minutes);
 		}
 		
 		int minuteMostAsleepCount() {
-			List<Integer> listOfMinutes = Arrays.stream(minutes).boxed().collect(toList());
-			return Collections.max(listOfMinutes);
+			return maxOf(minutes);
 		}
 	}
 }
