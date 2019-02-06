@@ -2,14 +2,18 @@ package fr.insee.aoc;
 
 import static fr.insee.aoc.Days.groupInt;
 import static fr.insee.aoc.Days.streamOfLines;
-import static java.util.stream.Collectors.counting;
-import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
-import java.util.Map.Entry;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.function.ToLongFunction;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -55,7 +59,7 @@ public class Day04 implements Day {
 				times.add(record.date.getMinute());
 			}
 			else {
-				guard.shifts.add(Shift.of(times));
+				guard.updateMinutes(times);
 				guard = guards.computeIfAbsent(record.guardId, Guard::new);
 				times.clear();
 			}
@@ -94,65 +98,34 @@ public class Day04 implements Day {
 	
 	static class Guard {
 		private int id;
-		private List<Shift> shifts = new ArrayList<>();
-
+		private int[] minutes = new int[60];
+		
 		public Guard() {}
 		
 		public Guard(int id) {
 			this.id = id;
 		}
 		
-		long totalTimeAsleep() {
-			return shifts.stream()
-				.flatMap(s -> s.minutes.stream())
-				.filter(m -> m.asleep)
-				.count();
-		}
-		
-		int minuteMostAsleep() {
-			return shifts.stream()
-				.flatMap(s -> s.minutes.stream())
-				.filter(m -> m.asleep)
-				.collect(groupingBy(m -> m.time, counting()))
-				.entrySet().stream()
-				.max(Entry.comparingByValue())
-				.map(Entry::getKey)
-				.orElse(-1);
-		}
-		
-		long minuteMostAsleepCount() {
-			return shifts.stream()
-				.flatMap(s -> s.minutes.stream())
-				.filter(m -> m.asleep)
-				.collect(groupingBy(m -> m.time, counting()))
-				.entrySet().stream()
-				.max(Entry.comparingByValue())
-				.map(Entry::getValue)
-				.orElse(-1L);
-		}
-	}
-	
-	static class Shift {
-		private List<Minute> minutes = new ArrayList<>();
-		
-		static Shift of(List<Integer> times) {
-			Shift shift = new Shift();
+		void updateMinutes(List<Integer> times) {
 			boolean asleep = false;
 			for(int time = 0; time < 60; time ++) {
 				if(times.contains(time)) asleep = !asleep;
-				shift.minutes.add(new Minute(time, asleep));
+				if(asleep) minutes[time] ++;  
 			}
-			return shift;
 		}
-	}
-	
-	static class Minute {
-		private int time;
-		private boolean asleep;
 		
-		Minute(int time, boolean asleep) {
-			this.time = time;
-			this.asleep = asleep;
+		long totalTimeAsleep() {
+			return Arrays.stream(minutes).sum();
+		}
+		
+		int minuteMostAsleep() {
+			List<Integer> listOfMinutes = Arrays.stream(minutes).boxed().collect(toList());
+			return listOfMinutes.indexOf(Collections.max(listOfMinutes));
+		}
+		
+		int minuteMostAsleepCount() {
+			List<Integer> listOfMinutes = Arrays.stream(minutes).boxed().collect(toList());
+			return Collections.max(listOfMinutes);
 		}
 	}
 }
