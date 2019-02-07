@@ -1,6 +1,6 @@
 package fr.insee.aoc;
 
-import static fr.insee.aoc.Days.streamOfLines;
+import static fr.insee.aoc.Days.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -42,11 +42,11 @@ public class Day03 implements Day {
 		Matcher matcher = regex.matcher(input);
 		Rectangle rectangle = new Rectangle();
 		if (matcher.matches()) {
-			int left = Integer.parseInt(matcher.group(2));
-			int top = Integer.parseInt(matcher.group(3));
-			int width = Integer.parseInt(matcher.group(4));
-			int height = Integer.parseInt(matcher.group(5));
-			rectangle.id = matcher.group(1);
+			int left = readInt(2, matcher);
+			int top = readInt(3, matcher);
+			int width = readInt(4, matcher);
+			int height = readInt(5, matcher);
+			rectangle.id = readString(1, matcher);
 			for (int i = left; i < left + width; i++) {
 				for (int j = top; j < top + height; j++) {
 					if (tissu[i][j] == null) {

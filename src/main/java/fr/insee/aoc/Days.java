@@ -5,6 +5,8 @@ import static java.util.stream.Collectors.toList;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
@@ -54,6 +56,16 @@ public class Days {
 
 	public static int groupInt(int group, Matcher matcher) {
 		return Integer.valueOf(matcher.group(group)).intValue();
+	}
+	
+	public static int readInt(int group, Matcher matcher) {
+		return Integer.parseInt(matcher.group(group));
+	}
+	public static String readString(int group, Matcher matcher) {
+		return matcher.group(group);
+	}
+	public static LocalDateTime readDate(int group, Matcher matcher, DateTimeFormatter formatter) {
+		return LocalDateTime.parse(matcher.group(group), formatter);
 	}
 	
 	public static class Point implements Comparable<Point> {
