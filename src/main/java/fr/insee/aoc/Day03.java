@@ -5,7 +5,6 @@ import static fr.insee.aoc.Days.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -16,18 +15,18 @@ public class Day03 implements Day {
 
 	@Override
 	public String part1(String input) {
-		AtomicInteger[][] fabric = new AtomicInteger[1000][1000];
+		SquareInch[][] fabric = new SquareInch[1000][1000];
 		streamOfLines(input).forEach(r -> rectangle(r, fabric));
 		long count = Arrays.stream(fabric)
 				.flatMap(Arrays::stream)
-				.filter(x -> x != null && x.get() > 1)
+				.filter(x -> x != null && x.counter > 1)
 				.count();
 		return String.valueOf(count);
 	}
 
 	@Override
 	public String part2(String input) {
-		AtomicInteger[][] tissu = new AtomicInteger[1000][1000];
+		SquareInch[][] tissu = new SquareInch[1000][1000];
 		List<Rectangle> rectangles = streamOfLines(input)
 				.map(r -> rectangle(r, tissu))
 				.collect(Collectors.toList());
@@ -38,7 +37,7 @@ public class Day03 implements Day {
 				.orElseThrow(DayException::new);
 	}
 
-	private Rectangle rectangle(String input, AtomicInteger[][] tissu) {
+	private Rectangle rectangle(String input, SquareInch[][] tissu) {
 		Matcher matcher = regex.matcher(input);
 		Rectangle rectangle = new Rectangle();
 		if (matcher.matches()) {
@@ -50,9 +49,9 @@ public class Day03 implements Day {
 			for (int i = left; i < left + width; i++) {
 				for (int j = top; j < top + height; j++) {
 					if (tissu[i][j] == null) {
-						tissu[i][j] = new AtomicInteger(1);
+						tissu[i][j] = new SquareInch(1);
 					} else {
-						tissu[i][j].incrementAndGet();
+						tissu[i][j].counter ++;
 					}
 					rectangle.points.add(tissu[i][j]);
 				}
@@ -63,14 +62,23 @@ public class Day03 implements Day {
 
 	static class Rectangle {
 		private String id;
-		private List<AtomicInteger> points = new ArrayList<>();
+		private List<SquareInch> points = new ArrayList<>();
 
 		public boolean doesntOverlap() {
-			return points.stream().allMatch(point -> point.get() == 1);
+			return points.stream().allMatch(point -> point.counter == 1);
 		}
 
 		public String getId() {
 			return id;
+		}
+	}
+	
+	static class SquareInch {
+		private int counter;
+
+		public SquareInch(int counter) {
+			super();
+			this.counter = counter;
 		}
 	}
 
