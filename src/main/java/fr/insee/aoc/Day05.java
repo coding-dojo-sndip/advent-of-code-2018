@@ -56,7 +56,7 @@ public class Day05 implements Day {
         void react(int left, int right) {
             if(willReact(left, right)){
                 index --;
-                react( left - 1, right + 1);
+                react(left - 1, right + 1);
             }
             else {
                 index ++;
