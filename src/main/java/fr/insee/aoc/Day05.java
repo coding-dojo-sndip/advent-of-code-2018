@@ -41,7 +41,7 @@ public class Day05 implements Day {
         }
 
         boolean willReact(int left, int right) {
-            if(left < 0 || right >= polymer.length()) return false;
+            if (left < 0 || right >= polymer.length()) return false;
             return canReact(polymer.charAt(left), polymer.charAt(right));
         }
 
@@ -54,18 +54,17 @@ public class Day05 implements Day {
         }
 
         void react(int left, int right) {
-            if(willReact(left, right)){
-                index --;
+            if (willReact(left, right)) {
+                index--;
                 react(left - 1, right + 1);
-            }
-            else {
-                index ++;
+            } else {
+                index++;
                 polymer.delete(left + 1, right);
             }
         }
 
         int triggerFullReaction() {
-            while(stillReacts()) {
+            while (stillReacts()) {
                 react();
             }
             return polymer.length();
