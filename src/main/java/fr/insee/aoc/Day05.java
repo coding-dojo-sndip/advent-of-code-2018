@@ -23,16 +23,24 @@ public class Day05 implements Day {
         }
 
         boolean stillReacts() {
-            // System.out.println(index);
             return index < polymer.length();
+        }
+
+        boolean willReact(int left, int right) {
+            if(left < 0 || right >= polymer.length()) return false;
+            return canReact(polymer.charAt(left), polymer.charAt(right));
+        }
+
+        boolean canReact(char a, char b) {
+            return Math.abs(a - b) == 32;
         }
 
         void react() {
             react(index, index + 1);
         }
 
-        private void react(int left, int right) {
-            if(left >=0 && right < polymer.length() && willReact(polymer.charAt(left), polymer.charAt(right))){
+        void react(int left, int right) {
+            if(willReact(left, right)){
                 index --;
                 react( left - 1, right + 1);
             }
@@ -40,10 +48,6 @@ public class Day05 implements Day {
                 index ++;
                 polymer.delete(left + 1, right);
             }
-        }
-
-        private boolean willReact(char a, char b) {
-            return Math.abs(a - b) == 32;
         }
     }
 }
