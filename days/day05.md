@@ -6,13 +6,13 @@ On considère un polymère composé de plus petites unités, qui, une fois activ
 
 Le type des unités est représenté par une lettre ; la polarité des unités est représentée par la casse.
 
-Par exemple, `r` et `R` sont des unités du même type mais de polarité opposées, alors que `r` et `s` sont de type différents et ne réagissent pas.
+Par exemple, `r` et `R` sont des unités du même type mais de polarités opposées, alors que `r` et `s` sont de types différents et ne réagissent pas.
 
 Par exemple :
 
  - Dans `aA`, `a` et `A` réagissent, ne laissant plus rien.
- - Dans `abBA`, `bB` se détruit, laissant `aA`, qui comme au-dessus, se détruit, ne laissant rien.
- - Dans `abAB`, aucune unité n'est adjacente à une unité du même type donc rien ne se passe.
+ - Dans `abBA`, `bB` se détruit, laissant `aA`, qui comme au dessus, se détruit, ne laissant rien.
+ - Dans `abAB`, aucune unité n’est adjacente à une unité du même type donc rien ne se passe.
  - Dans `aabAAB`, bien que `aa` et `AA` soient du même type, leur polarité sont identiques donc rien ne se passe.
  
  Considérons un exemple plus large, `dabAcCaCBAcCcaDA` :
@@ -42,4 +42,4 @@ Par exemple en utilisant le même polymère `dabAcCaCBAcCcaDA` que précédemmen
  
  Dans cet exemple, retirer les unités `C/c` était le meilleur choix, donnant une longueur finale de 4.
  
- __Quelle est la longueur du plus petit polymère qui peut être produit __en retirant toutes les unités d’un type et en faisant totalement réagir le polymère obtenu ?
+ __Quelle est la longueur du plus petit polymère qui peut être produit__ en retirant toutes les unités d’un type et en faisant totalement réagir le polymère obtenu ?
