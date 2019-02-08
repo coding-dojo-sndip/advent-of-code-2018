@@ -2,9 +2,9 @@
 
 ## Partie 1
 
-On considère un entrepôt gardé chaque nuit par un agent. Les nuits sont réparties entre plusieurs agents, mais une nuit donnée, il n’y a qu’un seul agent qui travaille. Il peut lui arriver de s'endormir plusieurs fois durant son tour de garde, mais toujours entre minuit et une heure du matin, c'est-à-dire `00:00 - 00:59`.
+On considère un entrepôt gardé chaque nuit par un agent. Les nuits sont réparties entre plusieurs agents, mais une nuit donnée, il n’y a qu’un seul agent qui travaille. Il peut lui arriver de s’endormir plusieurs fois durant son tour de garde, mais toujours entre minuit et une heure du matin, c'est-à-dire `00:00 - 00:59`.
 
-On dipose en entrée d’un relevé minuté des tours de garde listant pêle-mêle l’horaire de début des tours de garde et les période d'éveil et de sommeil de l'agent de garde.
+On dipose en entrée d’un relevé minuté des tours de garde listant pêle-mêle l’horaire de début des tours de garde et les période d’éveil et de sommeil de l'agent de garde.
 
 Par exemple, considérons le relevé suivant qui a été au préalable trié par ordre chronologique :
 
@@ -48,7 +48,7 @@ Date   ID   Minute
 
 Trouver l’agent qui passe le plus de temps endormi au total ; puis pour cet agent, déterminer la minutes durant laquelle il est le plus souvent endormi.
 
-Dans l’exemple précédent, l’agent #10 a passé le plus de temps endormi pour un total de 50 minutes (20 + 25 + 5), alors que le garde #99 n'a dormi que 30 minutes (10 + 10 + 10). L'agent #10 a été le plus souvent endormi durant la minute 24 (c'est arrivé lors de deux jours différents).
+Dans l’exemple précédent, l’agent #10 a passé le plus de temps endormi pour un total de 50 minutes (20 + 25 + 5), alors que le garde #99 n’a dormi que 30 minutes (10 + 10 + 10). L'agent #10 a été le plus souvent endormi durant la minute 24 (c'est arrivé lors de deux jours différents).
 
 __Quel est l’identifiant de l’agent qui dort le plus multiplié par la minute durant laquelle il dort le plus ?__
 
@@ -59,7 +59,7 @@ __Quel est l’identifiant de l’agent qui dort le plus multiplié par la minut
 
 De tous les agents quel est celui qui dort le plus à la même minute ?
 
-Dans l’exemple précédent, l’agent #99 dort durant la minute 45 plus souvent que n'importe quel agent à n'importe quelle minute.
+Dans l’exemple précédent, l’agent #99 dort durant la minute 45 plus souvent que n’importe quel agent à n'importe quelle minute.
 
 __Quel est l’identifiant de l’agent qui dort le plus à la même minute multiplié par cette minute ?__
 

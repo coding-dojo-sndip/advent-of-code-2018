@@ -53,7 +53,7 @@ __Combien de centimètres carrés de tissu appartiennent à au moins deux rectan
 
 ## Partie 2
 
-Il n’existe qu’un seul rectangle qui ne se superpose à aucun autre. Dans l’exemple précédent, il s’agit du rectangle dont l'identifiant est `3`.
+Il n’existe qu’un seul rectangle qui ne se superpose à aucun autre. Dans l’exemple précédent, il s’agit du rectangle dont l’identifiant est `3`.
 
 __Quel est l’identifiant de l’unique rectangle qui ne se superpose à aucun autre ?__
 
