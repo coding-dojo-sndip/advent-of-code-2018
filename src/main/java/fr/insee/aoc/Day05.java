@@ -1,5 +1,7 @@
 package fr.insee.aoc;
 
+import java.util.stream.IntStream;
+
 import static fr.insee.aoc.Days.*;
 
 public class Day05 implements Day {
@@ -7,10 +9,21 @@ public class Day05 implements Day {
     @Override
     public String part1(String input) {
         Reaction reaction = new Reaction(readLine(input));
-        while(reaction.stillReacts()) {
-            reaction.react();
-        }
-        return String.valueOf(reaction.polymer.length());
+        int length = reaction.triggerFullReaction();
+        return String.valueOf(length);
+    }
+
+    @Override
+    public String part2(String input) {
+        String polymer = readLine(input);
+        int min = IntStream.rangeClosed(97, 122)
+            .mapToObj(c -> (char) c + "|" + (char)(c - 32))
+            .map(regex -> polymer.replaceAll(regex, ""))
+            .map(Reaction::new)
+            .mapToInt(Reaction::triggerFullReaction)
+            .min()
+            .orElse(-1);
+        return String.valueOf(min);
     }
 
     static class Reaction {
@@ -48,6 +61,13 @@ public class Day05 implements Day {
                 index ++;
                 polymer.delete(left + 1, right);
             }
+        }
+
+        int triggerFullReaction() {
+            while(stillReacts()) {
+                react();
+            }
+            return polymer.length();
         }
     }
 }
