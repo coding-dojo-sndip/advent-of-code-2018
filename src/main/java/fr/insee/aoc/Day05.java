@@ -1,7 +1,15 @@
 package fr.insee.aoc;
 
 import java.util.ArrayDeque;
+import java.util.Collections;
 import java.util.Deque;
+import java.util.Set;
+import java.util.function.BiConsumer;
+import java.util.function.BinaryOperator;
+import java.util.function.Function;
+import java.util.function.Supplier;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static fr.insee.aoc.Days.*;
@@ -28,17 +36,20 @@ public class Day05 implements Day {
     }
 
     private static int triggerFullReaction(String polymer) {
-        Deque<Character> queue = new ArrayDeque<>(polymer.length());
-        for(int i = 0; i < polymer.length(); i ++) {
-            char unite = polymer.charAt(i);
-            if(!queue.isEmpty() && reactTogether(unite, queue.peek())) {
-                queue.pop();
-            }
-            else {
-                queue.push(unite);
-            }
+        return polymer.chars()
+            .mapToObj(c -> (char) c)
+            .collect(StringBuilder::new, Day05::accept, StringBuilder::append)
+            .length();
+    }
+
+    private static void accept(StringBuilder builder, Character character) {
+        int lastIndex = builder.length() - 1;
+        if (lastIndex < 0 || !reactTogether(builder.charAt(lastIndex), character)) {
+            builder.append(character);
         }
-        return queue.size();
+        else {
+            builder.deleteCharAt(lastIndex);
+        }
     }
 
     private static boolean reactTogether(char a, char b) {
