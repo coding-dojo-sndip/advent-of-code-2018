@@ -15,9 +15,9 @@ import java.util.regex.Matcher;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-public class Days {
+class Days {
 
-	public static Stream<String> streamOfLines(String input) {
+	static Stream<String> streamOfLines(String input) {
 		try {
 			return Files.lines(Paths.get(input));
 		} catch (IOException e) {
@@ -26,49 +26,55 @@ public class Days {
 		throw new DayException("Erreur dans la lecture du fichier");
 	}
 
-	public static IntStream streamOfInt(String input) {
+	static IntStream streamOfInt(String input) {
 		return streamOfLines(input).mapToInt(Integer::parseInt);
 	}
 
-	public static List<String> listOfLines(String input) {
+	static String readLine(String input) {
+		return streamOfLines(input).findFirst().orElse("");
+	}
+
+	static List<String> listOfLines(String input) {
 		return streamOfLines(input).collect(toList());
 	}
 
-	public static List<Integer> listOfIntegers(String input) {
+	static List<Integer> listOfIntegers(String input) {
 		return streamOfInt(input).boxed().collect(toList());
 	}
 
-	public static String[] arrayOfLines(String input) {
+	static String[] arrayOfLines(String input) {
 		return streamOfLines(input).toArray(String[]::new);
 	}
 
-	public static int[] arrayOfInt(String input) {
+	static int[] arrayOfInt(String input) {
 		return streamOfInt(input).toArray();
 	}
 
-	public static <T> boolean in(T element, Collection<T> collection) {
-		return collection == null ? false : collection.contains(element);
+	static <T> boolean in(T element, Collection<T> collection) {
+		return collection != null && collection.contains(element);
 	}
 
-	public static <T> boolean notIn(T element, Collection<T> collection) {
+	static <T> boolean notIn(T element, Collection<T> collection) {
 		return !in(element, collection);
 	}
 
-	public static int groupInt(int group, Matcher matcher) {
-		return Integer.valueOf(matcher.group(group)).intValue();
+	static int groupInt(int group, Matcher matcher) {
+		return Integer.valueOf(matcher.group(group));
 	}
 	
-	public static int readInt(int group, Matcher matcher) {
+	static int readInt(int group, Matcher matcher) {
 		return Integer.parseInt(matcher.group(group));
 	}
-	public static String readString(int group, Matcher matcher) {
+
+	static String readString(int group, Matcher matcher) {
 		return matcher.group(group);
 	}
-	public static LocalDateTime readDate(int group, Matcher matcher, DateTimeFormatter formatter) {
+
+	static LocalDateTime readDate(int group, Matcher matcher, DateTimeFormatter formatter) {
 		return LocalDateTime.parse(matcher.group(group), formatter);
 	}
 	
-	public static class Point implements Comparable<Point> {
+	static class Point implements Comparable<Point> {
 		
 		private int x, y;
 
@@ -76,7 +82,7 @@ public class Days {
 		
 		private Point() {}
 		
-		public static Point of(int x, int y) {
+		static Point of(int x, int y) {
 			Point point = new Point();
 			point.x = x;
 			point.y = y;
