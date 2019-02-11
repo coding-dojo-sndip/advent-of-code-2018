@@ -30,7 +30,15 @@ class Days {
 	static IntStream streamOfInt(String input) {
 		return streamOfLines(input).mapToInt(Integer::parseInt);
 	}
-
+	
+	static <T> Stream<T> streamOfCells(T[][] array) {
+		return Arrays.stream(array).flatMap(Arrays::stream);
+	}
+	
+	static IntStream streamOfCells(int[][] array) {
+		return Arrays.stream(array).flatMapToInt(Arrays::stream);
+	}
+	
 	static String readLine(String input) {
 		return streamOfLines(input).findFirst().orElse("");
 	}
