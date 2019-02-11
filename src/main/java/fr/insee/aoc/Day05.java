@@ -1,15 +1,5 @@
 package fr.insee.aoc;
 
-import java.util.ArrayDeque;
-import java.util.Collections;
-import java.util.Deque;
-import java.util.Set;
-import java.util.function.BiConsumer;
-import java.util.function.BinaryOperator;
-import java.util.function.Function;
-import java.util.function.Supplier;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static fr.insee.aoc.Days.*;
@@ -38,13 +28,13 @@ public class Day05 implements Day {
     private static int triggerFullReaction(String polymer) {
         return polymer.chars()
             .mapToObj(c -> (char) c)
-            .collect(StringBuilder::new, Day05::accept, StringBuilder::append)
+            .collect(StringBuilder::new, Day05::react, StringBuilder::append)
             .length();
     }
 
-    private static void accept(StringBuilder builder, Character character) {
+    private static void react(StringBuilder builder, Character character) {
         int lastIndex = builder.length() - 1;
-        if (lastIndex < 0 || !reactTogether(builder.charAt(lastIndex), character)) {
+        if (lastIndex < 0 || doesntReact(builder.charAt(lastIndex), character)) {
             builder.append(character);
         }
         else {
@@ -52,7 +42,7 @@ public class Day05 implements Day {
         }
     }
 
-    private static boolean reactTogether(char a, char b) {
-        return Math.abs(a - b) == 32;
+    private static boolean doesntReact(char a, char b) {
+        return Math.abs(a - b) != 32;
     }
 }
