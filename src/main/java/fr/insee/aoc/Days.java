@@ -7,14 +7,23 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
+import java.util.function.BiConsumer;
+import java.util.function.BinaryOperator;
+import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.regex.Matcher;
+import java.util.stream.Collector;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
+
+import org.assertj.core.util.Sets;
 
 class Days {
 
@@ -22,7 +31,7 @@ class Days {
 		try {
 			return Files.lines(Paths.get(input));
 		} catch (IOException e) {
-			e.printStackTrace();
+			System.out.println(e.getMessage());
 		}
 		throw new DayException("Erreur dans la lecture du fichier");
 	}
@@ -65,10 +74,6 @@ class Days {
 
 	static <T> boolean notIn(T element, Collection<T> collection) {
 		return !in(element, collection);
-	}
-
-	static int groupInt(int group, Matcher matcher) {
-		return Integer.valueOf(matcher.group(group));
 	}
 	
 	static int readInt(int group, Matcher matcher) {
