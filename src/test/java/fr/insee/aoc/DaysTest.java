@@ -1,11 +1,13 @@
 package fr.insee.aoc;
 
 import static fr.insee.aoc.Days.*;
+import static fr.insee.aoc.Days.MaxCollector.*;
 import static org.assertj.core.api.Assertions.*;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -279,5 +281,23 @@ public class DaysTest  {
 	public void minOf_test_with_equality() {
 		int[] int_array = new int[]{1, 8, 1, 1, 1, 0, 8, 8};
 		assertThat(minOf(int_array)).isEqualTo(0);
+	}
+	
+	@Test
+	public void maxList_test() {
+		int[] int_array = new int[]{1, 8, 1, 1, 1, 0, 8, 8};
+		List<Integer> listOfMax = Arrays.stream(int_array).boxed().collect(listOfMax());
+		assertThat(listOfMax)
+			.hasSize(3)
+			.containsOnly(8);
+	}
+	
+	@Test
+	public void maxList_test_string_length() {
+		String[] word_array = new String[]{"middle", "seed", "jump", "crowd", "chanel", "error", "ruin", "travel"};
+		List<String> listOfMax = Arrays.stream(word_array).collect(listOfMax(Comparator.comparingInt(String::length)));
+		assertThat(listOfMax)
+			.hasSize(3)
+			.containsExactly("middle", "chanel", "travel");
 	}
 }

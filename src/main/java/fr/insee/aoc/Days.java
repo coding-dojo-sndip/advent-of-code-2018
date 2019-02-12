@@ -160,4 +160,70 @@ class Days {
 			return y;
 		}
 	}
+	
+	static class MaxCollector<T> implements Collector<T, List<T>, List<T>> {
+		
+		private Comparator<? super T> comparator;
+		
+		private MaxCollector(Comparator<? super T> comparator) {
+			super();
+			this.comparator = comparator;
+		}
+		
+		public static <T> MaxCollector<T> listOfMax(Comparator<? super T> comparator) {
+			return new MaxCollector<T>(comparator);
+		}
+		
+		public static <T extends Comparable<T>> MaxCollector<T> listOfMax() {
+			return new MaxCollector<T>(Comparator.naturalOrder());
+		}
+
+		@Override
+		public Supplier<List<T>> supplier() {
+			return ArrayList::new;
+		}
+
+		@Override
+		public BiConsumer<List<T>, T> accumulator() {
+			return this::accept;
+		}
+		
+		@Override
+		public BinaryOperator<List<T>> combiner() {
+			return this::apply;
+		}
+
+		@Override
+		public Function<List<T>, List<T>> finisher() {
+			return Function.identity();
+		}
+
+		@Override
+		public Set<Characteristics> characteristics() {
+			return Sets.newHashSet(Arrays.asList(Characteristics.CONCURRENT, Characteristics.IDENTITY_FINISH, Characteristics.UNORDERED));
+		}
+		
+		private void accept(List<T> list, T t) {
+			int compare = 0;
+			if(list.isEmpty() || (compare = comparator.compare(t, list.get(0))) == 0) {
+				list.add(t);
+			}
+			else if(compare > 0) {
+				list.clear();
+				list.add(t);
+			}
+		}
+		
+		private List<T> apply(List<T> a, List<T> b) {
+			if(a.isEmpty()) return b;
+			if(b.isEmpty()) return a;
+			int result = comparator.compare(a.get(0), b.get(0));
+			if(result < 0) return b;
+			else if(result > 0) return a;
+			else {
+				a.addAll(b);
+				return a;
+			}
+		}
+	}
 }
