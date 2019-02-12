@@ -22,24 +22,26 @@ import java.util.regex.Pattern;
 public class Day04 implements Day {
 
 	public String part1(String input) {
-		Guard guard = selectGuard(guards(records(input)), Guard::totalAsleep);
+		List<Guard> guards = guards(input);
+		Guard guard = selectGuard(guards, Guard::totalAsleep);
 		return String.valueOf(guard.maxAsleep() * guard.id);
 	}
 
 	public String part2(String input) {
-		Guard guard = selectGuard(guards(records(input)), Guard::maxAsleepValue);
+		List<Guard> guards = guards(input);
+		Guard guard = selectGuard(guards, Guard::maxAsleepValue);
 		return String.valueOf(guard.maxAsleep() * guard.id);
 	}
 
-	private Guard selectGuard(List<Guard> guards, ToIntFunction<Guard> strategy) {
+	private static Guard selectGuard(List<Guard> guards, ToIntFunction<Guard> strategy) {
 		return guards.stream().max(comparingInt(strategy)).get();
 	}
 
-	List<Guard> guards(List<Record> records) {
+	private static List<Guard> guards(String input) {
 		Map<Integer, Guard> guards = new HashMap<>();
 		Guard guard = null;
 		Integer fallsAsleepAt = null;
-		for (Record record : records) {
+		for (Record record : records(input)) {
 			if (record.guardId != null) {
 				guard = guards.computeIfAbsent(record.guardId, Guard::new);
 				fallsAsleepAt = null;
@@ -56,6 +58,10 @@ public class Day04 implements Day {
 		return new ArrayList<>(guards.values());
 	}
 
+	private static List<Record> records(String input) {
+		return streamOfLines(input).map(Record::new).sorted().collect(toList());
+	}
+	
 	static class Record implements Comparable<Record> {
 		private LocalDateTime date;
 		private Integer guardId;
@@ -77,10 +83,6 @@ public class Day04 implements Day {
 		public int compareTo(Record o) {
 			return this.date.compareTo(o.date);
 		}
-	}
-
-	List<Record> records(String input) {
-		return streamOfLines(input).map(Record::new).sorted().collect(toList());
 	}
 
 	static class Guard {
