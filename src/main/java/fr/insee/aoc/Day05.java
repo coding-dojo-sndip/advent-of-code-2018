@@ -1,8 +1,10 @@
 package fr.insee.aoc;
 
-import java.util.stream.IntStream;
+import static fr.insee.aoc.Days.readLine;
 
-import static fr.insee.aoc.Days.*;
+import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.stream.IntStream;
 
 public class Day05 implements Day {
 
@@ -28,21 +30,20 @@ public class Day05 implements Day {
     private static int triggerFullReaction(String polymer) {
         return polymer.chars()
             .mapToObj(c -> (char) c)
-            .collect(StringBuilder::new, Day05::react, StringBuilder::append)
-            .length();
+            .collect(ArrayDeque::new, Day05::uniteReaction, (t, u) -> {throw new UnsupportedOperationException();})
+            .size();
     }
 
-    private static void react(StringBuilder builder, Character character) {
-        int lastIndex = builder.length() - 1;
-        if (lastIndex < 0 || doesntReact(builder.charAt(lastIndex), character)) {
-            builder.append(character);
+    private static void uniteReaction(Deque<Character> queue, Character unite) {
+    	if(!queue.isEmpty() && reactTogether(unite, queue.peek())) {
+            queue.pop();
         }
         else {
-            builder.deleteCharAt(lastIndex);
+            queue.push(unite);
         }
     }
 
-    private static boolean doesntReact(char a, char b) {
-        return Math.abs(a - b) != 32;
+    private static boolean reactTogether(char a, char b) {
+        return Math.abs(a - b) == 32;
     }
 }
