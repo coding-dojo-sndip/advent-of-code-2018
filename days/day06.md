@@ -56,3 +56,40 @@ Cependant, les zones des coordonnées D et E sont finies : D est le plus proche 
 Donc dans cet exemple, la taille de la zone la plus grande est 17.
 
 __Quelle est la taille de la zone la plus grande qui ne soit pas infinie ?__
+
+## Partie 2
+
+Pour chaque position, on considère la somme des distances de Manhattan qui la sépare de chaque point de la liste en entrée.
+On se fixe un seuil, par exemple 32 et dénombre les positions pour lesquelles cette somme est inférieur au seuil fixé.
+À partir de la même liste de points que précédemment, on obtient la zone suivante :
+
+```
+..........
+.A........
+..........
+...#*#..C.
+..#D###...
+..###E#...
+.B.###....
+..........
+..........
+........F.
+```
+
+En particulier, si on considère la position marquée d'une étoile situé aux coordonnées `3,4`, elle a été inclue dans la zone suite au calcul suivant :
+
+ - Distance a point A : `abs(4-1) + abs(3-1) =  5`
+ - Distance a point B : `abs(4-1) + abs(3-6) =  6`
+ - Distance a point C : `abs(4-8) + abs(3-3) =  4`
+ - Distance a point D : `abs(4-3) + abs(3-4) =  2`
+ - Distance a point E : `abs(4-5) + abs(3-5) =  3`
+ - Distance a point F : `abs(4-8) + abs(3-9) = 10`
+ - Distance totale : `5 + 6 + 4 + 2 + 3 + 10 = 30`
+ 
+Comme la somme des distances (30) est inférieure au seuil (32), la position est située dans la zone.
+
+Cette zone, qui comprend aussi les points D et E, a une surface totale de 16.
+
+Pour le calcul de la zone réelle, on se fixe un seuil de `10000`.
+
+__Quelle est la taille de la zone contenant toutes les positions qui ont une distance totale les séparants de tous les points inférieure strictement à 10000 ?__
