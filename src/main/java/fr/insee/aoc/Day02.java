@@ -10,14 +10,28 @@ import static java.util.stream.Collectors.counting;
 
 public class Day02 implements Day {
 
-    @Override
-    public String part1(String input) {
+	@Override
+	public String part1(String input, Object... params) {
         List<String> strings = listOfLines(input);
         long a = numberOfStringsNTimes(strings, 2);
         long b = numberOfStringsNTimes(strings, 3);
         return String.valueOf(a * b);
     }
 
+    @Override
+	public String part2(String input, Object... params) {
+        List<String> strings = listOfLines(input);
+        for (int i = 0; i < strings.size(); i++) {
+            String a = strings.get(i);
+            for (int j = i + 1; j < strings.size(); j++) {
+                if (differsByOneChar(a, strings.get(j))) {
+                    return charsInCommon(a, strings.get(j));
+                }
+            }
+        }
+        throw new DayException();
+    }
+	
     private long numberOfStringsNTimes(List<String> strings, int n) {
         return strings.stream()
                 .map(this::occurences)
@@ -56,19 +70,5 @@ public class Day02 implements Day {
             }
         }
         return sb.toString();
-    }
-
-    @Override
-    public String part2(String input) {
-        List<String> strings = listOfLines(input);
-        for (int i = 0; i < strings.size(); i++) {
-            String a = strings.get(i);
-            for (int j = i + 1; j < strings.size(); j++) {
-                if (differsByOneChar(a, strings.get(j))) {
-                    return charsInCommon(a, strings.get(j));
-                }
-            }
-        }
-        throw new DayException();
     }
 }

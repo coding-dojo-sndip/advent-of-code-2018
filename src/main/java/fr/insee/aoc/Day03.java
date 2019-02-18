@@ -14,7 +14,7 @@ public class Day03 implements Day {
 	private static final Pattern regex = Pattern.compile("#(\\d+) @ (\\d+),(\\d+): (\\d+)x(\\d+)");
 
 	@Override
-	public String part1(String input) {
+	public String part1(String input, Object... params) {
 		SquareInch[][] fabric = new SquareInch[1000][1000];
 		streamOfLines(input).forEach(r -> rectangle(r, fabric));
 		long count = Arrays.stream(fabric)
@@ -25,7 +25,7 @@ public class Day03 implements Day {
 	}
 
 	@Override
-	public String part2(String input) {
+	public String part2(String input, Object... params) {
 		SquareInch[][] tissu = new SquareInch[1000][1000];
 		List<Rectangle> rectangles = streamOfLines(input)
 				.map(r -> rectangle(r, tissu))

@@ -9,12 +9,14 @@ import java.util.Set;
 
 public class Day01 implements Day {
 
-	public String part1(String input) {
+	@Override
+	public String part1(String input, Object... params) {
 		int sum = streamOfInt(input).sum();
 		return String.valueOf(sum);
 	}
 
-	public String part2(String input) {
+	@Override
+	public String part2(String input, Object... params) {
 		Set<Integer> frequencies = new HashSet<>();
 		int[] changes = arrayOfInt(input);
 		int frequency = 0;

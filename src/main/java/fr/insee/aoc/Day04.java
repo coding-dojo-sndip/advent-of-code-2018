@@ -21,13 +21,15 @@ import java.util.regex.Pattern;
 
 public class Day04 implements Day {
 
-	public String part1(String input) {
+	@Override
+	public String part1(String input, Object... params) {
 		List<Guard> guards = guards(input);
 		Guard guard = selectGuard(guards, Guard::totalAsleep);
 		return String.valueOf(guard.maxAsleep() * guard.id);
 	}
 
-	public String part2(String input) {
+	@Override
+	public String part2(String input, Object... params) {
 		List<Guard> guards = guards(input);
 		Guard guard = selectGuard(guards, Guard::maxAsleepValue);
 		return String.valueOf(guard.maxAsleep() * guard.id);
