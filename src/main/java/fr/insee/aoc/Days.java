@@ -161,21 +161,29 @@ class Days {
 		}
 	}
 	
-	static class MaxCollector<T> implements Collector<T, List<T>, List<T>> {
+	static class DaysCollector<T> implements Collector<T, List<T>, List<T>> {
 		
 		private Comparator<? super T> comparator;
 		
-		private MaxCollector(Comparator<? super T> comparator) {
+		private DaysCollector(Comparator<? super T> comparator) {
 			super();
 			this.comparator = comparator;
 		}
 		
-		public static <T> MaxCollector<T> listOfMax(Comparator<? super T> comparator) {
-			return new MaxCollector<T>(comparator);
+		public static <T> DaysCollector<T> listOfMax(Comparator<? super T> comparator) {
+			return new DaysCollector<T>(comparator);
 		}
 		
-		public static <T extends Comparable<T>> MaxCollector<T> listOfMax() {
-			return new MaxCollector<T>(Comparator.naturalOrder());
+		public static <T> DaysCollector<T> listOfMin(Comparator<? super T> comparator) {
+			return new DaysCollector<T>(comparator.reversed());
+		}
+		
+		public static <T extends Comparable<T>> DaysCollector<T> listOfMax() {
+			return new DaysCollector<T>(Comparator.naturalOrder());
+		}
+		
+		public static <T extends Comparable<T>> DaysCollector<T> listOfMin() {
+			return new DaysCollector<T>(Comparator.reverseOrder());
 		}
 
 		@Override
