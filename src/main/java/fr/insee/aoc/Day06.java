@@ -29,7 +29,7 @@ public class Day06 implements Day {
 		for(int i = 0; i < frame.height(); i ++) {
 			for(int j = 0; j < frame.width(); j ++) {
 				Point location = Point.of(frame.left + j, frame.top + i);
-				List<Point> closestPoints = points.stream().collect(listOfMin(comparingInt(point -> manhattan(point, location))));
+				List<Point> closestPoints = points.stream().collect(listOfMin(comparingInt(point -> point.manhattan(location))));
 				if(closestPoints.size() == 1) {
 					Point closestPoint = closestPoints.get(0);
 					if(frame.isOnTheEdge(closestPoint)) {
@@ -54,7 +54,7 @@ public class Day06 implements Day {
 		for(int i = 0; i < frame.height(); i ++) {
 			for(int j = 0; j < frame.width(); j ++) {
 				Point location = Point.of(frame.left + j, frame.top + i);
-				int totalDistance = points.stream().mapToInt(point -> manhattan(point, location)).sum();
+				int totalDistance = points.stream().mapToInt(point -> point.manhattan(location)).sum();
 				if(totalDistance < threshold) area ++;
 			}
 		}
@@ -68,10 +68,6 @@ public class Day06 implements Day {
 	private static Point pointFromLine(String line) {
 		Matcher matcher = pattern.matcher(line);
 		return matcher.matches() ? Point.of(readInt(1, matcher), readInt(2, matcher)) : null;
-	}
-	
-	private static int manhattan(Point a, Point b) {
-		return Math.abs(a.getX() - b.getX()) + Math.abs(a.getY() - b.getY());
 	}
 	
 	static class Frame {
