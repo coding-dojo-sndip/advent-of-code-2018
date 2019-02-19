@@ -151,6 +151,10 @@ class Days {
 			return String.format("(%d, %d)", x, y);
 		}
 
+		public int manhattan(Point other) {
+			return Math.abs(this.x - other.x) + Math.abs(this.y - other.y);
+		}
+		
 		public int getX() {
 			return x;
 		}
