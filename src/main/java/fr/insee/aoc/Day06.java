@@ -41,10 +41,26 @@ public class Day06 implements Day {
 				}
 			}
 		}
-		int max = counts.values().stream().mapToInt(Integer::intValue).max().orElse(-1);
-		return String.valueOf(max);
+		int largestArea = counts.values().stream().mapToInt(Integer::intValue).max().orElse(-1);
+		return String.valueOf(largestArea);
 	}
 	
+	@Override
+	public String part2(String input, Object... params) {
+		int threshold = (int) params[0];
+		int area = 0;
+		List<Point> points = points(input);
+		Frame frame = Frame.smallestFrameContaining(points);
+		for(int i = 0; i < frame.height(); i ++) {
+			for(int j = 0; j < frame.width(); j ++) {
+				Point location = Point.of(frame.left + j, frame.top + i);
+				int totalDistance = points.stream().mapToInt(point -> manhattan(point, location)).sum();
+				if(totalDistance < threshold) area ++;
+			}
+		}
+		return String.valueOf(area);
+	}
+
 	private List<Point> points(String input) {
 		return streamOfLines(input).map(Day06::pointFromLine).collect(toList());
 	}
