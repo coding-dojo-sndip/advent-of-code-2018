@@ -300,4 +300,22 @@ public class DaysTest  {
 			.hasSize(3)
 			.containsExactly("middle", "chanel", "travel");
 	}
+	
+	@Test
+	public void minList_test() {
+		int[] int_array = new int[]{1, 8, 1, 1, 1, 2, 8, 8};
+		List<Integer> listOfMin = Arrays.stream(int_array).boxed().collect(listOfMin());
+		assertThat(listOfMin)
+			.hasSize(4)
+			.containsOnly(1);
+	}
+	
+	@Test
+	public void minList_test_string_length() {
+		String[] word_array = new String[]{"middle", "seed", "jump", "crowd", "chanel", "error", "ruin", "travel"};
+		List<String> listOfMin = Arrays.stream(word_array).collect(listOfMin(Comparator.comparingInt(String::length)));
+		assertThat(listOfMin)
+			.hasSize(3)
+			.containsExactly("seed", "jump", "ruin");
+	}
 }
