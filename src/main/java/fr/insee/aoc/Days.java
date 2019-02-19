@@ -1,5 +1,6 @@
 package fr.insee.aoc;
 
+import static java.util.stream.Collectors.summarizingInt;
 import static java.util.stream.Collectors.toList;
 
 import java.io.IOException;
@@ -12,6 +13,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.EnumSet;
+import java.util.IntSummaryStatistics;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -161,6 +163,34 @@ class Days {
 
 		public int getY() {
 			return y;
+		}
+	}
+	
+	static class Frame {
+		int top, left, bottom, right;
+		
+		static Frame smallestFrameContaining(Collection<Point> points) {
+			Frame frame = new Frame();
+			IntSummaryStatistics statX = points.stream().collect(summarizingInt(Point::getX));
+			IntSummaryStatistics statY = points.stream().collect(summarizingInt(Point::getY));
+			frame.left = statX.getMin();
+			frame.right = statX.getMax();
+			frame.top = statY.getMin();
+			frame.bottom = statY.getMax();
+			return frame;
+			
+		}
+		
+		int width() {
+			return right - left;
+		}
+		
+		int height() {
+			return bottom - top;
+		}
+		
+		boolean isOnTheEdge(Point point) {
+			return point.getX() == left || point.getX() == right || point.getY() == top || point.getY() == bottom;
 		}
 	}
 	

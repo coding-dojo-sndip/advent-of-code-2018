@@ -4,12 +4,9 @@ import static fr.insee.aoc.Days.*;
 import static fr.insee.aoc.Days.DaysCollector.*;
 import static java.util.stream.Collectors.*;
 
-import java.util.Collection;
-
 import static java.util.Comparator.*;
 import static java.util.function.Function.*;
 
-import java.util.IntSummaryStatistics;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -68,33 +65,5 @@ public class Day06 implements Day {
 	private static Point pointFromLine(String line) {
 		Matcher matcher = pattern.matcher(line);
 		return matcher.matches() ? Point.of(readInt(1, matcher), readInt(2, matcher)) : null;
-	}
-	
-	static class Frame {
-		int top, left, bottom, right;
-		
-		static Frame smallestFrameContaining(Collection<Point> points) {
-			Frame frame = new Frame();
-			IntSummaryStatistics statX = points.stream().collect(summarizingInt(Point::getX));
-			IntSummaryStatistics statY = points.stream().collect(summarizingInt(Point::getY));
-			frame.left = statX.getMin();
-			frame.right = statX.getMax();
-			frame.top = statY.getMin();
-			frame.bottom = statY.getMax();
-			return frame;
-			
-		}
-		
-		int width() {
-			return right - left;
-		}
-		
-		int height() {
-			return bottom - top;
-		}
-		
-		boolean isOnTheEdge(Point point) {
-			return point.getX() == left || point.getX() == right || point.getY() == top || point.getY() == bottom;
-		}
 	}
 }
