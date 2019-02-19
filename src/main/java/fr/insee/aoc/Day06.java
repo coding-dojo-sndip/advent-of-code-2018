@@ -3,10 +3,15 @@ package fr.insee.aoc;
 import static fr.insee.aoc.Days.*;
 import static fr.insee.aoc.Days.DaysCollector.*;
 import static java.util.stream.Collectors.*;
+
+import java.util.Collection;
+
 import static java.util.Comparator.*;
+import static java.util.function.Function.*;
 
 import java.util.IntSummaryStatistics;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -19,21 +24,25 @@ public class Day06 implements Day {
 	@Override
 	public String part1(String input, Object... params) {
 		List<Point> points = points(input);
-		Point[][] grid = fillGrid(points);
-		return "-1";
-	}
-
-	private Point[][] fillGrid(List<Point> points) {
+		Map<Point, Integer> counts = points.stream().collect(toMap(identity(), p -> 0));
 		Frame frame = Frame.smallestFrameContaining(points);
-		Point[][] grid = new Point[frame.width()][frame.height()];
 		for(int i = 0; i < frame.height(); i ++) {
 			for(int j = 0; j < frame.width(); j ++) {
 				Point location = Point.of(frame.left + j, frame.top + i);
-				List<Point> nearestPoints = points.stream().collect(listOfMin(comparingInt(point -> manhattan(point, location))));
-				grid[i][j] = nearestPoints.size() == 1 ? nearestPoints.get(0) : null;
+				List<Point> closestPoints = points.stream().collect(listOfMin(comparingInt(point -> manhattan(point, location))));
+				if(closestPoints.size() == 1) {
+					Point closestPoint = closestPoints.get(0);
+					if(frame.isOnTheEdge(closestPoint)) {
+						counts.remove(closestPoint);
+					}
+					else {
+						counts.computeIfPresent(closestPoint, (point, count) -> count + 1);
+					}
+				}
 			}
 		}
-		return grid;
+		int max = counts.values().stream().mapToInt(Integer::intValue).max().orElse(-1);
+		return String.valueOf(max);
 	}
 	
 	private List<Point> points(String input) {
@@ -52,7 +61,7 @@ public class Day06 implements Day {
 	static class Frame {
 		int top, left, bottom, right;
 		
-		static Frame smallestFrameContaining(List<Point> points) {
+		static Frame smallestFrameContaining(Collection<Point> points) {
 			Frame frame = new Frame();
 			IntSummaryStatistics statX = points.stream().collect(summarizingInt(Point::getX));
 			IntSummaryStatistics statY = points.stream().collect(summarizingInt(Point::getY));
@@ -70,6 +79,10 @@ public class Day06 implements Day {
 		
 		int height() {
 			return bottom - top;
+		}
+		
+		boolean isOnTheEdge(Point point) {
+			return point.getX() == left || point.getX() == right || point.getY() == top || point.getY() == bottom;
 		}
 	}
 }
