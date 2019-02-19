@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -22,8 +23,6 @@ import java.util.regex.Matcher;
 import java.util.stream.Collector;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
-
-import org.assertj.core.util.Sets;
 
 class Days {
 
@@ -161,21 +160,29 @@ class Days {
 		}
 	}
 	
-	static class MaxCollector<T> implements Collector<T, List<T>, List<T>> {
+	static class DaysCollector<T> implements Collector<T, List<T>, List<T>> {
 		
 		private Comparator<? super T> comparator;
 		
-		private MaxCollector(Comparator<? super T> comparator) {
+		private DaysCollector(Comparator<? super T> comparator) {
 			super();
 			this.comparator = comparator;
 		}
 		
-		public static <T> MaxCollector<T> listOfMax(Comparator<? super T> comparator) {
-			return new MaxCollector<T>(comparator);
+		public static <T> DaysCollector<T> listOfMax(Comparator<? super T> comparator) {
+			return new DaysCollector<T>(comparator);
 		}
 		
-		public static <T extends Comparable<T>> MaxCollector<T> listOfMax() {
-			return new MaxCollector<T>(Comparator.naturalOrder());
+		public static <T> DaysCollector<T> listOfMin(Comparator<? super T> comparator) {
+			return new DaysCollector<T>(comparator.reversed());
+		}
+		
+		public static <T extends Comparable<T>> DaysCollector<T> listOfMax() {
+			return new DaysCollector<T>(Comparator.naturalOrder());
+		}
+		
+		public static <T extends Comparable<T>> DaysCollector<T> listOfMin() {
+			return new DaysCollector<T>(Comparator.reverseOrder());
 		}
 
 		@Override
@@ -200,7 +207,7 @@ class Days {
 
 		@Override
 		public Set<Characteristics> characteristics() {
-			return Sets.newHashSet(Arrays.asList(Characteristics.CONCURRENT, Characteristics.IDENTITY_FINISH, Characteristics.UNORDERED));
+			return EnumSet.of(Characteristics.CONCURRENT, Characteristics.IDENTITY_FINISH, Characteristics.UNORDERED);
 		}
 		
 		private void accept(List<T> list, T t) {

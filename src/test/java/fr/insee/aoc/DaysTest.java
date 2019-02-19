@@ -1,7 +1,7 @@
 package fr.insee.aoc;
 
 import static fr.insee.aoc.Days.*;
-import static fr.insee.aoc.Days.MaxCollector.*;
+import static fr.insee.aoc.Days.DaysCollector.*;
 import static org.assertj.core.api.Assertions.*;
 
 import java.time.LocalDateTime;
