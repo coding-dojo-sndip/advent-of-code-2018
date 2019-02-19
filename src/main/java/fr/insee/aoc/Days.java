@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -22,8 +23,6 @@ import java.util.regex.Matcher;
 import java.util.stream.Collector;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
-
-import org.assertj.core.util.Sets;
 
 class Days {
 
@@ -208,7 +207,7 @@ class Days {
 
 		@Override
 		public Set<Characteristics> characteristics() {
-			return Sets.newHashSet(Arrays.asList(Characteristics.CONCURRENT, Characteristics.IDENTITY_FINISH, Characteristics.UNORDERED));
+			return EnumSet.of(Characteristics.CONCURRENT, Characteristics.IDENTITY_FINISH, Characteristics.UNORDERED);
 		}
 		
 		private void accept(List<T> list, T t) {
