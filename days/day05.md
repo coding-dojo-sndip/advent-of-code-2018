@@ -30,7 +30,7 @@ __Combien d’unités subsistent après que le polymère a totalement réagit ?_
 
 ## Partie 2
 
-Un type d’unité empêche le polymer de se réduire autant qu’il le pourrait.
+Un type d’unité empêche le polymère de se réduire autant qu’il le pourrait.
 L’objectif est de déterminer lequel, en retirant toutes les occurences de ce type, quelque soit leur polarité, puis en faisant réagir tout le polymère et en mesurant sa longueur après réaction complète.
 
 Par exemple en utilisant le même polymère `dabAcCaCBAcCcaDA` que précédemment :
