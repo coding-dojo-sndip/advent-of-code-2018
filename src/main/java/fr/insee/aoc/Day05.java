@@ -17,8 +17,7 @@ public class Day05 implements Day {
     @Override
     public String part2(String input) {
         String polymer = readLine(input);
-        int a = 97, z = 122;
-        int min = IntStream.rangeClosed(a, z)
+        int min = IntStream.rangeClosed('a', 'z')
             .mapToObj(c -> (char) c + "|" + (char)(c - 32))
             .map(regex -> polymer.replaceAll(regex, ""))
             .mapToInt(Day05::triggerFullReaction)
