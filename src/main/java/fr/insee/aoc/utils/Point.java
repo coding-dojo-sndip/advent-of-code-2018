@@ -5,7 +5,7 @@ import java.util.Objects;
 
 public class Point implements Comparable<Point> {
 	
-	int x, y;
+	public int x, y;
 
 	private static final Comparator<Point> comparator = Comparator.comparingInt(Point::getX).thenComparingInt(Point::getY);
 	

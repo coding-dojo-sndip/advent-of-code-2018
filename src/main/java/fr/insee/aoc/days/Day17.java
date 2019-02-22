@@ -1,21 +1,13 @@
 package fr.insee.aoc.days;
 
 import static fr.insee.aoc.utils.Days.*;
-import static fr.insee.aoc.utils.Collectors.*;
 import static java.util.stream.Collectors.*;
 
-import java.util.Arrays;
+import java.util.*;
 
-import static java.util.Comparator.*;
-import static java.util.function.Function.*;
-
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 import fr.insee.aoc.utils.Frame;
 import fr.insee.aoc.utils.Point;
@@ -27,18 +19,18 @@ public class Day17 implements Day {
 	@Override
 	public String part1(String input, Object... params) {
 		List<Point> points = streamOfLines(input)
-			.map(Segment::fromLine)
+            .map(Segment::fromLine)
 			.flatMap(segment -> segment.points().stream())
 			.collect(toList());
-		Frame frame = Frame.frameWithBorderContaining(points, 1);
-		int height = frame.height();
-		int width = frame.width();
+		Frame frame = Frame.enclosingWithBorder(points, 1);
+		int height = frame.height() + 1;
+		int width = frame.width() + 1;
 		char[][] grid = new char[height][width];
 		Arrays.stream(grid).forEach(line -> Arrays.fill(line, '.'));
 		for(Point point : points) {
 			grid[point.getY() - frame.top][point.getX() - frame.left] = '#';
 		}
-		Arrays.stream(grid).forEach(System.out::println);
+		// Arrays.stream(grid).forEach(System.out::println);
 		return null;
 	}
 	
@@ -66,10 +58,10 @@ public class Day17 implements Day {
 		}
 		
 		List<Point> points() {
-			if(start.getX() == end.getX()) {
-				return IntStream.rangeClosed(start.getY(), end.getY()).mapToObj(y -> Point.of(start.getX(), y)).collect(toList());
+			if(start.x == end.x) {
+				return IntStream.rangeClosed(start.y, end.y).mapToObj(y -> Point.of(start.x, y)).collect(toList());
 			}
-			return IntStream.rangeClosed(start.getX(), end.getX()).mapToObj(x -> Point.of(x, start.getY())).collect(toList());
+			return IntStream.rangeClosed(start.x, end.x).mapToObj(x -> Point.of(x, start.y)).collect(toList());
 		}
 	}
 }
