@@ -11,29 +11,29 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collector;
 
-public class DaysCollector<T> implements Collector<T, List<T>, List<T>> {
+public class Collectors<T> implements Collector<T, List<T>, List<T>> {
 	
 	private Comparator<? super T> comparator;
 	
-	private DaysCollector(Comparator<? super T> comparator) {
+	private Collectors(Comparator<? super T> comparator) {
 		super();
 		this.comparator = comparator;
 	}
 	
-	public static <T> DaysCollector<T> listOfMax(Comparator<? super T> comparator) {
-		return new DaysCollector<T>(comparator);
+	public static <T> Collectors<T> listOfMax(Comparator<? super T> comparator) {
+		return new Collectors<T>(comparator);
 	}
 	
-	public static <T> DaysCollector<T> listOfMin(Comparator<? super T> comparator) {
-		return new DaysCollector<T>(comparator.reversed());
+	public static <T> Collectors<T> listOfMin(Comparator<? super T> comparator) {
+		return new Collectors<T>(comparator.reversed());
 	}
 	
-	public static <T extends Comparable<T>> DaysCollector<T> listOfMax() {
-		return new DaysCollector<T>(Comparator.naturalOrder());
+	public static <T extends Comparable<T>> Collectors<T> listOfMax() {
+		return new Collectors<T>(Comparator.naturalOrder());
 	}
 	
-	public static <T extends Comparable<T>> DaysCollector<T> listOfMin() {
-		return new DaysCollector<T>(Comparator.reverseOrder());
+	public static <T extends Comparable<T>> Collectors<T> listOfMin() {
+		return new Collectors<T>(Comparator.reverseOrder());
 	}
 
 	@Override

@@ -17,8 +17,8 @@ import static fr.insee.aoc.utils.Days.readString;
 import static fr.insee.aoc.utils.Days.streamOfCells;
 import static fr.insee.aoc.utils.Days.streamOfInt;
 import static fr.insee.aoc.utils.Days.streamOfLines;
-import static fr.insee.aoc.utils.DaysCollector.listOfMax;
-import static fr.insee.aoc.utils.DaysCollector.listOfMin;
+import static fr.insee.aoc.utils.Collectors.listOfMax;
+import static fr.insee.aoc.utils.Collectors.listOfMin;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
