@@ -1,4 +1,4 @@
-package fr.insee.aoc;
+package fr.insee.aoc.days;
 
 import org.junit.Assert;
 import org.junit.Test;

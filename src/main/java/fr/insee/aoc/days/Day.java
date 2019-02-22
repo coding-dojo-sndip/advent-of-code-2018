@@ -1,4 +1,6 @@
-package fr.insee.aoc;
+package fr.insee.aoc.days;
+
+import fr.insee.aoc.utils.DayException;
 
 public interface Day {
 

@@ -1,8 +1,8 @@
-package fr.insee.aoc;
+package fr.insee.aoc.days;
 
-import static fr.insee.aoc.Days.arrayOfInt;
-import static fr.insee.aoc.Days.notIn;
-import static fr.insee.aoc.Days.streamOfInt;
+import static fr.insee.aoc.utils.Days.arrayOfInt;
+import static fr.insee.aoc.utils.Days.notIn;
+import static fr.insee.aoc.utils.Days.streamOfInt;
 
 import java.util.HashSet;
 import java.util.Set;

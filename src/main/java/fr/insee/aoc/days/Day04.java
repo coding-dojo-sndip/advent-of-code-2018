@@ -1,12 +1,8 @@
-package fr.insee.aoc;
+package fr.insee.aoc.days;
 
-import static fr.insee.aoc.Days.indexOfMax;
-import static fr.insee.aoc.Days.maxOf;
-import static fr.insee.aoc.Days.readDate;
-import static fr.insee.aoc.Days.readInt;
-import static fr.insee.aoc.Days.streamOfLines;
-import static java.util.Comparator.comparingInt;
-import static java.util.stream.Collectors.toList;
+import static fr.insee.aoc.utils.Days.*;
+import static java.util.Comparator.*;
+import static java.util.stream.Collectors.*;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;

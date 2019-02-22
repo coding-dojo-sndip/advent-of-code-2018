@@ -1,4 +1,4 @@
-package fr.insee.aoc;
+package fr.insee.aoc.utils;
 
 @SuppressWarnings("serial")
 public class DayException extends RuntimeException {

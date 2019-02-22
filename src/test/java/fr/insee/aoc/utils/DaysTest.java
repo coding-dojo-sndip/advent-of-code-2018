@@ -1,8 +1,26 @@
-package fr.insee.aoc;
+package fr.insee.aoc.utils;
 
-import static fr.insee.aoc.Days.*;
-import static fr.insee.aoc.Days.DaysCollector.*;
-import static org.assertj.core.api.Assertions.*;
+import static fr.insee.aoc.utils.Days.arrayOfInt;
+import static fr.insee.aoc.utils.Days.arrayOfLines;
+import static fr.insee.aoc.utils.Days.in;
+import static fr.insee.aoc.utils.Days.indexOfMax;
+import static fr.insee.aoc.utils.Days.indexOfMin;
+import static fr.insee.aoc.utils.Days.listOfIntegers;
+import static fr.insee.aoc.utils.Days.listOfLines;
+import static fr.insee.aoc.utils.Days.maxOf;
+import static fr.insee.aoc.utils.Days.minOf;
+import static fr.insee.aoc.utils.Days.notIn;
+import static fr.insee.aoc.utils.Days.readDate;
+import static fr.insee.aoc.utils.Days.readInt;
+import static fr.insee.aoc.utils.Days.readLine;
+import static fr.insee.aoc.utils.Days.readString;
+import static fr.insee.aoc.utils.Days.streamOfCells;
+import static fr.insee.aoc.utils.Days.streamOfInt;
+import static fr.insee.aoc.utils.Days.streamOfLines;
+import static fr.insee.aoc.utils.DaysCollector.listOfMax;
+import static fr.insee.aoc.utils.DaysCollector.listOfMin;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -15,8 +33,6 @@ import java.util.regex.Pattern;
 
 import org.assertj.core.util.Sets;
 import org.junit.Test;
-
-import fr.insee.aoc.Days.Point;
 
 
 public class DaysTest  {

@@ -1,6 +1,8 @@
-package fr.insee.aoc;
+package fr.insee.aoc.days;
 
-import static fr.insee.aoc.Days.*;
+import static fr.insee.aoc.utils.Days.readInt;
+import static fr.insee.aoc.utils.Days.readString;
+import static fr.insee.aoc.utils.Days.streamOfLines;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -8,6 +10,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+
+import fr.insee.aoc.utils.DayException;
 
 public class Day03 implements Day {
 
