@@ -42,4 +42,16 @@ public class FrameTest  {
 		assertThat(frame.isOnTheEdge(a)).isFalse();
 		assertThat(frame.isOnTheEdge(b)).isTrue();
 	}
+	
+	@Test
+	public void testFrame_width() {
+		Frame frame = Frame.frameOf(0, 3, 0, 2);
+		assertThat(frame.width()).isEqualTo(2);
+	}
+	
+	@Test
+	public void testFrame_height() {
+		Frame frame = Frame.frameOf(0, 3, 0, 2);
+		assertThat(frame.height()).isEqualTo(3);
+	}
 }
