@@ -1,0 +1,238 @@
+From 8a47d969498ffc9d7b88359d723dcb8d1144411b Mon Sep 17 00:00:00 2001
+From: coding-dojo-sndip <coding.dojo.sndip@gmail.com>
+Date: Fri, 22 Feb 2019 12:54:06 +0100
+Subject: [PATCH] =?UTF-8?q?Suppression=20des=20impl=C3=A9mentations=20:=20?=
+ =?UTF-8?q?Point,=20Frame=20et=20Collectors?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+---
+ .../java/fr/insee/aoc/utils/Collectors.java   | 54 ++++---------------
+ src/main/java/fr/insee/aoc/utils/Frame.java   | 22 +++-----
+ src/main/java/fr/insee/aoc/utils/Point.java   | 46 ++--------------
+ 3 files changed, 20 insertions(+), 102 deletions(-)
+
+diff --git a/src/main/java/fr/insee/aoc/utils/Collectors.java b/src/main/java/fr/insee/aoc/utils/Collectors.java
+index 1cd2c90..1e95edf 100644
+--- a/src/main/java/fr/insee/aoc/utils/Collectors.java
++++ b/src/main/java/fr/insee/aoc/utils/Collectors.java
+@@ -1,8 +1,6 @@
+ package fr.insee.aoc.utils;
+ 
+-import java.util.ArrayList;
+ import java.util.Comparator;
+-import java.util.EnumSet;
+ import java.util.List;
+ import java.util.Set;
+ import java.util.function.BiConsumer;
+@@ -11,76 +9,46 @@ import java.util.function.Function;
+ import java.util.function.Supplier;
+ import java.util.stream.Collector;
+ 
+-public class Collectors<T> implements Collector<T, List<T>, List<T>> {
+-	
+-	private Comparator<? super T> comparator;
+-	
+-	private Collectors(Comparator<? super T> comparator) {
+-		super();
+-		this.comparator = comparator;
+-	}
++public class Collectors<T> implements Collector<T, List<T>, List<T>>{
+ 	
+ 	public static <T> Collectors<T> listOfMax(Comparator<? super T> comparator) {
+-		return new Collectors<T>(comparator);
++		throw new DayException("Not implemented yet!"); // TODO
+ 	}
+ 	
+ 	public static <T> Collectors<T> listOfMin(Comparator<? super T> comparator) {
+-		return new Collectors<T>(comparator.reversed());
++		throw new DayException("Not implemented yet!"); // TODO
+ 	}
+ 	
+ 	public static <T extends Comparable<T>> Collectors<T> listOfMax() {
+-		return new Collectors<T>(Comparator.naturalOrder());
++		throw new DayException("Not implemented yet!"); // TODO
+ 	}
+ 	
+ 	public static <T extends Comparable<T>> Collectors<T> listOfMin() {
+-		return new Collectors<T>(Comparator.reverseOrder());
++		throw new DayException("Not implemented yet!"); // TODO
+ 	}
+ 
+ 	@Override
+ 	public Supplier<List<T>> supplier() {
+-		return ArrayList::new;
++		throw new DayException("Not implemented yet!"); // TODO
+ 	}
+ 
+ 	@Override
+ 	public BiConsumer<List<T>, T> accumulator() {
+-		return this::accept;
++		throw new DayException("Not implemented yet!"); // TODO
+ 	}
+-	
++
+ 	@Override
+ 	public BinaryOperator<List<T>> combiner() {
+-		return this::apply;
++		throw new DayException("Not implemented yet!"); // TODO
+ 	}
+ 
+ 	@Override
+ 	public Function<List<T>, List<T>> finisher() {
+-		return Function.identity();
++		throw new DayException("Not implemented yet!"); // TODO
+ 	}
+ 
+ 	@Override
+ 	public Set<Characteristics> characteristics() {
+-		return EnumSet.of(Characteristics.CONCURRENT, Characteristics.IDENTITY_FINISH, Characteristics.UNORDERED);
+-	}
+-	
+-	private void accept(List<T> list, T t) {
+-		int compare = 0;
+-		if(list.isEmpty() || (compare = comparator.compare(t, list.get(0))) == 0) {
+-			list.add(t);
+-		}
+-		else if(compare > 0) {
+-			list.clear();
+-			list.add(t);
+-		}
+-	}
+-	
+-	private List<T> apply(List<T> a, List<T> b) {
+-		if(a.isEmpty()) return b;
+-		if(b.isEmpty()) return a;
+-		int result = comparator.compare(a.get(0), b.get(0));
+-		if(result < 0) return b;
+-		else if(result > 0) return a;
+-		else {
+-			a.addAll(b);
+-			return a;
+-		}
++		throw new DayException("Not implemented yet!"); // TODO
+ 	}
+ }
+\ No newline at end of file
+diff --git a/src/main/java/fr/insee/aoc/utils/Frame.java b/src/main/java/fr/insee/aoc/utils/Frame.java
+index 4abed77..e8615e2 100644
+--- a/src/main/java/fr/insee/aoc/utils/Frame.java
++++ b/src/main/java/fr/insee/aoc/utils/Frame.java
+@@ -4,40 +4,30 @@ import static java.util.stream.Collectors.*;
+ import static java.lang.Math.*;
+ 
+ import java.util.Collection;
+-import java.util.IntSummaryStatistics;
+ 
+ public class Frame {
+ 	
+-	int top, left, bottom, right;
+-	
+ 	public static Frame frameOf(int top, int bottom, int left, int right) {
+-		Frame frame = new Frame();
+-		frame.left = left;
+-		frame.right = right;
+-		frame.top = top;
+-		frame.bottom = bottom;
+-		return frame;
++		throw new DayException("Not implemented yet!"); // TODO
+ 	}
+ 	
+ 	public static Frame inBetween(Point a, Point b) {
+-		return Frame.frameOf(min(a.y, b.y), max(a.y, b.y), min(a.x, b.x), max(a.x, b.x));
++		throw new DayException("Not implemented yet!"); // TODO
+ 	}
+ 	
+ 	public static Frame smallestFrameContaining(Collection<Point> points) {
+-		IntSummaryStatistics x = points.stream().collect(summarizingInt(Point::getX));
+-		IntSummaryStatistics y = points.stream().collect(summarizingInt(Point::getY));
+-		return Frame.frameOf(y.getMin(), y.getMax(), x.getMin(), x.getMax());
++		throw new DayException("Not implemented yet!"); // TODO
+ 	}
+ 	
+ 	int width() {
+-		return right - left;
++		throw new DayException("Not implemented yet!"); // TODO
+ 	}
+ 	
+ 	int height() {
+-		return bottom - top;
++		throw new DayException("Not implemented yet!"); // TODO
+ 	}
+ 	
+ 	boolean isOnTheEdge(Point point) {
+-		return point.getX() == left || point.getX() == right || point.getY() == top || point.getY() == bottom;
++		throw new DayException("Not implemented yet!"); // TODO
+ 	}
+ }
+\ No newline at end of file
+diff --git a/src/main/java/fr/insee/aoc/utils/Point.java b/src/main/java/fr/insee/aoc/utils/Point.java
+index 48243dd..8f8c03f 100644
+--- a/src/main/java/fr/insee/aoc/utils/Point.java
++++ b/src/main/java/fr/insee/aoc/utils/Point.java
+@@ -1,57 +1,17 @@
+ package fr.insee.aoc.utils;
+ 
+-import java.util.Comparator;
+-import java.util.Objects;
+-
+ public class Point implements Comparable<Point> {
+ 	
+-	int x, y;
+-
+-	private static final Comparator<Point> comparator = Comparator.comparingInt(Point::getX).thenComparingInt(Point::getY);
+-	
+-	private Point() {}
+-	
+ 	public static Point of(int x, int y) {
+-		Point point = new Point();
+-		point.x = x;
+-		point.y = y;
+-		return point;
++		throw new DayException("Not implemented yet!"); // TODO
+ 	}
+ 
+ 	@Override
+ 	public int compareTo(Point other) {
+-		return comparator.compare(this, other);
+-	}
+-
+-	@Override
+-	public int hashCode() {
+-		return Objects.hash(x, y);
+-	}
+-
+-	@Override
+-	public boolean equals(Object object) {
+-		if(object == null) return false;
+-		if(object instanceof Point) {
+-			Point other = (Point) object;
+-			return Objects.equals(this.x, other.x) && Objects.equals(this.y, other.y);
+-		}
+-		return false;
+-	}
+-
+-	@Override
+-	public String toString() {
+-		return String.format("(%d, %d)", x, y);
++		throw new DayException("Not implemented yet!"); // TODO
+ 	}
+ 
+ 	public int manhattan(Point other) {
+-		return Math.abs(this.x - other.x) + Math.abs(this.y - other.y);
+-	}
+-	
+-	public int getX() {
+-		return x;
+-	}
+-
+-	public int getY() {
+-		return y;
++		throw new DayException("Not implemented yet!"); // TODO
+ 	}
+ }
+\ No newline at end of file
+-- 
+2.17.0.windows.1
+
