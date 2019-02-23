@@ -46,7 +46,23 @@ public class Point implements Comparable<Point> {
 	public int manhattan(Point other) {
 		return Math.abs(this.x - other.x) + Math.abs(this.y - other.y);
 	}
-	
+
+	public Point downPoint() {
+	    return Point.of(x, y + 1);
+    }
+
+    public Point upPoint() {
+	    return Point.of(x, y - 1);
+    }
+
+    public Point leftPoint() {
+	    return Point.of(x - 1, y);
+    }
+
+	public Point rightPoint() {
+	    return Point.of(x + 1, y);
+    }
+
 	public int getX() {
 		return x;
 	}

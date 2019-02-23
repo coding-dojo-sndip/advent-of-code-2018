@@ -1,16 +1,16 @@
 package fr.insee.aoc.days;
 
-import static fr.insee.aoc.utils.Days.*;
-import static java.util.stream.Collectors.*;
+import fr.insee.aoc.utils.Frame;
+import fr.insee.aoc.utils.Point;
 
 import java.util.*;
-
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 
-import fr.insee.aoc.utils.Frame;
-import fr.insee.aoc.utils.Point;
+import static fr.insee.aoc.utils.Days.readInt;
+import static fr.insee.aoc.utils.Days.streamOfLines;
+import static java.util.stream.Collectors.toList;
 
 public class Day17 implements Day {
 
@@ -18,25 +18,56 @@ public class Day17 implements Day {
 	
 	@Override
 	public String part1(String input, Object... params) {
-		List<Point> points = streamOfLines(input)
+        List<Point> points = streamOfLines(input)
             .map(Segment::fromLine)
-			.flatMap(segment -> segment.points().stream())
-			.collect(toList());
-		Frame frame = Frame.enclosingWithBorder(points, 1);
-		int height = frame.height() + 1;
-		int width = frame.width() + 1;
-		char[][] grid = new char[height][width];
-		Arrays.stream(grid).forEach(line -> Arrays.fill(line, '.'));
-		for(Point point : points) {
-			grid[point.getY() - frame.top][point.getX() - frame.left] = '#';
-		}
-		// Arrays.stream(grid).forEach(System.out::println);
+            .flatMap(segment -> segment.points().stream())
+            .collect(toList());
+        Frame frame = Frame.enclosingWithBorder(points, 1);
+        char[][] grid = grid(frame, points);
+        // Arrays.stream(grid).forEach(System.out::println);
+        Water water = new Water(null, Point.of(500 - frame.left, 0));
+
 		return null;
 	}
-	
 
-	
-	static class Segment {
+    private char[][] grid(Frame frame, Collection<Point> points) {
+        int height = frame.height() + 1;
+        int width = frame.width() + 1;
+        char[][] grid = new char[height][width];
+        Arrays.stream(grid).forEach(line -> Arrays.fill(line, '.'));
+        for(Point point : points) {
+            grid[point.getY() - frame.top][point.getX() - frame.left] = '#';
+        }
+        return grid;
+    }
+
+    private static char typeOf(Point point, char[][] grid) {
+        return grid[point.y][point.x];
+    }
+
+    static class Water {
+
+        Water source;
+	    Point position;
+
+        Water(Water source, Point position) {
+            this.source = source;
+            this.position = position;
+        }
+
+        List<Water> flow(char[][] grid) {
+            Point downPoint = position.downPoint();
+            if(typeOf(downPoint, grid) == '.') return Collections.singletonList(new Water(this, downPoint));
+            List<Water> waters = new ArrayList<>(2);
+            Point leftPoint = position.leftPoint(), rightPoint = position.rightPoint();
+            if(typeOf(leftPoint, grid) == '.') waters.add(new Water(source, leftPoint));
+            if(typeOf(rightPoint, grid) == '.') waters.add(new Water(source, rightPoint));
+            if(waters.isEmpty()) return Collections.singletonList(source);
+            return waters;
+        }
+    }
+
+    static class Segment {
 		Point start, end;
 
 		private Segment(Point start, Point end) {
