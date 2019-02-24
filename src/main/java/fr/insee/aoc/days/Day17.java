@@ -9,6 +9,7 @@ import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 
 import static fr.insee.aoc.utils.Days.readInt;
+import static fr.insee.aoc.utils.Days.streamOfCells;
 import static fr.insee.aoc.utils.Days.streamOfLines;
 import static java.util.stream.Collectors.toList;
 
@@ -23,18 +24,26 @@ public class Day17 implements Day {
                 .flatMap(segment -> segment.points().stream())
                 .collect(toList());
         Frame frame = Frame.enclosingWithBorder(points, 1);
-        char[][] grid = grid(frame, points);
+        Character[][] grid = grid(frame, points);
         Water spring = new Water(null, Point.of(500 - frame.left, 0));
         setValue(spring.position, grid, '+');
         flow(spring, grid);
-        Arrays.stream(grid).forEach(System.out::println);
-        return null;
+        printGrid(grid);
+        long count = streamOfCells(grid).filter(c -> c == '|' || c == '~').count();
+        return String.valueOf(count);
     }
 
-    private char[][] grid(Frame frame, Collection<Point> points) {
+    private static void printGrid(Character[][] grid) {
+        Arrays.stream(grid).forEach(line -> {
+            Arrays.stream(line).forEach(System.out::print);
+            System.out.println();
+        });
+    }
+
+    private static Character[][] grid(Frame frame, Collection<Point> points) {
         int height = frame.height() + 1;
         int width = frame.width() + 1;
-        char[][] grid = new char[height][width];
+        Character[][] grid = new Character[height][width];
         Arrays.stream(grid).forEach(line -> Arrays.fill(line, '.'));
         for(Point point : points) {
             grid[point.getY() - frame.top][point.getX() - frame.left] = '#';
@@ -42,70 +51,70 @@ public class Day17 implements Day {
         return grid;
     }
 
-    private static char getValue(Point point, char[][] grid) {
+    private static char getValue(Point point, Character[][] grid) {
         return grid[point.y][point.x];
     }
 
-    private static void setValue(Point point, char[][] grid, char value) {
+    private static void setValue(Point point, Character[][] grid, char value) {
         grid[point.y][point.x] = value;
     }
 
-    private static void flow(Water water, char[][] grid) {
-        // Arrays.stream(grid).forEach(System.out::println);
+    private static void flow(Water water, Character[][] grid) {
+        // printGrid(grid);
+        // System.out.println(water.position);
         Point downPoint = water.position.downPoint();
-        if(downPoint.y >= grid.length - 1) return;
         boolean canFlowDown = getValue(downPoint, grid) == '.';
         if(canFlowDown) {
             setValue(downPoint, grid, '|');
-            flow(new Water(water, downPoint), grid);
+            if(downPoint.y < grid.length - 2) flow(new Water(water, downPoint), grid);
         }
         else {
             Point leftPoint = water.position.leftPoint();
             Point rightPoint = water.position.rightPoint();
-            boolean canFlowLeft = getValue(leftPoint, grid) == '.';
-            boolean canFlowRight = getValue(rightPoint, grid) == '.';
-            boolean cantFlow = !canFlowLeft && !canFlowRight;
+            boolean canFlowLeft = leftPoint.x >= 0 && getValue(leftPoint, grid) == '.';
+            boolean canFlowRight = rightPoint.x < grid[0].length && getValue(rightPoint, grid) == '.';
+            boolean canNotFlow = !canFlowLeft && !canFlowRight;
 
-            if(cantFlow){
-                cantFlow(water, grid);
+            if(canNotFlow){
+                canNotFlow(water, grid);
             }
             else {
-                if(canFlowLeft) {
-                    setValue(leftPoint, grid, '|');
-                    flow(new Water(water.source, leftPoint), grid);
-                }
                 if(canFlowRight){
                     setValue(rightPoint, grid, '|');
                     flow(new Water(water.source, rightPoint), grid);
+                }
+                if(canFlowLeft) {
+                    setValue(leftPoint, grid, '|');
+                    flow(new Water(water.source, leftPoint), grid);
                 }
             }
         }
     }
 
-    private static void cantFlow(Water water, char[][] grid) {
+    private static void canNotFlow(Water water, Character[][] grid) {
         Point point = null;
 
-        point = Point.of(water.position.x + 1, water.position.y);
+        point = water.position;
         while (getValue(point, grid) == '|') {
             point = Point.of(point.x + 1, point.y);
         }
-        boolean rightOk = (getValue(point, grid) == '#');
+        boolean clayRight = (getValue(point, grid) == '#');
 
-        point = Point.of(water.position.x - 1, water.position.y);
+        point = water.position;
         while (getValue(point, grid) == '|') {
-            point = Point.of(point.x + 1, point.y);
+            point = Point.of(point.x - 1, point.y);
         }
-        boolean leftOk = (getValue(point, grid) == '#');
+        boolean clayLeft = (getValue(point, grid) == '#');
 
-        if(rightOk && leftOk) {
+        if(clayRight && clayLeft) {
             setValue(water.position, grid, '~');
             point = Point.of(water.position.x + 1, water.position.y);
-            while (getValue(point, grid) == '|') {
+            while (point.x < grid[0].length && getValue(point, grid) == '|') {
                 setValue(point, grid, '~');
                 point = Point.of(point.x + 1, point.y);
             }
             point = Point.of(water.position.x - 1, water.position.y);
-            while (getValue(point, grid) == '|') {
+            while (point.x >= 0 && getValue(point, grid) == '|') {
                 setValue(point, grid, '~');
                 point = Point.of(point.x - 1, point.y);
             }
