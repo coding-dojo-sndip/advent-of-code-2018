@@ -39,44 +39,18 @@ public class Day17 implements Day {
         Frame frame = Frame.enclosingWithBorder(points, 1);
         Character[][] grid = grid(frame, points);
         Water spring = Water.at(Point.of(500 - frame.left, 0));
-        Collection<Water> waters = flow(spring, grid);
-        setValue(spring, grid, '+');
-        for(int i = 0; i < 13_000; i ++){
-        	Collection<Water> nextWaters = new HashSet<>();
-        	waters.forEach(water -> nextWaters.addAll(flow(water, grid)));
-        	waters = nextWaters;
-        }
+        flowFromSpring(spring, grid);
 		return grid;
 	}
 
-    /*
-    private static void printGrid(Character[][] grid) {
-        Arrays.stream(grid).forEach(line -> {
-            Arrays.stream(line).forEach(System.out::print);
-            System.out.println();
-        });
-    }
-    */
-
-    private static Character[][] grid(Frame frame, Collection<Point> points) {
-        int height = frame.height() + 1;
-        int width = frame.width() + 1;
-        Character[][] grid = new Character[height][width];
-        Arrays.stream(grid).forEach(line -> Arrays.fill(line, '.'));
-        for(Point point : points) {
-            grid[point.getY() - frame.top][point.getX() - frame.left] = '#';
+	private static void flowFromSpring(Water spring, Character[][] grid) {
+		Collection<Water> waters = flow(spring, grid);
+        while(!waters.isEmpty()){
+        	waters = waters.stream()
+    			.flatMap(water -> flow(water, grid).stream())
+    			.collect(toList());
         }
-        return grid;
-    }
-
-    private static char getValue(Point point, Character[][] grid) {
-    	if(point.x < 0 || point.x > grid[0].length) return ' ';
-        return grid[point.y][point.x];
-    }
-
-    private static void setValue(Point point, Character[][] grid, char value) {
-        grid[point.y][point.x] = value;
-    }
+	}
 
     private static Collection<Water> flow(Water water, Character[][] grid) {
     	Point downPoint = water.downPoint();
@@ -147,6 +121,26 @@ public class Day17 implements Day {
         return Collections.emptySet();
     }
 
+    private static Character[][] grid(Frame frame, Collection<Point> points) {
+        int height = frame.height() + 1;
+        int width = frame.width() + 1;
+        Character[][] grid = new Character[height][width];
+        Arrays.stream(grid).forEach(line -> Arrays.fill(line, '.'));
+        for(Point point : points) {
+            grid[point.getY() - frame.top][point.getX() - frame.left] = '#';
+        }
+        return grid;
+    }
+
+    private static char getValue(Point point, Character[][] grid) {
+    	if(point.x < 0 || point.x > grid[0].length) return ' ';
+        return grid[point.y][point.x];
+    }
+
+    private static void setValue(Point point, Character[][] grid, char value) {
+        grid[point.y][point.x] = value;
+    }
+    
     static class Water extends Point {
 
     	public static Water at(Point point) {
@@ -197,4 +191,13 @@ public class Day17 implements Day {
             return IntStream.rangeClosed(start.x, end.x).mapToObj(x -> Point.of(x, start.y)).collect(toList());
         }
     }
+    
+    /*
+    private static void printGrid(Character[][] grid) {
+        Arrays.stream(grid).forEach(line -> {
+            Arrays.stream(line).forEach(System.out::print);
+            System.out.println();
+        });
+    }
+     */
 }
