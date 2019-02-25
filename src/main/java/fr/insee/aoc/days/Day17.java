@@ -133,7 +133,7 @@ public class Day17 implements Day {
     }
 
     private static char getValue(Point point, Character[][] grid) {
-    	if(point.x < 0 || point.x > grid[0].length) return ' ';
+    	if(point.x < 0 || point.x >= grid[0].length) return ' ';
         return grid[point.y][point.x];
     }
 
