@@ -19,42 +19,44 @@ public class Day17 implements Day {
 
     @Override
     public String part1(String input, Object... params) {
-        List<Point> points = streamOfLines(input)
+        Character[][] grid = buildGridAndFlow(input);
+        long count = streamOfCells(grid).filter(c -> c == '|' || c == '~').count();
+        return String.valueOf(count);
+    }
+    
+    @Override
+    public String part2(String input, Object... params) {
+    	Character[][] grid = buildGridAndFlow(input);
+    	long count = streamOfCells(grid).filter(c -> c == '~').count();
+    	return String.valueOf(count);
+    }
+
+	private Character[][] buildGridAndFlow(String input) {
+		List<Point> points = streamOfLines(input)
             .map(Segment::fromLine)
             .flatMap(segment -> segment.points().stream())
             .collect(toList());
         Frame frame = Frame.enclosingWithBorder(points, 1);
         Character[][] grid = grid(frame, points);
-        Water spring = new Water(null, Point.of(500 - frame.left, 0));
+        Water spring = Water.at(Point.of(500 - frame.left, 0));
         Collection<Water> waters = flow(spring, grid);
-        setValue(spring.position, grid, '+');
-        for(int i = 0; i < 2_000; i ++){
-        	if(i >= 1_870) {
-        		printGrid(grid, 480, 500);
-        	}
+        setValue(spring, grid, '+');
+        for(int i = 0; i < 13_000; i ++){
         	Collection<Water> nextWaters = new HashSet<>();
         	waters.forEach(water -> nextWaters.addAll(flow(water, grid)));
         	waters = nextWaters;
         }
-        long count = streamOfCells(grid).filter(c -> c == '|' || c == '~').count();
-        return String.valueOf(count);
-    }
+		return grid;
+	}
 
+    /*
     private static void printGrid(Character[][] grid) {
         Arrays.stream(grid).forEach(line -> {
             Arrays.stream(line).forEach(System.out::print);
             System.out.println();
         });
     }
-    
-    private static void printGrid(Character[][] grid, int top, int bottom) {
-    	IntStream.range(0, grid.length)
-    		.filter(i -> i >= top && i <= bottom)
-    		.forEach(i -> {
-    			Arrays.stream(grid[i]).forEach(System.out::print);
-    			System.out.println();
-    		});
-    }
+    */
 
     private static Character[][] grid(Frame frame, Collection<Point> points) {
         int height = frame.height() + 1;
@@ -77,27 +79,28 @@ public class Day17 implements Day {
     }
 
     private static Collection<Water> flow(Water water, Character[][] grid) {
+    	Point downPoint = water.downPoint();
+    	if(getValue(downPoint, grid) == '|') return Collections.emptySet();
         if(water.canFlowDown(grid)) {
-        	Point downPoint = water.position.downPoint();
             setValue(downPoint, grid, '|');
-            if(downPoint.y < grid.length - 2) return Collections.singleton(new Water(water, downPoint));
+            if(downPoint.y < grid.length - 2) return Collections.singleton(Water.at(downPoint));
         }
         else {
             boolean canNotFlow = !water.canFlowLeft(grid) && !water.canFlowRight(grid);
             if(canNotFlow){
-                return canNotFlow(water, grid).map(Collections::singleton).orElse(Collections.emptySet());
+                return canNotFlow(water, grid);
             }
             else {
             	Set<Water> waters = new HashSet<>();
                 if(water.canFlowRight(grid)){
-                	Point rightPoint = water.position.rightPoint();
+                	Point rightPoint = water.rightPoint();
                     setValue(rightPoint, grid, '|');
-                    waters.add(new Water(water.source, rightPoint));
+                    waters.add(Water.at(rightPoint));
                 }
                 if(water.canFlowLeft(grid)) {
-                	Point leftPoint = water.position.leftPoint();
+                	Point leftPoint = water.leftPoint();
                     setValue(leftPoint, grid, '|');
-                    waters.add(new Water(water.source, leftPoint));
+                    waters.add(Water.at(leftPoint));
                 }
                 return waters;
             }
@@ -105,58 +108,64 @@ public class Day17 implements Day {
         return Collections.emptySet();
     }
 
-    private static Optional<Water> canNotFlow(Water water, Character[][] grid) {
+    private static Collection<Water> canNotFlow(Water water, Character[][] grid) {
         Point point = null;
 
-        point = water.position;
+        point = water;
         while (getValue(point, grid) == '|') {
             point = Point.of(point.x + 1, point.y);
         }
         boolean clayRight = getValue(point, grid) == '#';
 
-        point = water.position;
+        point = water;
         while (getValue(point, grid) == '|') {
             point = Point.of(point.x - 1, point.y);
         }
         boolean clayLeft = getValue(point, grid) == '#';
 
         if(clayRight && clayLeft) {
-            setValue(water.position, grid, '~');
-            point = Point.of(water.position.x + 1, water.position.y);
+        	Set<Water> waters = new HashSet<>();
+            setValue(water, grid, '~');
+            Point upPoint = water.upPoint();
+            if(getValue(upPoint, grid) == '|') waters.add(Water.at(upPoint));
+            point = Point.of(water.x + 1, water.y);
             while (getValue(point, grid) == '|') {
                 setValue(point, grid, '~');
+                upPoint = point.upPoint();
+				if(getValue(upPoint, grid) == '|') waters.add(Water.at(upPoint));
                 point = Point.of(point.x + 1, point.y);
             }
-            point = Point.of(water.position.x - 1, water.position.y);
+            point = Point.of(water.x - 1, water.y);
             while (getValue(point, grid) == '|') {
                 setValue(point, grid, '~');
+                upPoint = point.upPoint();
+                if(getValue(upPoint, grid) == '|') waters.add(Water.at(upPoint));
                 point = Point.of(point.x - 1, point.y);
             }
-            return Optional.of(water.source);
+            return waters;
         }
-        return Optional.empty();
+        return Collections.emptySet();
     }
 
-    static class Water {
+    static class Water extends Point {
 
-        Water source;
-        Point position;
-
-        Water(Water source, Point position) {
-            this.source = source;
-            this.position = position;
-        }
-        
-        boolean canFlowDown(Character[][] grid) {
-        	return getValue(position.downPoint(), grid) == '.';
+    	public static Water at(Point point) {
+    		Water water = new Water();
+    		water.x = point.x;
+    		water.y = point.y;
+    		return water;
+    	}
+    	
+		boolean canFlowDown(Character[][] grid) {
+        	return getValue(downPoint(), grid) == '.';
         }
         
         boolean canFlowLeft(Character[][] grid) {
-        	return getValue(position.leftPoint(), grid) == '.';
+        	return getValue(leftPoint(), grid) == '.';
         }
         
         boolean canFlowRight(Character[][] grid) {
-        	return getValue(position.rightPoint(), grid) == '.';
+        	return getValue(rightPoint(), grid) == '.';
         }
     }
 

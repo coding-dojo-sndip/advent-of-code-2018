@@ -9,7 +9,7 @@ public class Point implements Comparable<Point> {
 
 	private static final Comparator<Point> comparator = Comparator.comparingInt(Point::getX).thenComparingInt(Point::getY);
 	
-	private Point() {}
+	protected Point() {}
 	
 	public static Point of(int x, int y) {
 		Point point = new Point();
