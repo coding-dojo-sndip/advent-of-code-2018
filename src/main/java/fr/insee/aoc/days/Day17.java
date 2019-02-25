@@ -20,9 +20,9 @@ public class Day17 implements Day {
     @Override
     public String part1(String input, Object... params) {
         List<Point> points = streamOfLines(input)
-                .map(Segment::fromLine)
-                .flatMap(segment -> segment.points().stream())
-                .collect(toList());
+            .map(Segment::fromLine)
+            .flatMap(segment -> segment.points().stream())
+            .collect(toList());
         Frame frame = Frame.enclosingWithBorder(points, 1);
         Character[][] grid = grid(frame, points);
         Water spring = new Water(null, Point.of(500 - frame.left, 0));
@@ -52,6 +52,7 @@ public class Day17 implements Day {
     }
 
     private static char getValue(Point point, Character[][] grid) {
+    	if(point.x < 0 || point.x > grid[0].length) return ' ';
         return grid[point.y][point.x];
     }
 
@@ -60,30 +61,24 @@ public class Day17 implements Day {
     }
 
     private static void flow(Water water, Character[][] grid) {
-        // printGrid(grid);
-        // System.out.println(water.position);
-        Point downPoint = water.position.downPoint();
-        boolean canFlowDown = getValue(downPoint, grid) == '.';
-        if(canFlowDown) {
+        if(water.canFlowDown(grid)) {
+        	Point downPoint = water.position.downPoint();
             setValue(downPoint, grid, '|');
             if(downPoint.y < grid.length - 2) flow(new Water(water, downPoint), grid);
         }
         else {
-            Point leftPoint = water.position.leftPoint();
-            Point rightPoint = water.position.rightPoint();
-            boolean canFlowLeft = leftPoint.x >= 0 && getValue(leftPoint, grid) == '.';
-            boolean canFlowRight = rightPoint.x < grid[0].length && getValue(rightPoint, grid) == '.';
-            boolean canNotFlow = !canFlowLeft && !canFlowRight;
-
+            boolean canNotFlow = !water.canFlowLeft(grid) && !water.canFlowRight(grid);
             if(canNotFlow){
                 canNotFlow(water, grid);
             }
             else {
-                if(canFlowRight){
+                if(water.canFlowRight(grid)){
+                	Point rightPoint = water.position.rightPoint();
                     setValue(rightPoint, grid, '|');
                     flow(new Water(water.source, rightPoint), grid);
                 }
-                if(canFlowLeft) {
+                if(water.canFlowLeft(grid)) {
+                	Point leftPoint = water.position.leftPoint();
                     setValue(leftPoint, grid, '|');
                     flow(new Water(water.source, leftPoint), grid);
                 }
@@ -109,12 +104,12 @@ public class Day17 implements Day {
         if(clayRight && clayLeft) {
             setValue(water.position, grid, '~');
             point = Point.of(water.position.x + 1, water.position.y);
-            while (point.x < grid[0].length && getValue(point, grid) == '|') {
+            while (getValue(point, grid) == '|') {
                 setValue(point, grid, '~');
                 point = Point.of(point.x + 1, point.y);
             }
             point = Point.of(water.position.x - 1, water.position.y);
-            while (point.x >= 0 && getValue(point, grid) == '|') {
+            while (getValue(point, grid) == '|') {
                 setValue(point, grid, '~');
                 point = Point.of(point.x - 1, point.y);
             }
@@ -130,6 +125,18 @@ public class Day17 implements Day {
         Water(Water source, Point position) {
             this.source = source;
             this.position = position;
+        }
+        
+        boolean canFlowDown(Character[][] grid) {
+        	return getValue(position.downPoint(), grid) == '.';
+        }
+        
+        boolean canFlowLeft(Character[][] grid) {
+        	return getValue(position.leftPoint(), grid) == '.';
+        }
+        
+        boolean canFlowRight(Character[][] grid) {
+        	return getValue(position.rightPoint(), grid) == '.';
         }
     }
 
