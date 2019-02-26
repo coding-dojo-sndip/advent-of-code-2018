@@ -14,7 +14,7 @@ import static java.util.Collections.*;
 
 public class Day17 implements Day {
 
-    private static final Pattern pattern = Pattern.compile("(?:x=(\\d+), y=(\\d+)\\.\\.(\\d+))|(?:y=(\\d+), x=(\\d+)\\.\\.(\\d+))");
+    private static final Pattern pattern = Pattern.compile("[xy]=(\\d+), [xy]=(\\d+)\\.\\.(\\d+)");
 
     @Override
     public String part1(String input, Object... params) {
@@ -176,8 +176,8 @@ public class Day17 implements Day {
                     int x = readInt(1, matcher);
                     return new Segment(Point.of(x, readInt(2, matcher)), Point.of(x, readInt(3, matcher)));
                 }
-                int y = readInt(4, matcher);
-                return new Segment(Point.of(readInt(5, matcher), y), Point.of(readInt(6, matcher), y));
+                int y = readInt(1, matcher);
+                return new Segment(Point.of(readInt(2, matcher), y), Point.of(readInt(3, matcher), y));
             }
             return null;
         }
