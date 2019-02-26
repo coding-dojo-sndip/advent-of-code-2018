@@ -37,6 +37,20 @@ public class Days {
 		return Arrays.stream(array).flatMapToInt(Arrays::stream);
 	}
 	
+    public static <T> void printCells(T[][] array) {
+        Arrays.stream(array).forEach(line -> {
+            Arrays.stream(line).forEach(System.out::print);
+            System.out.println();
+        });
+    }
+    
+    public static void printCells(int[][] array) {
+    	 Arrays.stream(array).forEach(line -> {
+             Arrays.stream(line).forEach(System.out::print);
+             System.out.println();
+         });
+    }
+	
 	public static String readLine(String input) {
 		return streamOfLines(input).findFirst().orElse("");
 	}

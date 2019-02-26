@@ -8,10 +8,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 
-import static fr.insee.aoc.utils.Days.readInt;
-import static fr.insee.aoc.utils.Days.streamOfCells;
-import static fr.insee.aoc.utils.Days.streamOfLines;
-import static java.util.stream.Collectors.toList;
+import static fr.insee.aoc.utils.Days.*;
+import static java.util.stream.Collectors.*;
+import static java.util.Collections.*;
 
 public class Day17 implements Day {
 
@@ -53,83 +52,14 @@ public class Day17 implements Day {
 	}
 
     private static Collection<Water> flow(Water water, Character[][] grid) {
-    	Point downPoint = water.downPoint();
-    	if(getValue(downPoint, grid) == '|') return Collections.emptySet();
-        if(water.canFlowDown(grid)) {
-            setValue(downPoint, grid, '|');
-            if(downPoint.y < grid.length - 2) return Collections.singleton(Water.at(downPoint));
-        }
-        else {
-            boolean canNotFlow = !water.canFlowLeft(grid) && !water.canFlowRight(grid);
-            if(canNotFlow){
-                return canNotFlow(water, grid);
-            }
-            else {
-            	Set<Water> waters = new HashSet<>();
-                if(water.canFlowRight(grid)){
-                	Point rightPoint = water.rightPoint();
-                    setValue(rightPoint, grid, '|');
-                    waters.add(Water.at(rightPoint));
-                }
-                if(water.canFlowLeft(grid)) {
-                	Point leftPoint = water.leftPoint();
-                    setValue(leftPoint, grid, '|');
-                    waters.add(Water.at(leftPoint));
-                }
-                return waters;
-            }
-        }
-        return Collections.emptySet();
+    	if(water.shouldNotFlowAnymore(grid)) return emptySet();
+        if(water.canFlowDown(grid)) return singleton(water.flowDown(grid));
+        Collection<Water> sidewayWater = water.flowSideways(grid);
+        return sidewayWater.isEmpty() ? canNotFlowSideways(water, grid) : sidewayWater;
     }
 
-    private static Collection<Water> canNotFlow(Water water, Character[][] grid) {
-        Point point = null;
-
-        point = water;
-        while (getValue(point, grid) == '|') {
-            point = Point.of(point.x + 1, point.y);
-        }
-        boolean clayRight = getValue(point, grid) == '#';
-
-        point = water;
-        while (getValue(point, grid) == '|') {
-            point = Point.of(point.x - 1, point.y);
-        }
-        boolean clayLeft = getValue(point, grid) == '#';
-
-        if(clayRight && clayLeft) {
-        	Set<Water> waters = new HashSet<>();
-            setValue(water, grid, '~');
-            Point upPoint = water.upPoint();
-            if(getValue(upPoint, grid) == '|') waters.add(Water.at(upPoint));
-            point = Point.of(water.x + 1, water.y);
-            while (getValue(point, grid) == '|') {
-                setValue(point, grid, '~');
-                upPoint = point.upPoint();
-				if(getValue(upPoint, grid) == '|') waters.add(Water.at(upPoint));
-                point = Point.of(point.x + 1, point.y);
-            }
-            point = Point.of(water.x - 1, water.y);
-            while (getValue(point, grid) == '|') {
-                setValue(point, grid, '~');
-                upPoint = point.upPoint();
-                if(getValue(upPoint, grid) == '|') waters.add(Water.at(upPoint));
-                point = Point.of(point.x - 1, point.y);
-            }
-            return waters;
-        }
-        return Collections.emptySet();
-    }
-
-    private static Character[][] grid(Frame frame, Collection<Point> points) {
-        int height = frame.height() + 1;
-        int width = frame.width() + 1;
-        Character[][] grid = new Character[height][width];
-        Arrays.stream(grid).forEach(line -> Arrays.fill(line, '.'));
-        for(Point point : points) {
-            grid[point.getY() - frame.top][point.getX() - frame.left] = '#';
-        }
-        return grid;
+    private static Collection<Water> canNotFlowSideways(Water water, Character[][] grid) {
+        return water.stuckByClay(grid) ? water.flowOver(grid) : emptySet();
     }
 
     private static char getValue(Point point, Character[][] grid) {
@@ -141,26 +71,93 @@ public class Day17 implements Day {
         grid[point.y][point.x] = value;
     }
     
+    private static Character[][] grid(Frame frame, Collection<Point> points) {
+        int height = frame.height() + 1;
+        int width = frame.width() + 1;
+        Character[][] grid = new Character[height][width];
+        Arrays.stream(grid).forEach(line -> Arrays.fill(line, '.'));
+        for(Point point : points) {
+            grid[point.getY() - frame.top][point.getX() - frame.left] = '#';
+        }
+        return grid;
+    }
+    
     static class Water extends Point {
 
+    	private Point leftPoint, rightPoint, downPoint;
+    	
     	public static Water at(Point point) {
     		Water water = new Water();
     		water.x = point.x;
     		water.y = point.y;
+    		water.leftPoint = point.leftPoint();
+    		water.rightPoint = point.rightPoint();
+    		water.downPoint = point.downPoint();
     		return water;
     	}
     	
 		boolean canFlowDown(Character[][] grid) {
-        	return getValue(downPoint(), grid) == '.';
+        	return getValue(downPoint, grid) == '.';
         }
         
-        boolean canFlowLeft(Character[][] grid) {
-        	return getValue(leftPoint(), grid) == '.';
+		boolean shouldNotFlowAnymore(Character[][] grid) {
+			return getValue(downPoint, grid) == '|' || downPoint.y > grid.length - 2;
+		}
+		
+		boolean stuckByClay(Character[][] grid) {
+			return stuckByClayOnLeft(grid) && stuckByClayOnRight(grid);
+		}
+		
+        Water flowDown(Character[][] grid) {
+			setValue(downPoint, grid, '|');
+            return Water.at(downPoint);
         }
         
-        boolean canFlowRight(Character[][] grid) {
-        	return getValue(rightPoint(), grid) == '.';
+        Collection<Water> flowSideways(Character[][] grid) {
+        	Set<Water> waters = new HashSet<>();
+            if(getValue(rightPoint, grid) == '.'){
+                setValue(rightPoint, grid, '|');
+                waters.add(Water.at(rightPoint));
+            }
+            if(getValue(leftPoint, grid) == '.') {
+                setValue(leftPoint, grid, '|');
+                waters.add(Water.at(leftPoint));
+            }
+            return waters;
         }
+        
+        Collection<Water> flowOver(Character[][] grid) {
+        	Set<Water> waters = new HashSet<>();
+        	Point point = Water.at(this);
+            while (getValue(point, grid) == '|') {
+                setValue(point, grid, '~');
+				if(getValue(point.upPoint(), grid) == '|') waters.add(Water.at(point.upPoint()));
+                point = Point.of(point.x + 1, point.y);
+            }
+            point = Point.of(this.x - 1, this.y);
+            while (getValue(point, grid) == '|') {
+                setValue(point, grid, '~');
+                if(getValue(point.upPoint(), grid) == '|') waters.add(Water.at(point.upPoint()));
+                point = Point.of(point.x - 1, point.y);
+            }
+            return waters;
+        }
+        
+		private boolean stuckByClayOnRight(Character[][] grid) {
+			Point point = Water.at(this);
+	        while (getValue(point, grid) == '|') {
+	            point = Point.of(point.x + 1, point.y);
+	        }
+	       return getValue(point, grid) == '#';
+		}
+		
+		private boolean stuckByClayOnLeft(Character[][] grid) {
+			Point point = Water.at(this);
+			while (getValue(point, grid) == '|') {
+				point = Point.of(point.x - 1, point.y);
+			}
+			return getValue(point, grid) == '#';
+		}
     }
 
     static class Segment {
@@ -191,13 +188,4 @@ public class Day17 implements Day {
             return IntStream.rangeClosed(start.x, end.x).mapToObj(x -> Point.of(x, start.y)).collect(toList());
         }
     }
-    
-    /*
-    private static void printGrid(Character[][] grid) {
-        Arrays.stream(grid).forEach(line -> {
-            Arrays.stream(line).forEach(System.out::print);
-            System.out.println();
-        });
-    }
-     */
 }
