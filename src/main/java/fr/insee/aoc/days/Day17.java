@@ -55,7 +55,7 @@ public class Day17 implements Day {
     	if(water.shouldNotFlowAnymore(grid)) return emptySet();
         if(water.canFlowDown(grid)) return singleton(water.flowDown(grid));
         Collection<Water> sidewayWater = water.flowSideways(grid);
-        return sidewayWater.isEmpty() ? water.canNotFlowSideways(grid) : sidewayWater;
+        return sidewayWater.isEmpty() ? water.flowOver(grid) : sidewayWater;
     }
 
     private static char getValue(Point point, Character[][] grid) {
@@ -122,11 +122,11 @@ public class Day17 implements Day {
             return waters;
         }
         
-        Collection<Water> canNotFlowSideways(Character[][] grid) {
-            return stuckByClay(grid) ? flowOver(grid) : emptySet();
+        Collection<Water> flowOver(Character[][] grid) {
+            return stuckByClay(grid) ? restWaterAndFlowOver(grid) : emptySet();
         }
         
-        private Collection<Water> flowOver(Character[][] grid) {
+        private Collection<Water> restWaterAndFlowOver(Character[][] grid) {
         	Set<Water> waters = new HashSet<>();
         	Point point = Water.at(this);
             while (getValue(point, grid) == '|') {
