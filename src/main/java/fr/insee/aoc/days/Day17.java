@@ -38,24 +38,25 @@ public class Day17 implements Day {
         Frame frame = Frame.enclosingWithBorder(points, 1);
         Character[][] grid = grid(frame, points);
         Water spring = Water.at(Point.of(500 - frame.left, 0));
-        flowFromSpring(spring, grid);
+        flow(spring, grid);
 		return grid;
 	}
 
-	private static void flowFromSpring(Water spring, Character[][] grid) {
-		Collection<Water> waters = flow(spring, grid);
-        while(!waters.isEmpty()){
-        	waters = waters.stream()
-    			.flatMap(water -> flow(water, grid).stream())
-    			.collect(toList());
-        }
-	}
-
-    private static Collection<Water> flow(Water water, Character[][] grid) {
-    	if(water.shouldNotFlowAnymore(grid)) return emptySet();
-        if(water.canFlowDown(grid)) return singleton(water.flowDown(grid));
-        Collection<Water> sidewayWater = water.flowSideways(grid);
-        return sidewayWater.isEmpty() ? canNotFlowSideways(water, grid) : sidewayWater;
+    private static void flow(Water water, Character[][] grid) {
+    	if(water.shouldFlow(grid)) {
+    		if(water.canFlowDown(grid)) {
+    			flow(water.flowDown(grid), grid);
+    		}
+    		else {
+    			Collection<Water> sidewayWater = water.flowSideways(grid);
+    			if(sidewayWater.isEmpty()) {
+    				canNotFlowSideways(water, grid).forEach(w -> flow(w, grid));
+    			}
+    			else {
+    				sidewayWater.forEach(w -> flow(w, grid));
+    			}
+    		}
+    	}
     }
 
     private static Collection<Water> canNotFlowSideways(Water water, Character[][] grid) {
@@ -100,8 +101,8 @@ public class Day17 implements Day {
         	return getValue(downPoint, grid) == '.';
         }
         
-		boolean shouldNotFlowAnymore(Character[][] grid) {
-			return getValue(downPoint, grid) == '|' || downPoint.y > grid.length - 2;
+		boolean shouldFlow(Character[][] grid) {
+			return getValue(downPoint, grid) != '|' && downPoint.y <= grid.length - 2;
 		}
 		
 		boolean stuckByClay(Character[][] grid) {
