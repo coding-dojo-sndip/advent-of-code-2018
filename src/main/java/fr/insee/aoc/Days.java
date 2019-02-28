@@ -11,6 +11,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.EnumSet;
 import java.util.IntSummaryStatistics;
@@ -236,12 +237,12 @@ class Days {
 
 		@Override
 		public Function<List<T>, List<T>> finisher() {
-			return Function.identity();
+			return Collections::unmodifiableList;
 		}
 
 		@Override
 		public Set<Characteristics> characteristics() {
-			return EnumSet.of(Characteristics.CONCURRENT, Characteristics.IDENTITY_FINISH, Characteristics.UNORDERED);
+			return EnumSet.of(Characteristics.CONCURRENT, Characteristics.UNORDERED);
 		}
 		
 		private void accept(List<T> list, T t) {
