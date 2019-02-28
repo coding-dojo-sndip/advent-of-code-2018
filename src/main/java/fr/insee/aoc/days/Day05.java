@@ -14,16 +14,16 @@ public class Day05 implements Day {
 	}
 
 	private int reaction(String polymer) {
-		Deque<Character> res = new ArrayDeque<>();
+		Deque<Character> queue = new ArrayDeque<>();
 		for (int i = 0; i < polymer.length(); i++) {
 			char currentChar = polymer.charAt(i);
-			if(res.isEmpty() || !unitReact(currentChar, res.peek())) {
-				res.push(currentChar);
+			if(queue.isEmpty() || !unitReact(currentChar, queue.peek())) {
+				queue.push(currentChar);
 			} else {				
-				res.poll();
+				queue.poll();
 			}
 		}
-		return res.size();
+		return queue.size();
 	}
 
 	public boolean unitReact(char a, char b) {
