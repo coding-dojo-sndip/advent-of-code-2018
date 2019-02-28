@@ -1,9 +1,10 @@
 package fr.insee.aoc.days;
 
+import static fr.insee.aoc.utils.Days.readLine;
+
 import java.util.ArrayDeque;
 import java.util.Deque;
-
-import static fr.insee.aoc.utils.Days.*;
+import java.util.stream.IntStream;
 
 public class Day05 implements Day {
 
@@ -33,11 +34,11 @@ public class Day05 implements Day {
 	@Override
 	public String part2(String input, Object... params) {
 		String polymer = readLine(input);
-		int min = /*IntStream.rangeClosed('a', 'z')
-				.mapTo(c -> polymer.replaceAll(""+(char)c+"|"+(char)(c-32)+"", "")) //mapToObj
+		int min = IntStream.rangeClosed('a', 'z')
+				.mapToObj(c -> polymer.replaceAll(""+(char)c+"|"+(char)(c-32)+"", ""))
 				.mapToInt(p -> reaction(p))
-				.min(); // IntOptionnal
-		*/ 0;
+				.min()
+				.orElse(-1); // IntOptionnal
 		return String.valueOf(min);
 	}
 
