@@ -9,12 +9,12 @@ public class Day07Test {
 	
 	@Test
 	public void case1_0() {
-		Assert.assertEquals("17", day.part1("src/test/resources/07-0.txt"));
+		Assert.assertEquals("CABDFE", day.part1("src/test/resources/07-0.txt"));
 	}
 	
 	@Test
 	public void case2_0() {
-		Assert.assertEquals("16", day.part2("src/test/resources/07-0.txt", 2));
+		Assert.assertEquals("15", day.part2("src/test/resources/07-0.txt", 2, 0));
 	}
 	
 	@Test
@@ -26,7 +26,7 @@ public class Day07Test {
 	
 	@Test
 	public void part2() {
-		String answer = day.part2("src/main/resources/07.txt", 5);
+		String answer = day.part2("src/main/resources/07.txt", 5, 60);
 		System.out.println(String.format("%s.2: %s", day.getClass().getSimpleName(), answer));
 		Assert.assertEquals("", answer);
 	}
