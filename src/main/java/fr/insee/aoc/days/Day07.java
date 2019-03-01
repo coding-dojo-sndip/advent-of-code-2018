@@ -1,14 +1,17 @@
 package fr.insee.aoc.days;
 
+import static fr.insee.aoc.days.Day07.StepCollector.toSteps;
 import static fr.insee.aoc.utils.Days.readChar;
 import static fr.insee.aoc.utils.Days.streamOfLines;
-import static fr.insee.aoc.days.Day07.StepCollector.*;
 import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toCollection;
+import static java.util.stream.Collectors.toSet;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -19,6 +22,7 @@ import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collector;
+import java.util.stream.IntStream;
 
 public class Day07 implements Day {
 
@@ -40,17 +44,50 @@ public class Day07 implements Day {
 	public String part2(String input, Object... params) {
 		int numberOfWorkers = (int) params[0];
 		int amountOfTime = (int) params[1];
+		int elapsedTime = 0;
+		Set<Worker> workers = workers(numberOfWorkers);
 		Set<Step> remainingSteps = streamOfLines(input).collect(toSteps(amountOfTime));
-		
-		return null;
+		List<Character> completedSteps = new ArrayList<>(26);
+		while(!remainingSteps.isEmpty()) {
+			Set<Worker> busyWorkers = workers.stream().filter(Worker::isBusy).collect(toSet());
+			Set<Worker> availableWorkers = availableWorkers(workers);
+			Set<Step> runningSteps = busyWorkers.stream().map(worker -> worker.step).collect(toSet());
+			LinkedList<Step> availableSteps = availableSteps(completedSteps, remainingSteps, runningSteps);
+			for (Worker worker : availableWorkers) {
+				if(availableSteps.isEmpty()) break;
+				worker.startStep(availableSteps.poll());
+			}
+			for (Worker worker : workers) {
+				worker.work();
+				if(worker.hasCompletedHisStep()) {
+					remainingSteps.remove(worker.step);
+					completedSteps.add(worker.step.id);
+					worker.stopWorking();
+				}
+			}
+			elapsedTime ++;
+		}
+		return String.valueOf(elapsedTime);
 	}
 
 	private Step nextStep(List<Character> completedSteps, Set<Step> remainingSteps) {
 		return remainingSteps.stream()
-			.filter(step -> step.canBecompletedSteps(completedSteps))
+			.filter(step -> step.isAvailable(completedSteps))
 			.sorted()
 			.findFirst()
 			.orElse(null);
+	}
+	
+	private LinkedList<Step> availableSteps(List<Character> completedSteps, Set<Step> remainingSteps, Set<Step> runningSteps) {
+		return remainingSteps.stream()
+			.filter(step -> step.isAvailable(completedSteps))
+			.filter(step -> !runningSteps.contains(step))
+			.sorted()
+			.collect(toCollection(LinkedList::new));
+	}
+	
+	private Set<Worker> availableWorkers(Set<Worker> workers) {
+		return workers.stream().filter(Worker::isIdle).collect(toSet());
 	}
 	
 	static void readLine(Map<Character, Step> steps, String line, int amountOfTime) {
@@ -61,6 +98,40 @@ public class Day07 implements Day {
 			steps.computeIfAbsent(prerequisite, c -> Step.withId(c, amountOfTime));
 			Step step = steps.computeIfAbsent(id, c -> Step.withId(c, amountOfTime));
 			step.prerequisites.add(prerequisite);
+		}
+	}
+	
+	static Set<Worker> workers(int numberOfWorkers) {
+		return IntStream.range(0, numberOfWorkers).mapToObj(n -> new Worker()).collect(toSet());
+	}
+	
+	static class Worker {
+		Step step;
+		int timeSpent = 0;
+		
+		boolean isIdle() {
+			return step == null;
+		}
+		
+		boolean isBusy() {
+			return step != null;
+		}
+		
+		boolean hasCompletedHisStep() {
+			return step != null && timeSpent >= step.requiredTime;
+		}
+		
+		void startStep(Step step) {
+			this.step = step;
+			this.timeSpent = 0;
+		}
+		
+		void work() {
+			if(step != null) timeSpent ++;
+		}
+		
+		void stopWorking() {
+			step = null;
 		}
 	}
 	
@@ -87,7 +158,7 @@ public class Day07 implements Day {
 			return new Step(id, amountOfTime);
 		}
 		
-		boolean canBecompletedSteps(List<Character> completedSteps) {
+		boolean isAvailable(List<Character> completedSteps) {
 			return completedSteps.containsAll(prerequisites);
 		}
 		
