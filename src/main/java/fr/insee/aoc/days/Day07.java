@@ -49,9 +49,8 @@ public class Day07 implements Day {
 		Set<Step> remainingSteps = streamOfLines(input).collect(toSteps(amountOfTime));
 		List<Character> completedSteps = new ArrayList<>(26);
 		while(!remainingSteps.isEmpty()) {
-			Set<Worker> busyWorkers = workers.stream().filter(Worker::isBusy).collect(toSet());
 			Set<Worker> availableWorkers = availableWorkers(workers);
-			Set<Step> runningSteps = busyWorkers.stream().map(worker -> worker.step).collect(toSet());
+			Set<Step> runningSteps = runningSteps(workers);
 			LinkedList<Step> availableSteps = availableSteps(completedSteps, remainingSteps, runningSteps);
 			for (Worker worker : availableWorkers) {
 				if(availableSteps.isEmpty()) break;
@@ -72,10 +71,14 @@ public class Day07 implements Day {
 
 	private Step nextStep(List<Character> completedSteps, Set<Step> remainingSteps) {
 		return remainingSteps.stream()
-			.filter(step -> step.isAvailable(completedSteps))
-			.sorted()
-			.findFirst()
-			.orElse(null);
+				.filter(step -> step.isAvailable(completedSteps))
+				.sorted()
+				.findFirst()
+				.orElse(null);
+	}
+	
+	private Set<Step> runningSteps(Set<Worker> workers) {
+		return workers.stream().filter(Worker::isBusy).map(worker -> worker.step).collect(toSet());
 	}
 	
 	private LinkedList<Step> availableSteps(List<Character> completedSteps, Set<Step> remainingSteps, Set<Step> runningSteps) {
