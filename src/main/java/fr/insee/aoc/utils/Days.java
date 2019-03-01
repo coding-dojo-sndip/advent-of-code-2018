@@ -68,6 +68,10 @@ public class Days {
 	public static int readInt(int group, Matcher matcher) {
 		return Integer.parseInt(matcher.group(group));
 	}
+	
+	public static char readChar(int group, Matcher matcher) {
+		return readString(group, matcher).charAt(0);
+	}
 
 	public static String readString(int group, Matcher matcher) {
 		return matcher.group(group);
