@@ -76,7 +76,7 @@ Seconde   Ouvrier 1   Ouvrier 2   Terminé
 ```
 
 Chaque ligne représente une seconde écoulée.
-Pour chaque ouvrier on note sur quelle étape il travaille durant cette seconde (ou `.` s'il ne peut rien à faire).
+Pour chaque ouvrier on note sur quelle étape il travaille durant cette seconde (ou `.` s'il ne peut rien faire).
 La dernière colonne indique les étapes terminées.
 
 Notons que l'ordre des étapes n'est plus le même que dans la partie précédente puisque les étapes prennent désormais un certain temps à s'effectuer et que plusieurs ouvriers peuvent travailler sur plusieurs étapes en parallèle.
