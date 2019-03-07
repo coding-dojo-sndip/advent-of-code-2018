@@ -47,7 +47,7 @@ public class Frame {
 		return Math.abs(bottom - top);
 	}
 
-	boolean isOnTheEdge(Point point) {
+	public boolean isOnTheEdge(Point point) {
 		return point.getX() == left || point.getX() == right || point.getY() == top || point.getY() == bottom;
 	}
 
