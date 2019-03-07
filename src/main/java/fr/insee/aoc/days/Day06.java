@@ -44,6 +44,7 @@ public class Day06 implements Day {
 					Point pointClosest = listOfMin.get(0).getKey();
 					surfaces.computeIfPresent(pointClosest, (k, v) -> v+1);
 				} else if (frame.isOnTheEdge(point)) {
+					//  !!! A CORRIGER : ON A EU DE LA CHANCE !!!
 					surfaces.remove(point);
 				}
 			}
