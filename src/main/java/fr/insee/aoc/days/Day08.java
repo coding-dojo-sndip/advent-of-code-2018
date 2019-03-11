@@ -1,6 +1,6 @@
 package fr.insee.aoc.days;
 
-import static fr.insee.aoc.utils.Days.readLine;
+import static fr.insee.aoc.utils.Days.*;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -31,7 +31,7 @@ public class Day08 implements Day {
 		Deque<Node> uncompleteNodes = new ArrayDeque<>();
 		Node tree = readRoot(numbers);
 		uncompleteNodes.push(tree);
-		while(!uncompleteNodes.isEmpty()){
+		while(isNotEmpty(uncompleteNodes)){
 			readNode(index, uncompleteNodes, numbers);
 		}
 		return tree;
@@ -40,28 +40,28 @@ public class Day08 implements Day {
 	private static void readNode(AtomicInteger index, Deque<Node> uncompleteNodes, int[] numbers) {
 		int numberOfChildren = numbers[index.getAndIncrement()];
 		int numberOfMetadata = numbers[index.getAndIncrement()];
-		Node node = Node.with(numberOfChildren, numberOfMetadata);
+		Node node = Node.from(numberOfChildren, numberOfMetadata);
 		uncompleteNodes.push(node);
-		completeNode(node, index, uncompleteNodes, numbers);
+		fillNode(node, index, uncompleteNodes, numbers);
 	}
 
-	private static void completeNode(Node node, AtomicInteger index, Deque<Node> uncompleteNodes, int[] numbers) {
+	private static void fillNode(Node node, AtomicInteger index, Deque<Node> uncompleteNodes, int[] numbers) {
 		if(node.isComplete()) {
 			for(int i = 0; i < node.numberOfMetadata; i ++) {
 				node.metadata.add(numbers[index.getAndIncrement()]);
 			}
 			uncompleteNodes.pop();
-			if(!uncompleteNodes.isEmpty()) {
+			if(isNotEmpty(uncompleteNodes)) {
 				Node parent =  uncompleteNodes.peek();
 				parent.children.add(node);
-				completeNode(parent, index, uncompleteNodes, numbers);
+				fillNode(parent, index, uncompleteNodes, numbers);
 			}
 		}
 	}
 	
 	
 	private static Node readRoot(int[] numbers) {
-		return Node.with(numbers[0], numbers[1]);
+		return Node.from(numbers[0], numbers[1]);
 	}
 	
 	private static int[] readNumbers(String input) {
@@ -80,7 +80,7 @@ public class Day08 implements Day {
 			this.children = new ArrayList<>(numberOfChildren);
 		}
 		
-		public static Node with(int numberOfChildren, int numberOfMetadata) {
+		public static Node from(int numberOfChildren, int numberOfMetadata) {
 			return new Node(numberOfChildren, numberOfMetadata);
 		}
 		

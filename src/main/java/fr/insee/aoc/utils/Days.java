@@ -57,6 +57,10 @@ public class Days {
 		return streamOfInt(input).toArray();
 	}
 
+	public static <T> boolean isNotEmpty(Collection<T> collection) {
+		return collection != null && collection.size() > 0;
+	}
+	
 	public static <T> boolean in(T element, Collection<T> collection) {
 		return collection != null && collection.contains(element);
 	}
