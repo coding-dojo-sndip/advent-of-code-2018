@@ -29,7 +29,7 @@ public class Day06 implements Day {
 				List<Point> closestPoints = points.stream().collect(listOfMin(comparingInt(point -> point.manhattan(location))));
 				if(closestPoints.size() == 1) {
 					Point closestPoint = closestPoints.get(0);
-					if(frame.isOnTheEdge(closestPoint)) {
+					if(frame.isOnTheEdge(location)) {
 						counts.remove(closestPoint);
 					}
 					else {
