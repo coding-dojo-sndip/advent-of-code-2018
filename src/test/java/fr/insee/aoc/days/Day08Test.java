@@ -19,15 +19,15 @@ public class Day08Test {
 	
 	@Test
 	public void part1() {
-		String answer = day.part1("src/main/resources/08-rw.txt");
+		String answer = day.part1("src/main/resources/08.txt");
 		System.out.println(String.format("%s.1: %s", day.getClass().getSimpleName(), answer));
-		Assert.assertEquals("36627", answer);
+		Assert.assertEquals("", answer);
 	}
 	
 	@Test
 	public void part2() {
-		String answer = day.part2("src/main/resources/08-rw.txt");
+		String answer = day.part2("src/main/resources/08.txt");
 		System.out.println(String.format("%s.2: %s", day.getClass().getSimpleName(), answer));
-		Assert.assertEquals("16695", answer);
+		Assert.assertEquals("", answer);
 	}
 }
