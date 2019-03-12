@@ -7,7 +7,6 @@ import static java.util.stream.Collectors.*;
 import static java.util.function.Function.identity;
 
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -28,36 +27,31 @@ public class Day06 implements Day {
 	@Override
 	public String part1(String input, Object... params) {
 		Stream<String> coordsPoints = streamOfLines(input);
-		List<Point> points = coordsPoints.map(coord -> transformCoorsInPoint(coord)).collect(Collectors.toList());
+		List<Point> points = coordsPoints.map(coord -> lineToPoint(coord)).collect(Collectors.toList()); // Simplifier les deux lignes
 		Frame frame = smallestFrameContaining(points);
-		
-		Map<Point, Integer> surfaces =
-				points.stream().collect(Collectors.toMap(identity(), p -> 0));		
+		Map<Point, Integer> areas = points.stream().collect(Collectors.toMap(identity(), p -> 0));		
 		for(int i = frame.getLeft() ; i <= frame.getRight() ; i++) {
 			for(int j = frame.getTop() ; j <= frame.getBottom() ; j++) {
 				final Point point = Point.of(i, j);
-				Map<Point, Integer> mapPointDistance =
-						points.stream().collect(Collectors.toMap(identity(), p -> p.manhattan(point)));
-				List<Entry<Point, Integer>> listOfMin = 
-						mapPointDistance.entrySet().stream().collect(listOfMin(Comparator.comparingInt(e-> e.getValue())));
+				Map<Point, Integer> mapPointDistance = points.stream().collect(Collectors.toMap(identity(), p -> p.manhattan(point)));
+				List<Entry<Point, Integer>> listOfMin = mapPointDistance.entrySet().stream().collect(listOfMin(Comparator.comparingInt(e-> e.getValue())));
+				// Rassembler les deux lignes précédentes !
 				if(listOfMin.size() == 1 && !frame.isOnTheEdge(point)) {
 					Point pointClosest = listOfMin.get(0).getKey();
-					surfaces.computeIfPresent(pointClosest, (k, v) -> v+1);
+					areas.computeIfPresent(pointClosest, (k, v) -> v + 1);
 				} else if (frame.isOnTheEdge(point)) {
 					//  !!! A CORRIGER : ON A EU DE LA CHANCE !!!
-					surfaces.remove(point);
+					areas.remove(point);
 				}
 			}
 		}
-		
-		return String.valueOf(surfaces.entrySet().stream().mapToInt(e -> e.getValue()).max().orElse(-1));
+		int largestArea = areas.entrySet().stream().mapToInt(e -> e.getValue()).max().orElse(-1);
+		return String.valueOf(largestArea);
 	}
 	
-	private static Point transformCoorsInPoint(String coords) {
+	private static Point lineToPoint(String coords) {
 		Matcher matcher = pattern.matcher(coords);
 		matcher.matches();
 		return Point.of(Integer.parseInt(matcher.group(1)), Integer.parseInt(matcher.group(2)));
 	}
-
-
 }
