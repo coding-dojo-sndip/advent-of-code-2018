@@ -38,14 +38,12 @@ public class Day08 implements Day {
 	}
 
 	private static void readNode(AtomicInteger index, Deque<Node> incompleteNodes, int[] numbers) {
-		int numberOfChildren = numbers[index.getAndIncrement()];
-		int numberOfMetadata = numbers[index.getAndIncrement()];
-		Node node = Node.from(numberOfChildren, numberOfMetadata);
+		Node node = nextNode(index, numbers);
 		incompleteNodes.push(node);
-		fillNode(node, index, incompleteNodes, numbers);
+		tryToCompleteNode(node, index, incompleteNodes, numbers);
 	}
 
-	private static void fillNode(Node node, AtomicInteger index, Deque<Node> incompleteNodes, int[] numbers) {
+	private static void tryToCompleteNode(Node node, AtomicInteger index, Deque<Node> incompleteNodes, int[] numbers) {
 		if(node.isComplete()) {
 			for(int i = 0; i < node.numberOfMetadata; i ++) {
 				node.metadata.add(numbers[index.getAndIncrement()]);
@@ -54,11 +52,16 @@ public class Day08 implements Day {
 			if(isNotEmpty(incompleteNodes)) {
 				Node parent =  incompleteNodes.peek();
 				parent.children.add(node);
-				fillNode(parent, index, incompleteNodes, numbers);
+				tryToCompleteNode(parent, index, incompleteNodes, numbers);
 			}
 		}
 	}
 	
+	private static Node nextNode(AtomicInteger index, int[] numbers) {
+		int numberOfChildren = numbers[index.getAndIncrement()];
+		int numberOfMetadata = numbers[index.getAndIncrement()];
+		return Node.from(numberOfChildren, numberOfMetadata);
+	}
 	
 	private static Node readRoot(int[] numbers) {
 		return Node.from(numbers[0], numbers[1]);
