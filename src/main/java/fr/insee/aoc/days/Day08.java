@@ -28,33 +28,33 @@ public class Day08 implements Day {
 	private static Node readTree(String input) {
 		int[] numbers = readNumbers(input);
 		AtomicInteger index = new AtomicInteger(2);
-		Deque<Node> uncompleteNodes = new ArrayDeque<>();
+		Deque<Node> incompleteNodes = new ArrayDeque<>();
 		Node tree = readRoot(numbers);
-		uncompleteNodes.push(tree);
-		while(isNotEmpty(uncompleteNodes)){
-			readNode(index, uncompleteNodes, numbers);
+		incompleteNodes.push(tree);
+		while(isNotEmpty(incompleteNodes)){
+			readNode(index, incompleteNodes, numbers);
 		}
 		return tree;
 	}
 
-	private static void readNode(AtomicInteger index, Deque<Node> uncompleteNodes, int[] numbers) {
+	private static void readNode(AtomicInteger index, Deque<Node> incompleteNodes, int[] numbers) {
 		int numberOfChildren = numbers[index.getAndIncrement()];
 		int numberOfMetadata = numbers[index.getAndIncrement()];
 		Node node = Node.from(numberOfChildren, numberOfMetadata);
-		uncompleteNodes.push(node);
-		fillNode(node, index, uncompleteNodes, numbers);
+		incompleteNodes.push(node);
+		fillNode(node, index, incompleteNodes, numbers);
 	}
 
-	private static void fillNode(Node node, AtomicInteger index, Deque<Node> uncompleteNodes, int[] numbers) {
+	private static void fillNode(Node node, AtomicInteger index, Deque<Node> incompleteNodes, int[] numbers) {
 		if(node.isComplete()) {
 			for(int i = 0; i < node.numberOfMetadata; i ++) {
 				node.metadata.add(numbers[index.getAndIncrement()]);
 			}
-			uncompleteNodes.pop();
-			if(isNotEmpty(uncompleteNodes)) {
-				Node parent =  uncompleteNodes.peek();
+			incompleteNodes.pop();
+			if(isNotEmpty(incompleteNodes)) {
+				Node parent =  incompleteNodes.peek();
 				parent.children.add(node);
-				fillNode(parent, index, uncompleteNodes, numbers);
+				fillNode(parent, index, incompleteNodes, numbers);
 			}
 		}
 	}
@@ -73,14 +73,14 @@ public class Day08 implements Day {
 		List<Integer> metadata;
 		List<Node> children;
 
-		public Node(int numberOfChildren, int numberOfMetadata) {
+		Node(int numberOfChildren, int numberOfMetadata) {
 			this.numberOfChildren = numberOfChildren;
 			this.numberOfMetadata = numberOfMetadata;
 			this.metadata = new ArrayList<>(numberOfMetadata);
 			this.children = new ArrayList<>(numberOfChildren);
 		}
 		
-		public static Node from(int numberOfChildren, int numberOfMetadata) {
+		static Node from(int numberOfChildren, int numberOfMetadata) {
 			return new Node(numberOfChildren, numberOfMetadata);
 		}
 		
