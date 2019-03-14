@@ -1,53 +1,63 @@
 package fr.insee.aoc.days;
 
-import static fr.insee.aoc.utils.Frame.*;
-import static fr.insee.aoc.utils.Days.*;
-import static java.util.Comparator.*;
-import static java.util.stream.Collectors.*;
+import static fr.insee.aoc.utils.Collectors.listOfMin;
+import static fr.insee.aoc.utils.Days.streamOfLines;
+import static fr.insee.aoc.utils.Frame.smallestFrameContaining;
 import static java.util.function.Function.identity;
 
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import fr.insee.aoc.utils.Frame;
 import fr.insee.aoc.utils.Point;
 
-import static fr.insee.aoc.utils.Collectors.*;
-
 public class Day06 implements Day {
-	
+
 	private static Pattern pattern = Pattern.compile("(\\d+), (\\d+)");
-	
+
 	@Override
 	public String part1(String input, Object... params) {
-		Stream<String> coordsPoints = streamOfLines(input);
-		List<Point> points = coordsPoints.map(coord -> lineToPoint(coord)).collect(Collectors.toList()); // Simplifier les deux lignes
+		List<Point> points = streamOfLines(input).map(Day06::lineToPoint).collect(Collectors.toList());
 		Frame frame = smallestFrameContaining(points);
-		Map<Point, Integer> areas = points.stream().collect(Collectors.toMap(identity(), p -> 0));		
-		for(int i = frame.getLeft() ; i <= frame.getRight() ; i++) {
-			for(int j = frame.getTop() ; j <= frame.getBottom() ; j++) {
+		Map<Point, Integer> areas = points.stream().collect(Collectors.toMap(identity(), p -> 0));
+		for (int i = frame.getLeft(); i <= frame.getRight(); i++) {
+			for (int j = frame.getTop(); j <= frame.getBottom(); j++) {
 				final Point point = Point.of(i, j);
-				Map<Point, Integer> mapPointDistance = points.stream().collect(Collectors.toMap(identity(), p -> p.manhattan(point)));
-				List<Entry<Point, Integer>> listOfMin = mapPointDistance.entrySet().stream().collect(listOfMin(Comparator.comparingInt(e-> e.getValue())));
-				// Rassembler les deux lignes précédentes !
-				if(listOfMin.size() == 1 && !frame.isOnTheEdge(point)) {
-					Point pointClosest = listOfMin.get(0).getKey();
+				List<Point> listOfMin = points.stream()
+						.collect(listOfMin(Comparator.<Point>comparingInt(p -> p.manhattan(point))));
+				if (listOfMin.size() == 1) {
+					Point pointClosest = listOfMin.get(0);
+					if (frame.isOnTheEdge(point)) {
+						areas.remove(pointClosest);
+					}
 					areas.computeIfPresent(pointClosest, (k, v) -> v + 1);
-				} else if (frame.isOnTheEdge(point)) {
-					//  !!! A CORRIGER : ON A EU DE LA CHANCE !!!
-					areas.remove(point);
 				}
 			}
 		}
 		int largestArea = areas.entrySet().stream().mapToInt(e -> e.getValue()).max().orElse(-1);
 		return String.valueOf(largestArea);
 	}
+
+	@Override
+	public String part2(String input, Object... params) {
+		int seuil = (int) params[0];
+		int total = 0;
+		List<Point> points = streamOfLines(input).map(Day06::lineToPoint).collect(Collectors.toList());
+		Frame frame = smallestFrameContaining(points);
+		for (int i = frame.getLeft(); i <= frame.getRight(); i++) {
+			for (int j = frame.getTop(); j <= frame.getBottom(); j++) {
+				final Point point = Point.of(i, j);
+				int distanceTotale = points.stream().mapToInt(p -> p.manhattan(point)).sum();
+				if (distanceTotale < seuil) total++;
+			}
+		}
+		return String.valueOf(total);
+	}
+
 	
 	private static Point lineToPoint(String coords) {
 		Matcher matcher = pattern.matcher(coords);

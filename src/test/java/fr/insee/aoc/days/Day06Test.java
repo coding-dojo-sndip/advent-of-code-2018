@@ -21,13 +21,13 @@ public class Day06Test {
 	public void part1() {
 		String answer = day.part1("src/main/resources/06.txt");
 		System.out.println(String.format("%s.1: %s", day.getClass().getSimpleName(), answer));
-		Assert.assertEquals("", answer);
+		Assert.assertEquals("3290", answer);
 	}
 	
 	@Test
 	public void part2() {
 		String answer = day.part2("src/main/resources/06.txt", 10_000);
 		System.out.println(String.format("%s.2: %s", day.getClass().getSimpleName(), answer));
-		Assert.assertEquals("", answer);
+		Assert.assertEquals("45602", answer);
 	}
 }
