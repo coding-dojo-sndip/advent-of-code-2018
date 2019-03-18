@@ -4,13 +4,13 @@ import static fr.insee.aoc.utils.Collectors.listOfMin;
 import static fr.insee.aoc.utils.Days.streamOfLines;
 import static fr.insee.aoc.utils.Frame.smallestFrameContaining;
 import static java.util.function.Function.identity;
+import static java.util.stream.Collectors.*;
 
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import fr.insee.aoc.utils.Frame;
 import fr.insee.aoc.utils.Point;
@@ -21,9 +21,9 @@ public class Day06 implements Day {
 
 	@Override
 	public String part1(String input, Object... params) {
-		List<Point> points = streamOfLines(input).map(Day06::lineToPoint).collect(Collectors.toList());
+		List<Point> points = streamOfLines(input).map(Day06::lineToPoint).collect(toList());
 		Frame frame = smallestFrameContaining(points);
-		Map<Point, Integer> areas = points.stream().collect(Collectors.toMap(identity(), p -> 0));
+		Map<Point, Integer> areas = points.stream().collect(toMap(identity(), p -> 0));
 		for (int i = frame.getLeft(); i <= frame.getRight(); i++) {
 			for (int j = frame.getTop(); j <= frame.getBottom(); j++) {
 				final Point point = Point.of(i, j);
@@ -46,7 +46,7 @@ public class Day06 implements Day {
 	public String part2(String input, Object... params) {
 		int seuil = (int) params[0];
 		int total = 0;
-		List<Point> points = streamOfLines(input).map(Day06::lineToPoint).collect(Collectors.toList());
+		List<Point> points = streamOfLines(input).map(Day06::lineToPoint).collect(toList());
 		Frame frame = smallestFrameContaining(points);
 		for (int i = frame.getLeft(); i <= frame.getRight(); i++) {
 			for (int j = frame.getTop(); j <= frame.getBottom(); j++) {
