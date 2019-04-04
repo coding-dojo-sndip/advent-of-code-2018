@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 public class Day07 implements Day {
@@ -14,7 +15,7 @@ public class Day07 implements Day {
 	public String part1(String input, Object... params) {
 		Map<Character, Step> steps = new HashMap<>(26);
 
-		return "";
+		return "-1";
 	}
 
 	static class Step implements Comparable<Step> {
@@ -28,6 +29,16 @@ public class Day07 implements Day {
 		@Override
 		public int compareTo(Step other) {
 			return this.id - other.id;
+		}
+
+		@Override
+		public boolean equals(Object object) {
+			if(object == null) return false;
+			if(object instanceof Step) {
+				Step other = (Step) object;
+				return Objects.equals(this.id, other.id);
+			}
+			return false;
 		}
 	}
 
