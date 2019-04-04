@@ -21,8 +21,8 @@ public class Day07 implements Day {
 		char id;
 		List<Character> prerequisites = new ArrayList<>(26);
 
-		boolean ready(List<Character> etapesTerminees) {
-			return etapesTerminees.containsAll(prerequisites);
+		boolean ready(List<Character> stepsDone) {
+			return stepsDone.containsAll(prerequisites);
 		}
 
 		@Override
