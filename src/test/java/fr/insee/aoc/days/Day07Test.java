@@ -28,6 +28,6 @@ public class Day07Test {
 	public void part2() {
 		String answer = day.part2("src/main/resources/07.txt", 5, 60);
 		System.out.println(String.format("%s.2: %s", day.getClass().getSimpleName(), answer));
-		Assert.assertEquals("", answer);
+		Assert.assertEquals("864", answer);
 	}
 }
