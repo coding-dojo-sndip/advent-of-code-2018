@@ -32,29 +32,20 @@ public class Day08 implements Day {
 		Node tree = readRoot(numbers);
 		incompleteNodes.push(tree);
 		while(isNotEmpty(incompleteNodes)){
-			readNode(index, incompleteNodes, numbers);
+			Node node = incompleteNodes.peek();
+			if(node.isComplete()) {
+				for(int i = 0; i < node.numberOfMetadata; i ++) {
+					node.metadata.add(numbers[index.getAndIncrement()]);
+				}
+				incompleteNodes.pop();
+			}
+			else {
+				Node child = nextNode(index, numbers);
+				node.children.add(child);
+				incompleteNodes.push(child);
+			}
 		}
 		return tree;
-	}
-
-	private static void readNode(AtomicInteger index, Deque<Node> incompleteNodes, int[] numbers) {
-		Node node = nextNode(index, numbers);
-		incompleteNodes.push(node);
-		tryToCompleteNode(node, index, incompleteNodes, numbers);
-	}
-
-	private static void tryToCompleteNode(Node node, AtomicInteger index, Deque<Node> incompleteNodes, int[] numbers) {
-		if(node.isComplete()) {
-			for(int i = 0; i < node.numberOfMetadata; i ++) {
-				node.metadata.add(numbers[index.getAndIncrement()]);
-			}
-			incompleteNodes.pop();
-			if(isNotEmpty(incompleteNodes)) {
-				Node parent =  incompleteNodes.peek();
-				parent.children.add(node);
-				tryToCompleteNode(parent, index, incompleteNodes, numbers);
-			}
-		}
 	}
 	
 	private static Node nextNode(AtomicInteger index, int[] numbers) {
