@@ -37,23 +37,17 @@ public class Day09Test {
 		Assert.assertEquals("37305", day.part1("", 30, 5807));
 	}
 	
-	
-	@Test
-	public void case2_0() {
-		Assert.assertEquals("66", day.part2(""));
-	}
-	
 	@Test
 	public void part1() {
 		String answer = day.part1("src/main/resources/09.txt", 410, 72059);
 		System.out.println(String.format("%s.1: %s", day.getClass().getSimpleName(), answer));
-		Assert.assertEquals("?????", answer);
+		Assert.assertEquals("429287", answer);
 	}
 	
 	@Test
 	public void part2() {
-		String answer = day.part1("src/main/resources/09.txt", 410, 72059 * 100);
+		String answer = day.part2("src/main/resources/09.txt", 410, 72059);
 		System.out.println(String.format("%s.2: %s", day.getClass().getSimpleName(), answer));
-		Assert.assertEquals("?????", answer);
+		Assert.assertEquals("3624387659", answer);
 	}
 }
