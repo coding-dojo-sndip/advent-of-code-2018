@@ -26,7 +26,7 @@ public class Day09 implements Day {
 
 	private long maxScore(int numberOfPlayers, int marbleMaxValue) {
 		Map<Integer, Long> scores = IntStream
-			.rangeClosed(1, numberOfPlayers)
+			.range(0, numberOfPlayers)
 			.boxed()
 			.collect(toMap(identity(), t -> 0L));
 
