@@ -7,7 +7,7 @@ Le jeu favori des elfes est un jeu de bille.
 Ils y jouent en plaçant chacun à leur tour une bille sur un cercle dans un ordre bien particulier.
 Les billes sont numérotées de `1` en `1` en partant de `0`.
 
-D’abord la bille numérotée `0` est placée sur le cercle : elle est à la fois sa propre bille précédente te sa propre bille suivante.
+D’abord la bille numérotée `0` est placée sur le cercle : elle est à la fois sa propre bille précédente sa propre bille suivante.
 Cette bille est désignée comme étant la bille courante.
 
 Ensuite, chaque elfe joue à son tour en plaçant la bille restante portant le plus petit numéro sur le cercle.
@@ -21,7 +21,7 @@ De plus, la bille située `7` billes plus loin dans le sens anti-horaire est ret
 La bille située immédiatement après la bille retirée dans le sens horaire devient la bille courante.
 
 Par exemple, à 9 joueurs, avec 26 billes.
-Après avoir placer la bille de valeur `0` au milieu, chaque joueur (marqué entre crochets) joue à son tour.
+Après avoir placé la bille de valeur `0` au milieu, chaque joueur (marqué entre crochets) joue à son tour.
 La bille courante est marquée entre parenthèses :
 
 ```
