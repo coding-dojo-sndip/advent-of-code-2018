@@ -3,8 +3,10 @@ package fr.insee.aoc.utils;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.IntSummaryStatistics;
+import java.util.stream.Collectors;
 
 public class Frame {
 
@@ -29,7 +31,7 @@ public class Frame {
 		return frameOf(top, bottom, left, right);
 	}
 
-	public static Frame smallestFrameContaining(Collection<Point> points) {
+	public static Frame smallestFrameContaining(Collection<? extends Point> points) {
 		IntSummaryStatistics statX = points.stream().mapToInt(Point::getX).summaryStatistics();
 		int left = statX.getMin();
 		int right = statX.getMax();
