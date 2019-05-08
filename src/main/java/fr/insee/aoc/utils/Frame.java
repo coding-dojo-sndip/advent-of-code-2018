@@ -29,7 +29,7 @@ public class Frame {
 		return frameOf(top, bottom, left, right);
 	}
 
-	public static Frame smallestFrameContaining(Collection<Point> points) {
+	public static Frame smallestFrameContaining(Collection<? extends Point> points) {
 		IntSummaryStatistics statX = points.stream().mapToInt(Point::getX).summaryStatistics();
 		int left = statX.getMin();
 		int right = statX.getMax();

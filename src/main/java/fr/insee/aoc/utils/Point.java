@@ -5,12 +5,13 @@ import java.util.Objects;
 
 public class Point implements Comparable<Point> {
 
-	private int x, y;
+	protected int x, y;
 
-	private static final Comparator<Point> comparator = Comparator.comparingInt(Point::getY)
-			.thenComparingInt(Point::getX);
+	private static final Comparator<Point> comparator = Comparator.comparingInt(Point::getY).thenComparingInt(Point::getX);
 
-	private Point(int x, int y) {
+	protected Point() {}
+
+	protected Point(int x, int y) {
 		this.x = x;
 		this.y = y;
 	}
