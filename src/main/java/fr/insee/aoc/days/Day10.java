@@ -14,8 +14,9 @@ public class Day10 implements Day {
 
 	@Override
 	public String part1(String input, Object... params) {
+		int letterHeight = (int) params[0];
         Collection<MovingPoint> points = points(input);
-        while (!MovingPoint.areAligned(points)) {
+        while (!MovingPoint.areAligned(points, letterHeight)) {
             points.forEach(MovingPoint::move);
         }
         return readMessage(points);
@@ -23,9 +24,10 @@ public class Day10 implements Day {
 	
 	@Override
 	public String part2(String input, Object... params) {
+		int letterHeight = (int) params[0];
 		Collection<MovingPoint> points = points(input);
 		int elapsed = 0;
-		while (!MovingPoint.areAligned(points)) {
+		while (!MovingPoint.areAligned(points, letterHeight)) {
 			elapsed ++;
 			points.forEach(MovingPoint::move);
 		}
@@ -75,22 +77,9 @@ public class Day10 implements Day {
             return point;
         }
 
-        private static boolean areAligned(Collection<MovingPoint> points) {
-            return points.stream()
-        		.collect(groupingBy(Point::getX, toSet()))
-                .values()
-                .stream()
-                .anyMatch(MovingPoint::areConnected);
-        }
-
-        private static boolean areConnected(Collection<MovingPoint> verticallyAlignedPoints) {
-            if(verticallyAlignedPoints.size() < 8) return false;
-            IntSummaryStatistics statistics = verticallyAlignedPoints.stream()
-                .mapToInt(Point::getY)
-                .summaryStatistics();
-            int min = statistics.getMin();
-            int max = statistics.getMax();
-            return (max - min) == verticallyAlignedPoints.size() - 1;
+        private static boolean areAligned(Collection<MovingPoint> points, int letterHeight) {
+        	Frame frame = Frame.smallestFrameContaining(points);
+            return frame.height() <= letterHeight;
         }
 
         void move() {

@@ -16,19 +16,19 @@ public class Day10Test {
 
 	@Test
 	public void case1_0() {
-		Assert.assertEquals(textFromFile("src/test/resources/10-0-s.txt"), day.part1("src/test/resources/10-0.txt"));
+		Assert.assertEquals(textFromFile("src/test/resources/10-0-s.txt"), day.part1("src/test/resources/10-0.txt", 8));
 	}
 	
 	@Test
 	public void part1() {
-		String answer = day.part1("src/main/resources/10.txt");
+		String answer = day.part1("src/main/resources/10.txt", 10);
 		System.out.println(String.format("%s.1:%n%s", day.getClass().getSimpleName(), answer));
 		Assert.assertEquals(textFromFile("src/main/resources/10-s.txt"), answer);
 	}
 
 	@Test
 	public void part2() {
-		String answer = day.part2("src/main/resources/10.txt");
+		String answer = day.part2("src/main/resources/10.txt", 10);
 		System.out.println(String.format("%s.2: %s", day.getClass().getSimpleName(), answer));
 		Assert.assertEquals("10476", answer);
 	}
