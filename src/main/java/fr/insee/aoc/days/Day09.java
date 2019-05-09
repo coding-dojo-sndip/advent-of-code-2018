@@ -1,13 +1,10 @@
 package fr.insee.aoc.days;
 
-import static java.util.stream.Collectors.toMap;
-
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
-import static java.util.function.Function.*;
-import java.util.stream.IntStream;
 
 public class Day09 implements Day {
 
@@ -25,10 +22,7 @@ public class Day09 implements Day {
 	}
 
 	private long maxScore(int numberOfPlayers, int marbleMaxValue) {
-		Map<Integer, Long> scores = IntStream
-			.rangeClosed(1, numberOfPlayers)
-			.boxed()
-			.collect(toMap(identity(), t -> 0L));
+		Map<Integer, Long> scores = new HashMap<>(numberOfPlayers);
 
 		List<Integer> marbles = new LinkedList<>();
 		ListIterator<Integer> iterator = marbles.listIterator();
@@ -38,7 +32,7 @@ public class Day09 implements Day {
 
 		for (int marble = 1; marble <= marbleMaxValue; marble++) {
 			currentPlayer = (currentPlayer + 1) % numberOfPlayers;
-
+			if(marble % 100_000 == 0) System.out.println(marble * 100 / marbleMaxValue + " %");
 			if (marble % 23 != 0) {
 				iterator = moveNext(marbles, iterator);
 				iterator.add(marble);
@@ -48,7 +42,7 @@ public class Day09 implements Day {
 				}
 				iterator.next();
 				int points = iterator.previous() + marble;
-				scores.computeIfPresent(currentPlayer, (player, score) -> score + points);
+				scores.compute(currentPlayer, (player, score) -> score == null ? points : score + points);
 				iterator.remove();
 				moveNext(marbles, iterator);
 			}
