@@ -32,7 +32,6 @@ public class Day09 implements Day {
 
 		for (int marble = 1; marble <= marbleMaxValue; marble++) {
 			currentPlayer = (currentPlayer + 1) % numberOfPlayers;
-			if(marble % 100_000 == 0) System.out.println(marble * 100 / marbleMaxValue + " %");
 			if (marble % 23 != 0) {
 				iterator = moveNext(marbles, iterator);
 				iterator.add(marble);
