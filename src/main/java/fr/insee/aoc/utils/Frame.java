@@ -39,11 +39,11 @@ public class Frame {
 		return frameOf(top, bottom, left, right);
 	}
 
-	int width() {
+	public int width() {
 		return Math.abs(right - left);
 	}
 
-	int height() {
+	public int height() {
 		return Math.abs(bottom - top);
 	}
 
