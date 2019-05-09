@@ -18,30 +18,38 @@ public class Day10 implements Day {
         while (!MovingPoint.areAligned(points)) {
             points.forEach(MovingPoint::move);
         }
-        String message = readMessage(points);
-        System.out.println(message);
-        return message;
+        return readMessage(points);
+	}
+	
+	@Override
+	public String part2(String input, Object... params) {
+		Collection<MovingPoint> points = points(input);
+		int elapsed = 0;
+		while (!MovingPoint.areAligned(points)) {
+			elapsed ++;
+			points.forEach(MovingPoint::move);
+		}
+		return String.valueOf(elapsed);
 	}
 
     private static String readMessage(Collection<MovingPoint> points) {
 	    StringBuilder builder = new StringBuilder();
-        Collection<Point> positions = points.stream()
-            .map(p -> Point.of(p.getX(), p.getY()))
-            .collect(toList());
+        Set<Point> positions = positions(points);
         Frame frame = Frame.smallestFrameContaining(positions);
         for (int y = frame.getTop(); y <= frame.getBottom(); y ++) {
             for (int x = frame.getLeft(); x <= frame.getRight(); x ++) {
-                if(positions.contains(Point.of(x, y))) {
-                    builder.append('#');
-                }
-                else {
-                    builder.append(' ');
-                }
+            	builder.append(positions.contains(Point.of(x, y)) ? '#' : ' ');
             }
             builder.append(String.format("%n"));
         }
         return builder.toString();
     }
+
+	private static Set<Point> positions(Collection<MovingPoint> points) {
+		return points.stream()
+            .map(p -> Point.of(p.getX(), p.getY()))
+            .collect(toSet());
+	}
 
 	private static Collection<MovingPoint> points(String input) {
 	    return streamOfLines(input).map(MovingPoint::fromLine).collect(toList());
@@ -68,22 +76,22 @@ public class Day10 implements Day {
         }
 
         private static boolean areAligned(Collection<MovingPoint> points) {
-            return points.stream()
-                .collect(groupingBy(Point::getX))
+        	Map<Integer, Set<MovingPoint>> collect = points.stream().collect(groupingBy(Point::getX, toSet()));
+            return collect
                 .values()
                 .stream()
                 .filter(MovingPoint::areConnected)
-                .count() >= 3;
+                .count() >= 1;
         }
 
         private static boolean areConnected(Collection<MovingPoint> verticallyAlignedPoints) {
-            if(verticallyAlignedPoints.size() != 8) return false;
+            if(verticallyAlignedPoints.size() < 8) return false;
             IntSummaryStatistics statistics = verticallyAlignedPoints.stream()
                 .mapToInt(Point::getY)
                 .summaryStatistics();
             int min = statistics.getMin();
             int max = statistics.getMax();
-            return (max - min) == 7;
+            return (max - min) == verticallyAlignedPoints.size() - 1;
         }
 
         void move() {
