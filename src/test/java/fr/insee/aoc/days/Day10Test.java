@@ -30,6 +30,6 @@ public class Day10Test {
 	public void part2() {
 		String answer = day.part2("src/main/resources/10.txt");
 		System.out.println(String.format("%s.2: %s", day.getClass().getSimpleName(), answer));
-		Assert.assertEquals("-1", answer);
+		Assert.assertEquals("10476", answer);
 	}
 }

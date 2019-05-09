@@ -76,12 +76,11 @@ public class Day10 implements Day {
         }
 
         private static boolean areAligned(Collection<MovingPoint> points) {
-        	Map<Integer, Set<MovingPoint>> collect = points.stream().collect(groupingBy(Point::getX, toSet()));
-            return collect
+            return points.stream()
+        		.collect(groupingBy(Point::getX, toSet()))
                 .values()
                 .stream()
-                .filter(MovingPoint::areConnected)
-                .count() >= 1;
+                .anyMatch(MovingPoint::areConnected);
         }
 
         private static boolean areConnected(Collection<MovingPoint> verticallyAlignedPoints) {
