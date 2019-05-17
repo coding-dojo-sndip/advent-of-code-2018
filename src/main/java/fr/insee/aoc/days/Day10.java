@@ -27,6 +27,17 @@ public class Day10 implements Day {
 		}
 		return readMessage(points);
 	}
+	
+	@Override
+	public String part2(String input, Object... params) {
+		List<MobilePoint> points = streamOfLines(input).map(MobilePoint::new).collect(toList());
+		int n = 0;
+		while (!areAligned(points)) {
+			n ++;
+			points.forEach(MobilePoint::move);
+		}
+		return String.valueOf(n);
+	}
 
 	private boolean areAligned(List<MobilePoint> points) {
 		return points
