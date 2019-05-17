@@ -1,12 +1,16 @@
 package fr.insee.aoc.days;
 
-import static java.util.stream.Collectors.*;
-import static fr.insee.aoc.utils.Days.*;
-import static fr.insee.aoc.utils.Frame.*;
+import static fr.insee.aoc.utils.Days.readInt;
+import static fr.insee.aoc.utils.Days.streamOfLines;
+import static fr.insee.aoc.utils.Frame.smallestFrameContaining;
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
 
 import java.util.Collection;
 import java.util.IntSummaryStatistics;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -18,31 +22,28 @@ public class Day10 implements Day {
 	@Override
 	public String part1(String input, Object... params) {
 		List<MobilePoint> points = streamOfLines(input).map(MobilePoint::new).collect(toList());
-		boolean aligned = false;
-		while (!aligned) { // TODO à simplifier
+		while (!areAligned(points)) {
 			points.forEach(MobilePoint::move);
-			aligned = areAligned(points);
 		}
-		String message = printMessage(points);
-		return message;
+		return readMessage(points);
 	}
 
 	private boolean areAligned(List<MobilePoint> points) {
 		return points
 			.stream()
-			.collect(groupingBy(MobilePoint::getX)) // TODO Set
+			.collect(groupingBy(MobilePoint::getX, toSet()))
 			.values()
 			.stream()
 			.filter(list -> list.size() > 7)
 			.anyMatch(list -> areAdjacent(list));
 	}
 
-	private boolean areAdjacent(List<MobilePoint> points) {
+	private boolean areAdjacent(Set<MobilePoint> points) {
 		IntSummaryStatistics stat = points.stream().mapToInt(Point::getY).summaryStatistics();
-		return stat.getMax() - stat.getMin() == 7; // TODO à rendre plus robuste
+		return stat.getMax() - stat.getMin() == stat.getCount() - 1;
 	}
 
-	private String printMessage(Collection<MobilePoint> points) {
+	private String readMessage(Collection<MobilePoint> points) {
 		StringBuilder message = new StringBuilder();
 		Frame frame = smallestFrameContaining(points);
 		for (int y = frame.getTop(); y <= frame.getBottom(); y++) {
@@ -85,5 +86,4 @@ public class Day10 implements Day {
 			return vy;
 		}
 	}
-
 }
