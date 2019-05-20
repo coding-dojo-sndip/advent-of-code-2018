@@ -16,7 +16,7 @@ public class Day10Test {
 
 	@Test
 	public void case1_0() {
-		Assert.assertEquals(textFromFile("src/test/resources/10-0-s.txt"), day.part1("src/test/resources/10-0.txt"));
+		Assert.assertEquals(textFromFile("src/test/resources/10-0.sol"), day.part1("src/test/resources/10-0.txt"));
 	}
 
 	@Test
@@ -28,7 +28,7 @@ public class Day10Test {
 	public void part1() {
 		String answer = day.part1("src/main/resources/10.txt");
 		System.out.println(String.format("%s.1:%n%s", day.getClass().getSimpleName(), answer));
-		Assert.assertEquals(textFromFile("src/main/resources/10-s.txt"), answer);
+		Assert.assertEquals(textFromFile("src/main/resources/10.sol"), answer);
 	}
 
 	@Test
