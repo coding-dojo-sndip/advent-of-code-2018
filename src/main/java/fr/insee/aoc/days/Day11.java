@@ -14,7 +14,6 @@ public class Day11 implements Day {
 	public String part1(String input, Object... params) {
 		int gridSerial = Integer.valueOf(readLine(input));
 		int[][] grid = grid(gridSerial);
-		grid = summedAreaGrid(grid);
 		PowerPoint point = optimalPowerPoint(3, 3, grid);
 		return String.format("%d,%d", point.getX(), point.getY());
 	}
@@ -23,7 +22,6 @@ public class Day11 implements Day {
 	public String part2(String input, Object... params) {
 		int gridSerial = Integer.valueOf(readLine(input));
 		int[][] grid = grid(gridSerial);
-		grid = summedAreaGrid(grid);
 		PowerPoint point = optimalPowerPoint(1, 300, grid);
 		return String.format("%d,%d,%d", point.getX(), point.getY(), point.getSize());
 	}
@@ -43,7 +41,7 @@ public class Day11 implements Day {
 				grid[x][y] = powerLevel(x + 1, y + 1, gridSerial);
 			});
 		});
-		return grid;
+		return summedAreaGrid(grid);
 	}
 	
 	private int[][] summedAreaGrid(int[][] grid) {
