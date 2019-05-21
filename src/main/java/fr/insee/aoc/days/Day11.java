@@ -1,8 +1,10 @@
 package fr.insee.aoc.days;
 
 import static fr.insee.aoc.utils.Days.readLine;
-import static java.util.stream.IntStream.*;
+import static java.util.stream.IntStream.range;
+import static java.util.stream.IntStream.rangeClosed;
 
+import java.util.Arrays;
 import java.util.Comparator;
 
 import fr.insee.aoc.utils.DayException;
@@ -41,7 +43,21 @@ public class Day11 implements Day {
 				grid[x][y] = powerLevel(x + 1, y + 1, gridSerial);
 			});
 		});
-		return grid;
+		return summedAreaGrid(grid);
+	}
+	
+	private int[][] summedAreaGrid(int[][] grid) {
+		int width = grid.length;
+		int height = grid[0].length;
+		int[][] summedAreaGrid = new int [width][height];
+		int[][] partialSum = new int [width][height];
+		for(int x = 0; x < width; x ++) {
+			for(int y = 0; y < height; y ++) {
+				partialSum[x][y] = grid[x][y] + (y == 0 ? 0 : partialSum[x][y - 1]);
+				summedAreaGrid[x][y] = partialSum[x][y] + (x == 0 ? 0 : summedAreaGrid[x - 1][y]);
+			}	
+		}
+		return summedAreaGrid;
 	}
 	
 	private int powerLevel(int x, int y, int gridSerial) {
@@ -50,13 +66,7 @@ public class Day11 implements Day {
 	}
 	
 	private int totalPower(int x, int y, int size, int[][] grid) {
-		int totalPower = 0;
-		for(int i = x; i < x + size; i ++) {
-			for(int j = y; j < y + size; j ++) {
-				totalPower += grid[i][j];
-			}
-		}
-		return totalPower;
+		return grid[x][y] + grid[x + size][y + size] - grid[x + size][y] - grid[x][y + size];
 	}
 	
 	private PowerPoint largestTotalPower(int size, int[][] grid) {
@@ -65,7 +75,7 @@ public class Day11 implements Day {
 			for(int y = 0; y < 300 - size; y ++) {
 				int totalPower = totalPower(x, y, size, grid);
 				if(totalPower > point.totalPower) {
-					point = PowerPoint.of(x + 1, y + 1, size, totalPower);
+					point = PowerPoint.of(x + 2, y + 2, size, totalPower);
 				}
 			}
 		}
