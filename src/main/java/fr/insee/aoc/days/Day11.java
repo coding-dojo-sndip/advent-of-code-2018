@@ -1,8 +1,11 @@
 package fr.insee.aoc.days;
 
 import static fr.insee.aoc.utils.Days.readLine;
-import static java.util.stream.IntStream.range;
+import static java.util.stream.IntStream.*;
 
+import java.util.Comparator;
+
+import fr.insee.aoc.utils.DayException;
 import fr.insee.aoc.utils.Point;
 
 public class Day11 implements Day {
@@ -11,17 +14,7 @@ public class Day11 implements Day {
 	public String part1(String input, Object... params) {
 		int gridSerial = Integer.valueOf(readLine(input));
 		int[][] grid = grid(gridSerial);
-		int largestTotalPower = Integer.MIN_VALUE;
-		Point point = null;
-		for(int x = 0; x < 297; x ++) {
-			for(int y = 0; y < 297; y ++) {
-				int totalPower = totalPower(x, y, 3, grid);
-				if(totalPower > largestTotalPower) {
-					point = Point.of(x + 1, y + 1);
-					largestTotalPower = totalPower;
-				}
-			}
-		}
+		PowerPoint point = optimalPowerPoint(3, 3, grid);
 		return String.format("%d,%d", point.getX(), point.getY());
 	}
 	
@@ -29,20 +22,16 @@ public class Day11 implements Day {
 	public String part2(String input, Object... params) {
 		int gridSerial = Integer.valueOf(readLine(input));
 		int[][] grid = grid(gridSerial);
-		int largestTotalPower = Integer.MIN_VALUE;
-		PointSize point = null;
-		for(int size = 1; size <= 300 - size; size ++) {
-			for(int x = 0; x < 300 - size; x ++) {
-				for(int y = 0; y < 300 - size; y ++) {
-					int totalPower = totalPower(x, y, size, grid);
-					if(totalPower > largestTotalPower) {
-						point = PointSize.of(x + 1, y + 1, size);
-						largestTotalPower = totalPower;
-					}
-				}
-			}
-		}
+		PowerPoint point = optimalPowerPoint(1, 300, grid);
 		return String.format("%d,%d,%d", point.getX(), point.getY(), point.getSize());
+	}
+	
+	private PowerPoint optimalPowerPoint(int minSize, int maxSize, int[][] grid) {
+		return rangeClosed(minSize, maxSize)
+			.parallel()
+			.mapToObj(size -> largestTotalPower(size, grid))
+			.max(Comparator.comparingInt(PowerPoint::getTotalPower))
+			.orElseThrow(DayException::new);
 	}
 	
 	private int[][] grid(int gridSerial) {
@@ -70,23 +59,42 @@ public class Day11 implements Day {
 		return totalPower;
 	}
 	
-	static class PointSize extends Point {
+	private PowerPoint largestTotalPower(int size, int[][] grid) {
+		PowerPoint point = new PowerPoint();
+		for(int x = 0; x < 300 - size; x ++) {
+			for(int y = 0; y < 300 - size; y ++) {
+				int totalPower = totalPower(x, y, size, grid);
+				if(totalPower > point.totalPower) {
+					point = PowerPoint.of(x + 1, y + 1, size, totalPower);
+				}
+			}
+		}
+		return point;
+	}
+	
+	static class PowerPoint extends Point {
 		private int size;
+		private int totalPower = Integer.MIN_VALUE;
 
-		private PointSize() {
+		private PowerPoint() {
 			super();
 		}
 
-		static PointSize of(int x, int y, int size) {
-			PointSize point = new PointSize();
+		static PowerPoint of(int x, int y, int size, int totalPower) {
+			PowerPoint point = new PowerPoint();
 			point.x = x;
 			point.y = y;
 			point.size = size;
+			point.totalPower = totalPower;
 			return point;
 		}
 
 		public int getSize() {
 			return size;
+		}
+
+		public int getTotalPower() {
+			return totalPower;
 		}
 	}
 }
