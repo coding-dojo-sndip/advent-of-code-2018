@@ -18,9 +18,9 @@ public class Day05 implements Day {
 		Deque<Character> queue = new ArrayDeque<>();
 		for (int i = 0; i < polymer.length(); i++) {
 			char currentChar = polymer.charAt(i);
-			if(queue.isEmpty() || !unitReact(currentChar, queue.peek())) {
+			if (queue.isEmpty() || !unitReact(currentChar, queue.peek())) {
 				queue.push(currentChar);
-			} else {				
+			} else {
 				queue.poll();
 			}
 		}
@@ -35,10 +35,8 @@ public class Day05 implements Day {
 	public String part2(String input, Object... params) {
 		String polymer = readLine(input);
 		int min = IntStream.rangeClosed('a', 'z')
-				.mapToObj(c -> polymer.replaceAll(""+(char)c+"|"+(char)(c-32)+"", ""))
-				.mapToInt(p -> reaction(p))
-				.min()
-				.orElse(-1); // IntOptionnal
+				.mapToObj(c -> polymer.replaceAll("" + (char) c + "|" + (char) (c - 32) + "", ""))
+				.mapToInt(p -> reaction(p)).min().orElse(-1); // IntOptionnal
 		return String.valueOf(min);
 	}
 
