@@ -1,18 +1,17 @@
 package fr.insee.aoc.days;
 
-import static java.util.stream.Collectors.*;
+import static fr.insee.aoc.utils.Days.readLine;
 
 import fr.insee.aoc.utils.Point;
 
-import static fr.insee.aoc.utils.Days.*;
-import static fr.insee.aoc.utils.Frame.*;
-
 public class Day11 implements Day {
 
+	private static final int GRID_SIZE = 300;
+	
 	@Override
 	public String part1(String input, Object... params) {
 		int gridSerial = Integer.valueOf(readLine(input));
-		Point point = pointWithMaxTotalPower(gridSerial);
+		Point point = pointWithMaxTotalPower(gridSerial, 3).point;
 		return String.format("%d,%d", point.getX(), point.getY());
 	}
 
@@ -22,24 +21,29 @@ public class Day11 implements Day {
 	}
 
 	static int[][] createGrid(int gridSerial) {
-		int[][] grid = new int[301][301];
-		for (int x = 1; x <= 300; x++) {
-			for (int y = 1; y <= 300; y++) {
+		int[][] grid = new int[GRID_SIZE + 1][GRID_SIZE + 1];
+		for (int x = 1; x <= GRID_SIZE; x++) {
+			for (int y = 1; y <= GRID_SIZE; y++) {
 				grid[x][y] = powerLevel(x, y, gridSerial);
 			}
 		}
 		return grid;
 	}
 
-	static Point pointWithMaxTotalPower(int gridSerial) {
+	static PointSizeValue pointWithMaxTotalPower(int gridSerial) {
+		return pointWithMaxTotalPower(gridSerial, 3);
+	}
+	
+	static PointSizeValue pointWithMaxTotalPower(int gridSerial, int size) {
 		int[][] grid = createGrid(gridSerial);
 		int maxTotalPower = Integer.MIN_VALUE;
 		Point point = null;
-		for (int x = 1; x <= 298; x++) {
-			for (int y = 1; y <= 298; y++) {
+
+		for (int x = 1; x <= GRID_SIZE + 1 - size; x++) {
+			for (int y = 1; y <= GRID_SIZE + 1 - size; y++) {
 				int totalPower = 0;
-				for (int i = 0; i < 3; i++) {
-					for (int j = 0; j < 3; j++) {
+				for (int i = 0; i < size; i++) {
+					for (int j = 0; j < size; j++) {
 						totalPower = totalPower + grid[x + i][y + j];
 					}
 				}
@@ -49,7 +53,40 @@ public class Day11 implements Day {
 				}
 			}
 		}
-		return point;
+		return new PointSizeValue(point, size, maxTotalPower);
 	}
 
+	@Override
+	public String part2(String input, Object... params) {
+		int gridSerial = Integer.valueOf(readLine(input));
+		int max = Integer.MIN_VALUE;
+		PointSizeValue pointSizeValue = null;
+		for (int size = 1; size <= 300; size++) {
+			PointSizeValue point = pointWithMaxTotalPower(gridSerial, size);
+			if (point.value > max) {
+				max = point.value;
+				pointSizeValue = point;
+			}
+		}
+		return pointSizeValue.toString();
+	}
+
+	static class PointSizeValue {
+
+		private Point point;
+		private int size;
+		private int value;
+
+		public PointSizeValue(Point point, int size, int value) {
+			super();
+			this.point = point;
+			this.size = size;
+			this.value = value;
+		}
+
+		@Override
+		public String toString() {
+			return String.format("%d,%d,%d", point.getX(), point.getY(), size);
+		}
+	}
 }

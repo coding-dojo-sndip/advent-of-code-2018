@@ -20,12 +20,12 @@ public class Day11Test {
 
 	@Test
 	public void case2_0() {
-		Assert.assertEquals("90,269,16", day.part2("src/test/resources/11-0.txt"));
+		Assert.assertEquals("232,251,12", day.part2("src/test/resources/11-0.txt"));
 	}
 	
 	@Test
 	public void case2_1() {
-		Assert.assertEquals("232,251,12", day.part2("src/test/resources/11-1.txt"));
+		Assert.assertEquals("90,269,16", day.part2("src/test/resources/11-1.txt"));
 	}
 
 	@Test
@@ -39,7 +39,7 @@ public class Day11Test {
 	public void part2() {
 		String answer = day.part2("src/main/resources/11.txt");
 		System.out.println(String.format("%s.2: %s", day.getClass().getSimpleName(), answer));
-		Assert.assertEquals("237,281,10", answer);
+		Assert.assertEquals("235,287,13", answer);
 	}
 	
 	@Test
