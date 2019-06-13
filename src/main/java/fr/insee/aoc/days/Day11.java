@@ -2,6 +2,10 @@ package fr.insee.aoc.days;
 
 import static fr.insee.aoc.utils.Days.readLine;
 
+import static java.util.Comparator.*;
+import java.util.stream.IntStream;
+
+import fr.insee.aoc.utils.DayException;
 import fr.insee.aoc.utils.Point;
 
 public class Day11 implements Day {
@@ -15,6 +19,17 @@ public class Day11 implements Day {
 		return String.format("%d,%d", point.getX(), point.getY());
 	}
 
+	@Override
+	public String part2(String input, Object... params) {
+		int gridSerial = Integer.valueOf(readLine(input));
+		PointSizeValue pointSizeValue = IntStream.rangeClosed(1, GRID_SIZE)
+			.parallel()
+			.mapToObj(size -> pointWithMaxTotalPower(gridSerial, size))
+			.max(comparingInt(point -> point.value))
+			.orElseThrow(DayException::new);
+		return pointSizeValue.toString();
+	}
+	
 	static int powerLevel(int x, int y, int gridSerial) {
 		int rackId = x + 10;
 		return ((((rackId * y + gridSerial) * rackId) % 1000) / 100) - 5;
@@ -28,10 +43,6 @@ public class Day11 implements Day {
 			}
 		}
 		return grid;
-	}
-
-	static PointSizeValue pointWithMaxTotalPower(int gridSerial) {
-		return pointWithMaxTotalPower(gridSerial, 3);
 	}
 	
 	static PointSizeValue pointWithMaxTotalPower(int gridSerial, int size) {
@@ -54,21 +65,6 @@ public class Day11 implements Day {
 			}
 		}
 		return new PointSizeValue(point, size, maxTotalPower);
-	}
-
-	@Override
-	public String part2(String input, Object... params) {
-		int gridSerial = Integer.valueOf(readLine(input));
-		int max = Integer.MIN_VALUE;
-		PointSizeValue pointSizeValue = null;
-		for (int size = 1; size <= 300; size++) {
-			PointSizeValue point = pointWithMaxTotalPower(gridSerial, size);
-			if (point.value > max) {
-				max = point.value;
-				pointSizeValue = point;
-			}
-		}
-		return pointSizeValue.toString();
 	}
 
 	static class PointSizeValue {
