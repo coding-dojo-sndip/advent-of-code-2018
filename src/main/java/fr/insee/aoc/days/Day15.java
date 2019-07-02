@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.stream.Stream;
 
 import fr.insee.aoc.utils.Point;
 
@@ -76,11 +77,9 @@ public class Day15 implements Day {
 					closed.add(successor);
 				}
 				else {
-					if(open.stream().noneMatch(n -> n.equals(successor) && n.compareTo(successor) < 0)) {
-						if(closed.stream().noneMatch(n -> n.equals(successor) && n.compareTo(successor) < 0)) {
-							open.add(successor);
-						}
-					}
+                    if(Stream.concat(open.stream(), closed.stream()).noneMatch(aNode -> aNode.equals(successor) && aNode.compareTo(successor) < 0)) {
+                        open.add(successor);
+                    }
 				}
 			}
 			closed.add(node);
@@ -88,7 +87,7 @@ public class Day15 implements Day {
 		return closed.stream()
 			.filter(node -> node.point.equals(goal))
 			.findFirst()
-			.map(goalNode -> goalNode.path())
+			.map(Node::path)
 			.orElse(null);
 	}
 	
@@ -113,10 +112,7 @@ public class Day15 implements Day {
 		}
 		
 		List<Point> path() {
-			if(this.parent == null) {
-				return new ArrayList<>();
-			}
-			List<Point> path = this.parent.path();
+            var path = parent == null ? new ArrayList<Point>() : parent.path();
 			path.add(this.point);
 			return path;
 		}
