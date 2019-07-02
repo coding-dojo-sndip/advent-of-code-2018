@@ -20,6 +20,22 @@ public class Point implements Comparable<Point> {
 		return new Point(x, y);
 	}
 
+	public Point onTop() {
+		return Point.of(x, y - 1);
+	}
+	
+	public Point onBottom() {
+		return Point.of(x, y + 1);
+	}
+	
+	public Point onLeft() {
+		return Point.of(x - 1, y);
+	}
+	
+	public Point onRight() {
+		return Point.of(x + 1, y);
+	}
+	
 	@Override
 	public int compareTo(Point other) {
 		return comparator.compare(this, other);
@@ -45,6 +61,11 @@ public class Point implements Comparable<Point> {
 			return Objects.equals(this.x, other.x) && Objects.equals(this.y, other.y);
 		}
 		return false;
+	}
+
+	@Override
+	public String toString() {
+		return String.format("(%d, %d)", x, y);
 	}
 
 	public int getX() {
