@@ -2,6 +2,7 @@ package fr.insee.aoc.utils;
 
 import java.util.Comparator;
 import java.util.Objects;
+import java.util.stream.*;
 
 public class Point implements Comparable<Point> {
 
@@ -36,13 +37,17 @@ public class Point implements Comparable<Point> {
 		return Point.of(x + 1, y);
 	}
 	
+	public Stream<Point> neighbors() {
+		return Stream.of(onTop(), onBottom(), onLeft(), onRight());
+	}
+	
+	public int manhattan(Point other) {
+		return Math.abs(this.x - other.x) + Math.abs(this.y - other.y);
+	}
+	
 	@Override
 	public int compareTo(Point other) {
 		return comparator.compare(this, other);
-	}
-
-	public int manhattan(Point other) {
-		return Math.abs(this.x - other.x) + Math.abs(this.y - other.y);
 	}
 
 	@Override

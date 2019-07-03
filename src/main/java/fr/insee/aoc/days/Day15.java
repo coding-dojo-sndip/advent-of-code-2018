@@ -60,25 +60,19 @@ public class Day15 implements Day {
 
 	static class Unit implements Comparable<Unit> {
 
-		Type type;
+		char type;
 		int hp;
 		Point position;
 
-		private Unit() {
-		}
-
+		static final Comparator<Unit> compareByPosition = comparing(unit -> unit.position);
+		static final Comparator<Unit> compareByHitPoints = comparingInt(unit -> unit.hp);
+		
 		static Unit create(char type, int i, int j) {
 			var unit = new Unit();
-			unit.type = type == 'E' ? Type.ELF : Type.GOBELIN;
+			unit.type = type;
 			unit.hp = 200;
 			unit.position = Point.of(j, i);
 			return unit;
-		}
-
-		static final Comparator<Unit> compareByPosition = comparing(unit -> unit.position);
-
-		enum Type {
-			ELF, GOBELIN
 		}
 
 		boolean isAlive() {
@@ -90,8 +84,9 @@ public class Day15 implements Day {
 		}
 
 		List<Point> openSquaresInRange(char[][] cave) {
-			return Set.of(position.onTop(), position.onBottom(), position.onLeft(), position.onRight()).stream()
-					.filter(point -> cave[point.getY()][point.getX()] == '.').collect(toList());
+			return position.neighbors()
+				.filter(point -> cave[point.getY()][point.getX()] == '.')
+				.collect(toList());
 		}
 
 		List<Point> squaresInRange(char[][] cave, List<Unit> enemies) {
@@ -104,13 +99,12 @@ public class Day15 implements Day {
 
 		void moveTo(Point destination, char[][] cave) {
 			cave[position.getY()][position.getX()] = '.';
-			cave[destination.getY()][destination.getX()] = type == Type.ELF ? 'E' : 'G';
+			cave[destination.getY()][destination.getX()] = type;
 			this.position = destination;
 		}
 
 		boolean canAttack(char[][] cave) {
-			return Set.of(position.onTop(), position.onBottom(), position.onLeft(), position.onRight()).stream()
-					.anyMatch(point -> cave[point.getY()][point.getX()] == (type == Type.ELF ? 'G' : 'E'));
+			return position.neighbors().anyMatch(point -> cave[point.getY()][point.getX()] == (type == 'E' ? 'G' : 'E'));
 		}
 
 		private void move(char[][] cave, List<Unit> enemies) {
