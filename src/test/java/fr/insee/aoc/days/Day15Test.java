@@ -1,7 +1,6 @@
 package fr.insee.aoc.days;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.*;
 
 public class Day15Test {
 

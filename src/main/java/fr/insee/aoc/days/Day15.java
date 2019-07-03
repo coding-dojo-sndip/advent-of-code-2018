@@ -17,27 +17,24 @@ public class Day15 implements Day {
 	@Override
 	public String part1(String input, Object... params) {
 		char[][] cave = cave(input);
-		printGrid(cave);
 		var units = units(cave);
-		int round = 1;
+		int round = 0;
 		while (true) {
 			units.sort(Unit.compareByPosition);
 			for (Unit unit : units) {
 				if (unit.isAlive()) {
 					var enemies = unit.identifyTargets(units);
 					if (enemies.isEmpty()) {
-						var battleOutcome = round * units.stream().mapToInt(u -> u.hp).sum();
+						var battleOutcome = round * units.stream().filter(Unit::isAlive).mapToInt(u -> u.hp).sum();
 						return String.valueOf(battleOutcome);
 					}
 					if (unit.canAttack(cave)) {
-						// Attack
+						unit.attack(cave, enemies);
 					} else {
-						unit.move(cave, enemies);
-						// Attack
+						unit.moveThenAttack(cave, enemies);
 					}
 				}
 			}
-			printGrid(cave);
 			round++;
 		}
 	}
@@ -78,11 +75,19 @@ public class Day15 implements Day {
 		boolean isAlive() {
 			return this.hp > 0;
 		}
-
-		boolean isAnEnemy(Unit other) {
-			return this.type != other.type;
+		
+		boolean isDead() {
+			return !isAlive();
 		}
 
+		boolean isAnEnemy(Unit other) {
+			return other.isAlive() && this.type != other.type;
+		}
+
+		boolean isAnEnemy(char[][] cave, Point point) {
+			return cave[point.getY()][point.getX()] == (type == 'E' ? 'G' : 'E');
+		}
+		
 		List<Point> openSquaresInRange(char[][] cave) {
 			return position.neighbors()
 				.filter(point -> cave[point.getY()][point.getX()] == '.')
@@ -103,14 +108,10 @@ public class Day15 implements Day {
 			this.position = destination;
 		}
 
-		boolean canAttack(char[][] cave) {
-			return position.neighbors().anyMatch(point -> cave[point.getY()][point.getX()] == (type == 'E' ? 'G' : 'E'));
-		}
-
 		void move(char[][] cave, List<Unit> enemies) {
 			List<Point> squaresInRange = squaresInRange(cave, enemies);
 			if (!squaresInRange.isEmpty()) {
-				Optional<Point> target = chooseTarget(cave, squaresInRange);
+				Optional<Point> target = chooseTargetSquare(cave, squaresInRange);
 				if(target.isPresent()) {
 					this.openSquaresInRange(cave).stream()
 						.map(start -> shortestPath(start, target.get(), cave))
@@ -121,15 +122,49 @@ public class Day15 implements Day {
 				}
 			}
 		}
+		
+		void moveThenAttack(char[][] cave, List<Unit> enemies) {
+			move(cave, enemies);
+			attack(cave, enemies);
+		}
 
-		Optional<Point> chooseTarget(char[][] cave, List<Point> squaresInRange) {
+		Optional<Point> chooseTargetSquare(char[][] cave, List<Point> squaresInRange) {
 			return squaresInRange.stream()
 				.map(goal -> shortestPath(position, goal, cave))
 				.filter(Objects::nonNull)
 				.min(Comparator.<List<Point>>comparingInt(path -> path.size()).thenComparing(path -> path.get(path.size() - 1)))
 				.map(path -> path.get(path.size() - 1));
 		}
+		
+		Optional<Unit> chooseEnemy(char[][] cave, List<Unit> enemies) {
+			return position.neighbors()
+				.filter(point -> isAnEnemy(cave, point))
+				.map(point -> unitFromPoint(point, enemies).get())
+				.min(Comparator.<Unit>comparingInt(unit -> unit.hp).thenComparing(unit -> unit.position));
+		}
 
+		static Optional<Unit> unitFromPoint(Point point, List<Unit> enemies) {
+			return enemies.stream()
+				.filter(enemy -> enemy.position.equals(point))
+				.findFirst();
+		}
+		
+		boolean canAttack(char[][] cave) {
+			return position.neighbors().anyMatch(point -> isAnEnemy(cave, point));
+		}
+
+
+		void attack(char[][] cave, List<Unit> enemies) {
+			chooseEnemy(cave, enemies).ifPresent(enemy -> attack(cave, enemy));
+		}
+		
+		void attack(char[][] cave, Unit other) {
+			other.hp -= 3;
+			if(other.isDead()) {
+				cave[other.position.getY()][other.position.getX()] = '.';
+			}
+		}
+		
 		@Override
 		public int hashCode() {
 			return Objects.hash(position);
