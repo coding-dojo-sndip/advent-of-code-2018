@@ -1,19 +1,20 @@
 package fr.insee.aoc.days;
 
+import java.util.*;
+
 import static fr.insee.aoc.utils.Days.*;
+
+import static fr.insee.aoc.utils.PathFinder.*;
+
+import static java.util.Comparator.*;
+
 import static java.util.stream.Collectors.*;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-import java.util.TreeSet;
-import java.util.stream.Stream;
-
-import fr.insee.aoc.utils.Point;
+import fr.insee.aoc.utils.*;
 
 public class Day15 implements Day {
+
+	private static Comparator<List<Point>> pathComparator = Comparator.<List<Point>>comparingInt(path -> path.size()).thenComparing(path -> path.get(1));
 
 	@Override
 	public String part1(String input, Object... params) {
@@ -29,16 +30,10 @@ public class Day15 implements Day {
 						var battleOutcome = round * units.stream().mapToInt(u -> u.hp).sum();
 						return String.valueOf(battleOutcome);
 					}
-					List<Point> squaresInRange = unit.squaresInRange(cave, enemies);
-					if(!squaresInRange.isEmpty()) {
-						if(!squaresInRange.contains(unit.position)) {
-							// Move before attack
-							for(Point goal : squaresInRange) {
-								List<Point> path = findPath(unit.position, goal, cave);
-								System.out.println(unit.position + " => " + goal + " : " + path);
-							}
-							System.exit(0);
-						}
+					if (unit.canAttack(cave)) {
+						// Attack
+					} else {
+						unit.move(cave, enemies);
 						// Attack
 					}
 				}
@@ -63,80 +58,6 @@ public class Day15 implements Day {
 		return units;
 	}
 
-	static List<Point> findPath(Point start, Point goal, char[][] grid) {
-		var open = new TreeSet<Node>();
-		var closed = new TreeSet<Node>();
-		open.add(Node.from(start));
-		while(!open.isEmpty()) {
-			var node = open.pollFirst();
-			var successors = node.successors(grid);
-			for (Node successor : successors) {
-				successor.cost = node.cost + 1;
-				successor.heuristic = successor.point.manhattan(goal);
-				if(successor.point.equals(goal)) {
-					closed.add(successor);
-				}
-				else {
-                    if(Stream.concat(open.stream(), closed.stream()).noneMatch(aNode -> aNode.equals(successor) && aNode.compareTo(successor) < 0)) {
-                        open.add(successor);
-                    }
-				}
-			}
-			closed.add(node);
-		}
-		return closed.stream()
-			.filter(node -> node.point.equals(goal))
-			.findFirst()
-			.map(Node::path)
-			.orElse(null);
-	}
-	
-	static class Node implements Comparable<Node> {
-		int cost, heuristic;
-		Node parent;
-		Point point;
-		
-		static Node from(Point point) {
-			var node = new Node();
-			node.point = point;
-			return node;
-		}
-		
-		Set<Node> successors(char[][] grid) {
-			return Set.of(point.onTop(), point.onBottom(), point.onLeft(), point.onRight())
-				.stream()
-				.filter(point -> grid[point.getY()][point.getX()] == '.')
-				.map(Node::from)
-				.peek(node -> node.parent = this)
-				.collect(toSet());
-		}
-		
-		List<Point> path() {
-            var path = parent == null ? new ArrayList<Point>() : parent.path();
-			path.add(this.point);
-			return path;
-		}
-		
-		@Override
-		public int compareTo(Node other) {
-			return (this.cost + this.heuristic) - (other.cost + other.heuristic);
-		}
-		
-		@Override
-		public int hashCode() {
-			return Objects.hash(point);
-		}
-
-		@Override
-		public boolean equals(Object object) {
-			if (object instanceof Node) {
-				var other = (Node) object;
-				return Objects.equals(this.point, other.point);
-			}
-			return false;
-		}
-	}
-	
 	static class Unit implements Comparable<Unit> {
 
 		Type type;
@@ -154,7 +75,7 @@ public class Day15 implements Day {
 			return unit;
 		}
 
-		static final Comparator<Unit> compareByPosition = Comparator.comparing(unit -> unit.position);
+		static final Comparator<Unit> compareByPosition = comparing(unit -> unit.position);
 
 		enum Type {
 			ELF, GOBELIN
@@ -169,12 +90,10 @@ public class Day15 implements Day {
 		}
 
 		List<Point> openSquaresInRange(char[][] cave) {
-			return Set.of(position.onTop(), position.onBottom(), position.onLeft(), position.onRight())
-			.stream()
-			.filter(point -> cave[point.getY()][point.getX()] == '.')
-			.collect(toList());
+			return Set.of(position.onTop(), position.onBottom(), position.onLeft(), position.onRight()).stream()
+					.filter(point -> cave[point.getY()][point.getX()] == '.').collect(toList());
 		}
-		
+
 		List<Point> squaresInRange(char[][] cave, List<Unit> enemies) {
 			return enemies.stream().flatMap(enemie -> enemie.openSquaresInRange(cave).stream()).collect(toList());
 		}
@@ -182,7 +101,30 @@ public class Day15 implements Day {
 		List<Unit> identifyTargets(List<Unit> units) {
 			return units.stream().filter(this::isAnEnemy).collect(toList());
 		}
-		
+
+		void moveTo(Point destination, char[][] cave) {
+			cave[position.getY()][position.getX()] = '.';
+			cave[destination.getY()][destination.getX()] = type == Type.ELF ? 'E' : 'G';
+			this.position = destination;
+		}
+
+		boolean canAttack(char[][] cave) {
+			return Set.of(position.onTop(), position.onBottom(), position.onLeft(), position.onRight()).stream()
+					.anyMatch(point -> cave[point.getY()][point.getX()] == (type == Type.ELF ? 'G' : 'E'));
+		}
+
+		private void move(char[][] cave, List<Unit> enemies) {
+			List<Point> squaresInRange = squaresInRange(cave, enemies);
+			if (!squaresInRange.isEmpty()) {
+				squaresInRange.stream()
+					.map(goal -> shortestPath(position, goal, cave))
+					.filter(Objects::nonNull)
+					.min(pathComparator)
+					.map(path -> path.get(1))
+					.ifPresent(point -> moveTo(point, cave));
+			}
+		}
+
 		@Override
 		public int hashCode() {
 			return Objects.hash(position);

@@ -1,6 +1,6 @@
 package fr.insee.aoc.utils;
 
-import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.*;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -103,5 +103,9 @@ public class Days {
 	
 	public static int minOf(int[] array) {
 		return Arrays.stream(array).min().getAsInt();
+	}
+	
+	public static void printGrid(char[][] grid) {
+		Arrays.stream(grid).forEach(line ->	System.out.println(new String(line)));
 	}
 }
