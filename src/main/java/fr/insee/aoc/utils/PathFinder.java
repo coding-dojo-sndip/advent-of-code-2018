@@ -46,8 +46,7 @@ public class PathFinder {
 		}
 		
 		Set<Node> successors(char[][] grid) {
-			return Set.of(point.onTop(), point.onBottom(), point.onLeft(), point.onRight())
-				.stream()
+			return point.neighbors()
 				.filter(point -> grid[point.getY()][point.getX()] == '.')
 				.map(Node::from)
 				.peek(node -> node.parent = this)

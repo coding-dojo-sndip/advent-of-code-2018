@@ -14,11 +14,10 @@ import fr.insee.aoc.utils.*;
 
 public class Day15 implements Day {
 
-	private static Comparator<List<Point>> pathComparator = Comparator.<List<Point>>comparingInt(path -> path.size()).thenComparing(path -> path.get(1));
-
 	@Override
 	public String part1(String input, Object... params) {
 		char[][] cave = cave(input);
+		printGrid(cave);
 		var units = units(cave);
 		int round = 1;
 		while (true) {
@@ -38,6 +37,7 @@ public class Day15 implements Day {
 					}
 				}
 			}
+			printGrid(cave);
 			round++;
 		}
 	}
@@ -107,16 +107,27 @@ public class Day15 implements Day {
 			return position.neighbors().anyMatch(point -> cave[point.getY()][point.getX()] == (type == 'E' ? 'G' : 'E'));
 		}
 
-		private void move(char[][] cave, List<Unit> enemies) {
+		void move(char[][] cave, List<Unit> enemies) {
 			List<Point> squaresInRange = squaresInRange(cave, enemies);
 			if (!squaresInRange.isEmpty()) {
-				squaresInRange.stream()
-					.map(goal -> shortestPath(position, goal, cave))
-					.filter(Objects::nonNull)
-					.min(pathComparator)
-					.map(path -> path.get(1))
-					.ifPresent(point -> moveTo(point, cave));
+				Optional<Point> target = chooseTarget(cave, squaresInRange);
+				if(target.isPresent()) {
+					this.openSquaresInRange(cave).stream()
+						.map(start -> shortestPath(start, target.get(), cave))
+						.filter(Objects::nonNull)
+						.min(Comparator.<List<Point>>comparingInt(path -> path.size()).thenComparing(path -> path.get(0)))
+						.map(path -> path.get(0))
+						.ifPresent(point -> moveTo(point, cave));
+				}
 			}
+		}
+
+		Optional<Point> chooseTarget(char[][] cave, List<Point> squaresInRange) {
+			return squaresInRange.stream()
+				.map(goal -> shortestPath(position, goal, cave))
+				.filter(Objects::nonNull)
+				.min(Comparator.<List<Point>>comparingInt(path -> path.size()).thenComparing(path -> path.get(path.size() - 1)))
+				.map(path -> path.get(path.size() - 1));
 		}
 
 		@Override
