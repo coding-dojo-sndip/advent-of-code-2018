@@ -1,18 +1,17 @@
 package fr.insee.aoc.utils;
 
-import static java.util.stream.Collectors.toSet;
+import java.util.*;
+import java.util.stream.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.PriorityQueue;
-import java.util.Set;
-import java.util.stream.Stream;
+import static fr.insee.aoc.utils.Days.*;
 
+import static java.util.stream.Collectors.*;
 
 public class PathFinder {
 
 	public static List<Point> shortestPath(Point start, Point goal, char[][] grid) {
+		System.out.println(start + " => " + goal);
+		printGrid(grid);
 		var closed = new ArrayList<Node>();
 		var open = new PriorityQueue<Node>();
 		open.add(Node.from(start));
@@ -29,6 +28,9 @@ public class PathFinder {
 					open.add(successor);
 				}
 			}
+			System.out.println(currentNode);
+			System.out.println(closed);
+			System.out.println(open);
 			closed.add(currentNode);
 		}
 		return null;

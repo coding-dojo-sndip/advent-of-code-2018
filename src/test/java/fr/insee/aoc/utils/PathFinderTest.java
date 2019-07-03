@@ -72,4 +72,16 @@ public class PathFinderTest  {
 			.hasSize(1)
 			.containsExactly(start);
 	}
+	
+	
+	@Test
+	public void testPathFinding_huge() {
+		char[][] grid = streamOfLines("src/test/resources/problem.txt").map(String::toCharArray).toArray(char[][]::new);
+		var start = Point.of(24, 15);
+		var goal = Point.of(8, 7);
+		List<Point> path = PathFinder.shortestPath(start, goal, grid);
+		assertThat(path)
+			.hasSize(1)
+			.containsExactly(start);
+	}
 }
