@@ -16,8 +16,26 @@ public class Day15 implements Day {
 
 	@Override
 	public String part1(String input, Object... params) {
+		return battle(input).battleOutcome();
+	}
+
+	@Override
+	public String part2(String input, Object... params) {
+		int elfAttackPower = 4;
+		while(true) {
+			var battleOutcome = battle(input, elfAttackPower);
+			if(battleOutcome.noElvesKilled()) return battleOutcome.battleOutcome();
+			elfAttackPower ++;
+		}
+	}
+
+	Outcome battle(String input) {
+		return battle(input, 3);
+	}
+	
+	Outcome battle(String input, int elfAttackPower) {
 		char[][] cave = cave(input);
-		var units = units(cave);
+		var units = units(cave, elfAttackPower);
 		int round = 0;
 		while (true) {
 			units.sort(Unit.compareByPosition);
@@ -25,8 +43,7 @@ public class Day15 implements Day {
 				if (unit.isAlive()) {
 					var enemies = unit.identifyTargets(units);
 					if (enemies.isEmpty()) {
-						var battleOutcome = round * units.stream().filter(Unit::isAlive).mapToInt(u -> u.hp).sum();
-						return String.valueOf(battleOutcome);
+						return Outcome.of(round, units);
 					}
 					if (unit.canAttack(cave)) {
 						unit.attack(cave, enemies);
@@ -43,30 +60,52 @@ public class Day15 implements Day {
 		return streamOfLines(input).map(String::toCharArray).toArray(char[][]::new);
 	}
 
-	static List<Unit> units(char[][] cave) {
+	static List<Unit> units(char[][] cave, int elfAttackPower) {
 		List<Unit> units = new ArrayList<>();
 		for (int i = 0; i < cave.length; i++) {
 			for (int j = 0; j < cave[0].length; j++) {
 				var type = cave[i][j];
 				if (type == 'E' || type == 'G')
-					units.add(Unit.create(type, i, j));
+					units.add(Unit.create(type, elfAttackPower, i, j));
 			}
 		}
 		return units;
 	}
 
+	static class Outcome {
+		int round;
+		List<Unit> units;
+		
+		static Outcome of(int round, List<Unit> units) {
+			Outcome outcome = new Outcome();
+			outcome.round = round;
+			outcome.units = units;
+			return outcome;
+		}
+		
+		String battleOutcome() {
+			return String.valueOf(round * units.stream().filter(Unit::isAlive).mapToInt(u -> u.hp).sum());
+		}
+		
+		boolean noElvesKilled() {
+			return units.stream().filter(unit -> unit.type == 'E').noneMatch(elf -> elf.isDead());
+		}
+	}
+	
 	static class Unit implements Comparable<Unit> {
 
 		char type;
 		int hp;
 		Point position;
+		int attackPower = 3;
 
 		static final Comparator<Unit> compareByPosition = comparing(unit -> unit.position);
 		static final Comparator<Unit> compareByHitPoints = comparingInt(unit -> unit.hp);
 		
-		static Unit create(char type, int i, int j) {
+		static Unit create(char type, int elfAttackPower, int i, int j) {
 			var unit = new Unit();
 			unit.type = type;
+			if(type == 'E') unit.attackPower = elfAttackPower;
 			unit.hp = 200;
 			unit.position = Point.of(j, i);
 			return unit;
@@ -159,7 +198,7 @@ public class Day15 implements Day {
 		}
 		
 		void attack(char[][] cave, Unit other) {
-			other.hp -= 3;
+			other.hp -= this.attackPower;
 			if(other.isDead()) {
 				cave[other.position.getY()][other.position.getX()] = '.';
 			}
