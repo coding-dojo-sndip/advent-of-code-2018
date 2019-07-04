@@ -1,19 +1,14 @@
 package fr.insee.aoc.utils;
 
 import java.util.*;
-import java.util.stream.*;
-
-import static fr.insee.aoc.utils.Days.*;
 
 import static java.util.stream.Collectors.*;
 
 public class PathFinder {
 
 	public static List<Point> shortestPath(Point start, Point goal, char[][] grid) {
-		System.out.println(start + " => " + goal);
-		printGrid(grid);
-		var closed = new ArrayList<Node>();
-		var open = new PriorityQueue<Node>();
+		var closed = new HashSet<Node>();
+		var open = new PriorityQueue<Node>(Comparator.comparingInt(node -> node.heuristic));
 		open.add(Node.from(start));
 		while(!open.isEmpty()) {
 			var currentNode = open.poll();
@@ -22,21 +17,21 @@ public class PathFinder {
 			}
 			var successors = currentNode.successors(grid);
 			for (Node successor : successors) {
+				if(closed.contains(successor)) {
+					continue;
+				}
 				successor.cost = currentNode.cost + 1;
 				successor.heuristic = successor.cost + successor.point.manhattan(goal);
-				if(Stream.concat(closed.stream(), open.stream()).noneMatch(node -> node.isBetterThan(successor))) {
+				if(!open.contains(successor) || open.removeIf(node -> successor.isBetterThan(node))) {
 					open.add(successor);
 				}
 			}
-			System.out.println(currentNode);
-			System.out.println(closed);
-			System.out.println(open);
 			closed.add(currentNode);
 		}
 		return null;
 	}
 	
-	static class Node implements Comparable<Node> {
+	static class Node {
 		int cost, heuristic;
 		Node parent;
 		Point point;
@@ -62,12 +57,7 @@ public class PathFinder {
 		}
 		
 		boolean isBetterThan(Node other) {
-			return this.equals(other) && this.compareTo(other) < 0;
-		}
-		
-		@Override
-		public int compareTo(Node other) {
-			return this.heuristic - other.heuristic;
+			return this.equals(other) && this.heuristic < other.heuristic;
 		}
 		
 		@Override

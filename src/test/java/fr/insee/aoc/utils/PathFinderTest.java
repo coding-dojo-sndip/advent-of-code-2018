@@ -6,7 +6,7 @@ import static org.assertj.core.api.Assertions.atIndex;
 
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.*;
 
 
 public class PathFinderTest  {
@@ -76,12 +76,10 @@ public class PathFinderTest  {
 	
 	@Test
 	public void testPathFinding_huge() {
-		char[][] grid = streamOfLines("src/test/resources/problem.txt").map(String::toCharArray).toArray(char[][]::new);
-		var start = Point.of(24, 15);
-		var goal = Point.of(8, 7);
+		char[][] grid = streamOfLines("src/test/resources/path-finding.txt").map(String::toCharArray).toArray(char[][]::new);
+		var start = Point.of(24, 52);
+		var goal = Point.of(8, 44);
 		List<Point> path = PathFinder.shortestPath(start, goal, grid);
-		assertThat(path)
-			.hasSize(1)
-			.containsExactly(start);
+		assertThat(path).isNullOrEmpty();
 	}
 }

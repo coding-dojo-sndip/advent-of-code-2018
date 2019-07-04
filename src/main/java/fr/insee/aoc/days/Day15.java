@@ -17,7 +17,6 @@ public class Day15 implements Day {
 	@Override
 	public String part1(String input, Object... params) {
 		char[][] cave = cave(input);
-		printGrid(cave);
 		var units = units(cave);
 		int round = 0;
 		while (true) {
@@ -37,8 +36,6 @@ public class Day15 implements Day {
 				}
 			}
 			round++;
-			System.out.println(round);
-			printGrid(cave);
 		}
 	}
 
