@@ -1,19 +1,18 @@
 package fr.insee.aoc.days;
 
-import static fr.insee.aoc.utils.Collectors.listOfMin;
-import static fr.insee.aoc.utils.Days.streamOfLines;
-import static fr.insee.aoc.utils.Frame.smallestFrameContaining;
-import static java.util.function.Function.identity;
+import static fr.insee.aoc.utils.Collectors.*;
+import static fr.insee.aoc.utils.Frame.*;
+import static java.util.function.Function.*;
+
+import java.util.*;
+import java.util.Map.*;
+import java.util.regex.*;
+
+import static fr.insee.aoc.utils.Days.*;
+
 import static java.util.stream.Collectors.*;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import fr.insee.aoc.utils.Frame;
-import fr.insee.aoc.utils.Point;
+import fr.insee.aoc.utils.*;
 
 public class Day06 implements Day {
 
@@ -38,7 +37,7 @@ public class Day06 implements Day {
 				}
 			}
 		}
-		int largestArea = areas.entrySet().stream().mapToInt(e -> e.getValue()).max().orElse(-1);
+		int largestArea = areas.entrySet().stream().mapToInt(Entry::getValue).max().orElseThrow(DayException::new);
 		return String.valueOf(largestArea);
 	}
 
@@ -62,6 +61,6 @@ public class Day06 implements Day {
 	private static Point lineToPoint(String coords) {
 		Matcher matcher = pattern.matcher(coords);
 		matcher.matches();
-		return Point.of(Integer.parseInt(matcher.group(1)), Integer.parseInt(matcher.group(2)));
+		return Point.of(readInt(1, matcher), readInt(2, matcher));
 	}
 }

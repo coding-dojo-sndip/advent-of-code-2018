@@ -1,19 +1,14 @@
 package fr.insee.aoc.days;
 
+import java.util.*;
+import java.util.regex.*;
+import java.util.stream.*;
+
 import static fr.insee.aoc.utils.Days.*;
+
 import static java.util.stream.Collectors.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.IntStream;
-
-import fr.insee.aoc.utils.DayException;
+import fr.insee.aoc.utils.*;
 
 public class Day07 implements Day {
 
@@ -47,7 +42,7 @@ public class Day07 implements Day {
 			workers.forEach(Worker::work);
 			List<Character> stepsOver = steps.values()
 				.stream()
-				.filter(step -> step.isOver())
+				.filter(Step::isOver)
 				.map(step -> step.id)
 				.collect(toList());
 			stepsDone.addAll(stepsOver);
@@ -78,7 +73,7 @@ public class Day07 implements Day {
 	private static Set<Worker> availableWorkers(Set<Worker> workers) {
 		return workers
 			.stream()
-			.filter(worker -> worker.isIdle())
+			.filter(Worker::isIdle)
 			.collect(toSet());
 	}
 
@@ -105,7 +100,8 @@ public class Day07 implements Day {
 	
 	static class Step implements Comparable<Step> {
 		char id;
-		int remainingTime, totalTime;
+		int remainingTime;
+		int totalTime;
 		List<Character> prerequisites = new ArrayList<>(26);
 
 		public Step(char id) {
@@ -133,6 +129,20 @@ public class Day07 implements Day {
 		@Override
 		public int compareTo(Step other) {
 			return this.id - other.id;
+		}
+
+		@Override
+		public boolean equals(Object object) {
+			if(object instanceof Step) {
+				Step other = (Step) object;
+				return Objects.equals(this.id, other.id);
+			}
+			return false;
+		}
+
+		@Override
+		public int hashCode() {
+			return id;
 		}
 	}
 

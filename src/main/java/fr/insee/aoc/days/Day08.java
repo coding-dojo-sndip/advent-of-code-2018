@@ -29,7 +29,8 @@ public class Day08 implements Day {
 		Deque<Node> incompleteNodes = new ArrayDeque<>();
 		Node root = createNode(numbers, 0);
 		incompleteNodes.push(root);
-		for (int i = 2; i < numbers.length; i++) {
+		int i = 2;
+		while (!incompleteNodes.isEmpty()) {
 			Node currentNode = incompleteNodes.peek();
 			if (currentNode.isComplete()) {
 				for (int j = i; j < i + currentNode.numberOfMetadata; j++) {
@@ -43,7 +44,7 @@ public class Day08 implements Day {
 				incompleteNodes.push(node);
 				i++;
 			}
-
+			i ++;
 		}
 		return root;
 	}

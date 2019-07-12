@@ -8,7 +8,10 @@ import java.util.IntSummaryStatistics;
 
 public class Frame {
 
-	private int top, bottom, left, right;
+	private int top;
+	private int bottom;
+	private int left;
+	private int right;
 
 	private Frame(int top, int bottom, int left, int right) {
 		this.top = top;

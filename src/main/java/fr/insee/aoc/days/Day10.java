@@ -1,21 +1,15 @@
 package fr.insee.aoc.days;
 
-import static fr.insee.aoc.utils.Days.readInt;
-import static fr.insee.aoc.utils.Days.streamOfLines;
-import static fr.insee.aoc.utils.Frame.smallestFrameContaining;
-import static java.util.stream.Collectors.groupingBy;
-import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toSet;
+import static fr.insee.aoc.utils.Frame.*;
 
-import java.util.Collection;
-import java.util.IntSummaryStatistics;
-import java.util.List;
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.*;
+import java.util.regex.*;
 
-import fr.insee.aoc.utils.Frame;
-import fr.insee.aoc.utils.Point;
+import static fr.insee.aoc.utils.Days.*;
+
+import static java.util.stream.Collectors.*;
+
+import fr.insee.aoc.utils.*;
 
 public class Day10 implements Day {
 
@@ -25,8 +19,7 @@ public class Day10 implements Day {
 		while (!areAligned(points)) {
 			points.forEach(MobilePoint::move);
 		}
-		String message = printMessage(points);
-		return message;
+		return printMessage(points);
 	}
 	
 
@@ -48,7 +41,7 @@ public class Day10 implements Day {
 			.values()
 			.stream()
 			.filter(list -> list.size() > 7)
-			.anyMatch(set -> areAdjacent(set));
+			.anyMatch(this::areAdjacent);
 	}
 
 	private boolean areAdjacent(Set<MobilePoint> points) {
@@ -73,7 +66,8 @@ public class Day10 implements Day {
 	}
 
 	static class MobilePoint extends Point {
-		protected int vx, vy;
+		protected int vx;
+		protected int vy;
 		private static final Pattern pattern = Pattern.compile("position=< *(-?\\d+), *(-?\\d+)> velocity=< *(-?\\d+), *(-?\\d+)>");
 
 		public MobilePoint(String line) {
@@ -97,6 +91,17 @@ public class Day10 implements Day {
 
 		public int getVy() {
 			return vy;
+		}
+		
+
+		@Override
+		public boolean equals(Object object) {
+			return super.equals(object);
+		}
+
+		@Override
+		public int hashCode() {
+			return super.hashCode();
 		}
 	}
 

@@ -14,14 +14,14 @@ public class Day11 implements Day {
 	
 	@Override
 	public String part1(String input, Object... params) {
-		int gridSerial = Integer.valueOf(readLine(input));
+		int gridSerial = Integer.parseInt(readLine(input));
 		Point point = pointWithMaxTotalPower(gridSerial, 3).point;
 		return String.format("%d,%d", point.getX(), point.getY());
 	}
 
 	@Override
 	public String part2(String input, Object... params) {
-		int gridSerial = Integer.valueOf(readLine(input));
+		int gridSerial = Integer.parseInt(readLine(input));
 		PointSizeValue pointSizeValue = IntStream.rangeClosed(1, GRID_SIZE)
 			.parallel()
 			.mapToObj(size -> pointWithMaxTotalPower(gridSerial, size))

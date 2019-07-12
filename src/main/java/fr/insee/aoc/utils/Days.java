@@ -16,11 +16,15 @@ import java.util.stream.Stream;
 
 public class Days {
 
+	private Days() {
+		//
+	}
+	
 	public static Stream<String> streamOfLines(String input) {
 		try {
 			return Files.lines(Paths.get(input));
 		} catch (IOException e) {
-			System.out.println(e.getMessage());
+			//
 		}
 		throw new DayException("Erreur dans la lecture du fichier");
 	}

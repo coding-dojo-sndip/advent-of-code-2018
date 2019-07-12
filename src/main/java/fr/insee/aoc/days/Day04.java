@@ -4,13 +4,11 @@ import static fr.insee.aoc.utils.Days.*;
 import static java.util.Comparator.*;
 import static java.util.stream.Collectors.*;
 
+import fr.insee.aoc.utils.*;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.ToIntFunction;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -32,7 +30,7 @@ public class Day04 implements Day {
 	}
 
 	private static Guard selectGuard(List<Guard> guards, ToIntFunction<Guard> strategy) {
-		return guards.stream().max(comparingInt(strategy)).get();
+		return guards.stream().max(comparingInt(strategy)).orElseThrow(DayException::new);
 	}
 
 	private static List<Guard> guards(String input) {
@@ -47,7 +45,7 @@ public class Day04 implements Day {
 				fallsAsleepAt = record.date.getMinute();
 			} else {
 				for (int i = fallsAsleepAt; i < record.date.getMinute(); i++) {
-					guard.minutes[i]++;
+					if(guard != null) guard.minutes[i]++;
 				}
 				fallsAsleepAt = null;
 			}
@@ -80,6 +78,20 @@ public class Day04 implements Day {
 		@Override
 		public int compareTo(Record o) {
 			return this.date.compareTo(o.date);
+		}
+
+		@Override
+		public boolean equals(Object object) {
+			if(object instanceof Record) {
+				Record other = (Record) object;
+				return Objects.equals(this.date, other.date);
+			}
+			return false;
+		}
+
+		@Override
+		public int hashCode() {
+			return Objects.hash(this.date);
 		}
 	}
 

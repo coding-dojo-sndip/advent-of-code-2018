@@ -36,7 +36,7 @@ public class Day05 implements Day {
 		String polymer = readLine(input);
 		int min = IntStream.rangeClosed('a', 'z')
 				.mapToObj(c -> polymer.replaceAll("" + (char) c + "|" + (char) (c - 32) + "", ""))
-				.mapToInt(p -> reaction(p)).min().orElse(-1); // IntOptionnal
+				.mapToInt(this::reaction).min().orElse(-1);
 		return String.valueOf(min);
 	}
 
