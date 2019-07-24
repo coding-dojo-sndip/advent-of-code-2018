@@ -11,7 +11,7 @@ public class Day12 implements Day {
 	@Override
 	public String part1(String input, Object... params) {
 		var pots = potsAfterGenerations(input, 20);
-		int score = score(pots);
+		var score = score(pots);
 		return String.valueOf(score);
 	}
 	
