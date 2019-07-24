@@ -1,18 +1,16 @@
 package fr.insee.aoc.utils;
 
-import static java.util.stream.Collectors.toList;
+import java.io.*;
+import java.nio.file.*;
+import java.time.*;
+import java.time.format.*;
+import java.util.*;
+import java.util.regex.*;
+import java.util.stream.*;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
+import static java.util.stream.Collectors.*;
+import static java.util.stream.StreamSupport.*;
+import static java.util.Spliterators.*;
 
 public class Days {
 
@@ -35,6 +33,10 @@ public class Days {
 	
 	public static <T> Stream<T> streamOfCells(T[][] array) {
 		return Arrays.stream(array).flatMap(Arrays::stream);
+	}
+	
+	public static <T> Stream<T> reverseStream(Deque<T> deque) {
+		return stream(spliterator(deque.descendingIterator(), deque.size(), Spliterator.ORDERED), false);
 	}
 	
 	public static IntStream streamOfCells(int[][] array) {
