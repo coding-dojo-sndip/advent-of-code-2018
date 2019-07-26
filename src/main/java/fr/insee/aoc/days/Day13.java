@@ -4,14 +4,71 @@ import java.util.*;
 
 import org.apache.commons.math3.complex.*;
 
+import static fr.insee.aoc.utils.Days.*;
+
+import static java.util.Comparator.*;
+
 public class Day13 implements Day {
 
 	static final Map<Character, Complex> directions = Map.of(
-		'<', Complex.ONE,
-		'>', Complex.ONE.negate(),
+		'>', Complex.ONE,
 		'v', Complex.I,
+		'<', Complex.ONE.negate(),
 		'^', Complex.I.negate());
+	
+	@Override
+	public String part1(String input, Object... params) {
+		var tracks = tracks(input);
+		var carts = carts(tracks);
+		while(true) {
+			carts.sort(naturalOrder());
+			for(var cart : carts) {
+				cart.move(tracks);
+				if(cart.collideWithAny(carts).isPresent()) {
+					return String.format("%.0f,%.0f", cart.position.getReal(), cart.position.getImaginary());
+				}
+			}
+		}
+	}
 
+	@Override
+	public String part2(String input, Object... params) {
+		var tracks = tracks(input);
+		var carts = carts(tracks);
+		while(carts.size() > 1) {
+			carts.sort(naturalOrder());
+			for(var cart : carts) {
+				if(cart.moving) {
+					cart.move(tracks);
+					cart.collideWithAny(carts).ifPresent(other -> {
+						other.moving = false;
+						cart.moving = false;
+					});
+				}
+			}
+			carts.removeIf(cart -> !cart.moving);
+		}
+		var lastCart = carts.get(0);
+		return String.format("%.0f,%.0f", lastCart.position.getReal(), lastCart.position.getImaginary());
+	}
+
+	static char[][] tracks(String input) {
+		return tableOfChars(input);
+	}
+	
+	static List<Cart> carts(char[][] tracks) {
+		List<Cart> carts = new ArrayList<>();
+		for(var i = 0; i < tracks.length; i++) {
+			for(var j = 0; j < tracks[i].length; j++) {
+				char dir = tracks[i][j];
+				if(directions.containsKey(dir)) {
+					carts.add(new Cart(dir, j, i));
+				}
+			}	
+		}
+		return carts;
+	}
+	
 	static class Cart implements Comparable<Cart>{
 
 		Complex direction;
@@ -26,7 +83,12 @@ public class Day13 implements Day {
 			this.moving = true;
 		}
 
-		void moveForward() {
+		void move(char[][] tracks) {
+			forward();
+			turn(tracks);
+		}
+		
+		void forward() {
 			position = position.add(direction);
 		}
 		
@@ -38,24 +100,24 @@ public class Day13 implements Day {
 			direction = direction.multiply(Complex.I);
 		}
 		
-		void turn(char[][] track) {
-			var re = (int) position.getReal();
-			var im = (int) position.getImaginary();
-			switch (track[im][re]) {
+		void turn(char[][] tracks) {
+			var x = (int) position.getReal();
+			var y = (int) position.getImaginary();
+			switch (tracks[y][x]) {
 			case '/':
-				if(re == 0) {
-					turnRight();
+				if(direction.conjugate().equals(direction)) {
+					turnLeft();
 				}
 				else {
-					turnLeft();
+					turnRight();
 				}
 				break;
 			case '\\':
-				if(re == 0) {
-					turnLeft();
+				if(direction.conjugate().equals(direction)) {
+					turnRight();
 				}
 				else {
-					turnRight();
+					turnLeft();
 				}
 				break;
 			case '+':
@@ -82,8 +144,8 @@ public class Day13 implements Day {
 			return this.position.equals(other.position);
 		}
 		
-		boolean collideWith(List<Cart> carts) {
-			return carts.stream().filter(cart -> cart != this && cart.moving).anyMatch(this::collideWith);
+		Optional<Cart> collideWithAny(List<Cart> carts) {
+			return carts.stream().filter(cart -> cart != this && cart.moving).filter(this::collideWith).findFirst();
 		}
 		
 		enum Way {
@@ -92,9 +154,9 @@ public class Day13 implements Day {
 
 		@Override
 		public int compareTo(Cart other) {
-			return (int) (this.direction.getImaginary() == other.direction.getImaginary()
-				? this.direction.getReal() - other.direction.getReal()
-				: this.direction.getImaginary() - other.direction.getImaginary());
+			return (int) (this.position.getImaginary() == other.position.getImaginary()
+				? this.position.getReal() - other.position.getReal()
+				: this.position.getImaginary() - other.position.getImaginary());
 		}
 
 		@Override
@@ -105,12 +167,10 @@ public class Day13 implements Day {
 		@Override
 		public boolean equals(Object object) {
 			if(object instanceof Cart) {
-				Cart other = (Cart) object;
+				var other = (Cart) object;
 				return this.direction.equals(other.direction);
 			}
 			return false;
 		}
-		
-		
 	}
 }

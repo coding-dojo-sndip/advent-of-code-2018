@@ -13,13 +13,13 @@ public class Day13Test {
 	
 	@Test
 	public void case2_0() {
-		Assert.assertEquals("6,4", day.part1("src/test/resources/13-1.txt"));
+		Assert.assertEquals("6,4", day.part2("src/test/resources/13-1.txt"));
 	}
 
 	@Test
 	public void part1() {
 		String answer = day.part1("src/main/resources/13.txt");
-		System.out.println(String.format("%s.1:%n%s", day.getClass().getSimpleName(), answer));
+		System.out.println(String.format("%s.1: %s", day.getClass().getSimpleName(), answer));
 		Assert.assertEquals("113,136", answer);
 	}
 

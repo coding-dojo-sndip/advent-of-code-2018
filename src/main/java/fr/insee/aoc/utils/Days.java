@@ -1,5 +1,8 @@
 package fr.insee.aoc.utils;
 
+import static java.util.Spliterators.*;
+import static java.util.stream.StreamSupport.*;
+
 import java.io.*;
 import java.nio.file.*;
 import java.time.*;
@@ -9,8 +12,6 @@ import java.util.regex.*;
 import java.util.stream.*;
 
 import static java.util.stream.Collectors.*;
-import static java.util.stream.StreamSupport.*;
-import static java.util.Spliterators.*;
 
 public class Days {
 
@@ -35,12 +36,12 @@ public class Days {
 		return Arrays.stream(array).flatMap(Arrays::stream);
 	}
 	
-	public static <T> Stream<T> reverseStream(Deque<T> deque) {
-		return stream(spliterator(deque.descendingIterator(), deque.size(), Spliterator.ORDERED), false);
-	}
-	
 	public static IntStream streamOfCells(int[][] array) {
 		return Arrays.stream(array).flatMapToInt(Arrays::stream);
+	}
+	
+	public static <T> Stream<T> reverseStream(Deque<T> deque) {
+		return stream(spliterator(deque.descendingIterator(), deque.size(), Spliterator.ORDERED), false);
 	}
 	
 	public static String readLine(String input) {
@@ -63,6 +64,10 @@ public class Days {
 		return streamOfInt(input).toArray();
 	}
 
+	public static char[][] tableOfChars(String input) {
+		return streamOfLines(input).map(String::toCharArray).toArray(char[][]::new);
+	}
+	
 	public static <T> boolean in(T element, Collection<T> collection) {
 		return collection != null && collection.contains(element);
 	}
