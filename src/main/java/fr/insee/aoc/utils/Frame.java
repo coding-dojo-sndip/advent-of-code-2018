@@ -8,7 +8,10 @@ import java.util.IntSummaryStatistics;
 
 public class Frame {
 
-	private int top, bottom, left, right;
+	private int top;
+	private int bottom;
+	private int left;
+	private int right;
 
 	private Frame(int top, int bottom, int left, int right) {
 		this.top = top;
@@ -29,7 +32,7 @@ public class Frame {
 		return frameOf(top, bottom, left, right);
 	}
 
-	public static Frame smallestFrameContaining(Collection<Point> points) {
+	public static Frame smallestFrameContaining(Collection<? extends Point> points) {
 		IntSummaryStatistics statX = points.stream().mapToInt(Point::getX).summaryStatistics();
 		int left = statX.getMin();
 		int right = statX.getMax();
@@ -39,11 +42,11 @@ public class Frame {
 		return frameOf(top, bottom, left, right);
 	}
 
-	int width() {
+	public int width() {
 		return Math.abs(right - left);
 	}
 
-	int height() {
+	public int height() {
 		return Math.abs(bottom - top);
 	}
 

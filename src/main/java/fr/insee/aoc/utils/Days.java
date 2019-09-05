@@ -1,26 +1,29 @@
 package fr.insee.aoc.utils;
 
-import static java.util.stream.Collectors.toList;
+import static java.util.Spliterators.*;
+import static java.util.stream.StreamSupport.*;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
+import java.io.*;
+import java.nio.file.*;
+import java.time.*;
+import java.time.format.*;
+import java.util.*;
+import java.util.regex.*;
+import java.util.stream.*;
+
+import static java.util.stream.Collectors.*;
 
 public class Days {
 
+	private Days() {
+		//
+	}
+	
 	public static Stream<String> streamOfLines(String input) {
 		try {
 			return Files.lines(Paths.get(input));
 		} catch (IOException e) {
-			System.out.println(e.getMessage());
+			//
 		}
 		throw new DayException("Erreur dans la lecture du fichier");
 	}
@@ -35,6 +38,10 @@ public class Days {
 	
 	public static IntStream streamOfCells(int[][] array) {
 		return Arrays.stream(array).flatMapToInt(Arrays::stream);
+	}
+	
+	public static <T> Stream<T> reverseStream(Deque<T> deque) {
+		return stream(spliterator(deque.descendingIterator(), deque.size(), Spliterator.ORDERED), false);
 	}
 	
 	public static String readLine(String input) {
@@ -57,6 +64,10 @@ public class Days {
 		return streamOfInt(input).toArray();
 	}
 
+	public static char[][] tableOfChars(String input) {
+		return streamOfLines(input).map(String::toCharArray).toArray(char[][]::new);
+	}
+	
 	public static <T> boolean in(T element, Collection<T> collection) {
 		return collection != null && collection.contains(element);
 	}
