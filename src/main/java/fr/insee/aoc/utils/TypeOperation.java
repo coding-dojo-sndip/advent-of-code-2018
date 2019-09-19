@@ -16,9 +16,10 @@ public enum TypeOperation {
 	// Assignment
 	SET((t, u) -> t),
 	// Greater-than testing
-	GT((t, u) -> t >= u ? 1 : 0),
-	// Equality testing
-	EQU((t, u) -> Objects.equals(t, u) ? 1 : 0);
+	GT((t, u) -> t > u ? 1 : 0),
+	// Equality testing (utilisation de .equals car == ne fonctionne que sur des
+	// Integers compris entre -128 et 127)
+	EQ((t, u) -> Objects.equals(t, u) ? 1 : 0);
 
 	private BiFunction<Integer, Integer, Integer> fonction;
 
