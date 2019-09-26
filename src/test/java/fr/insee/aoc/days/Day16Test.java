@@ -19,7 +19,7 @@ public class Day16Test {
 
 	@Test
 	public void case2_0() {
-		Assert.assertEquals("", day.part2("src/main/resources/16-samples.txt", "src/main/resources/16-test.txt"));
+		Assert.assertEquals("525", day.part2("src/main/resources/16-samples.txt", "src/main/resources/16-test.txt"));
 	}
 
 }
